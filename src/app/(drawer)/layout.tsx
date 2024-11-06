@@ -1,8 +1,7 @@
 "use client";
 import React from "react";
 import { Header, SideNav } from "../components";
-import { Box, ThemeProvider } from "@mui/material";
-import theme from "../assets/styles/theme";
+import { Box } from "@mui/material";
 
 export default function Layout({
   children,
@@ -11,7 +10,7 @@ export default function Layout({
 }>) {
   return (
     <>
-      <Box className="bg-primaryLight h-screen w-full p-4">
+      <Box className="bg-primaryExtraLight h-screen w-full p-4">
         <Box className="flex gap-3 w-full">
           <Box className="max-w-[270px] w-full">
             <SideNav />
