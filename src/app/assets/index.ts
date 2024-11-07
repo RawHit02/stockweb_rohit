@@ -9,6 +9,14 @@ import DashboardIcon from './images/dashboard-icon.svg'
 import DashboardIconActive from './images/dashboard-icon-active.svg'
 import VendorManagementicon from './images/vendor-m-icon.svg'
 import VendorManagementiconActive from './images/vendor-m-icon-active.svg'
+import AdminIconActive from './images/admin-icon-active.svg'
+import AdminIcon from './images/admin-icon.svg'
+import EmployeeIcon from './images/employee-icon.svg'
+import EmployeeIconActive from './images/employee-icon-active.svg'
+import StockIcon from './images/stock-m-icon.svg'
+import StockIconActive from './images/stock-m-icon-active.svg'
+import CoinsImg from './images/coins-img.png'
+import DummyProfile from "./images/dummy-profile.jpeg"
 
 //Mui Icons
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
@@ -17,6 +25,7 @@ import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 
 export {
@@ -31,6 +40,14 @@ export {
     DashboardIconActive,
     VendorManagementicon,
     VendorManagementiconActive,
+    AdminIconActive,
+    AdminIcon,
+    EmployeeIcon,
+    EmployeeIconActive,
+    StockIcon,
+    StockIconActive,
+    CoinsImg,
+    DummyProfile,
 
     //Mui Icons
     CheckCircleIcon,
@@ -38,5 +55,6 @@ export {
     FileUploadOutlinedIcon,
     CloseOutlinedIcon,
     ArrowDropDownIcon,
-    ArrowRightIcon
+    ArrowRightIcon,
+    ArrowForwardIosIcon
 }
