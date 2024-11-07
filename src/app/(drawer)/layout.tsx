@@ -10,10 +10,12 @@ export default function Layout({
 }>) {
   return (
     <>
-      <Box className="bg-primaryLight h-screen w-full">
-        <Box>
-          <SideNav />
-          <Box>
+      <Box className="bg-primaryExtraLight h-screen w-full p-4">
+        <Box className="flex gap-3 w-full">
+          <Box className="max-w-[270px] w-full">
+            <SideNav />
+          </Box>
+          <Box className="w-calc(100%-286px) flex flex-col gap-3 w-full">
             <Header />
             {children}
           </Box>
