@@ -17,8 +17,7 @@ const config: Config = {
         secondary: "#E8EBED",
         secondary100: "#F9F871",
         secondary800: "#4B7D47",
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        gray100: "#1C1B1F"
       },
     },
   },

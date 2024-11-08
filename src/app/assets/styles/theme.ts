@@ -51,6 +51,7 @@ const theme = createTheme({
                 root: {
                     textTransform: "uppercase",
                     boxShadow: "none",
+                    borderRadius: "8px"
                 },
             },
             variants: [

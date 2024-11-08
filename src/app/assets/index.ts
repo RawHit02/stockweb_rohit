@@ -17,6 +17,7 @@ import StockIcon from './images/stock-m-icon.svg'
 import StockIconActive from './images/stock-m-icon-active.svg'
 import CoinsImg from './images/coins-img.png'
 import DummyProfile from "./images/dummy-profile.jpeg"
+import Logo2 from './images/Logo2.svg'
 
 //Mui Icons
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
@@ -26,9 +27,9 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import logo from './images/logo.svg'
-import password from './images/password.svg'
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
  
 
 export {
@@ -36,9 +37,6 @@ export {
     LoginBackground,
     NotificationIcon,
     SearchIcon,
-    KeyboardArrowRightIcon,
-    password,
-    logo,
     Logo1,
     Hamburger,
     UploadImageIcon,
@@ -54,6 +52,7 @@ export {
     StockIconActive,
     CoinsImg,
     DummyProfile,
+    Logo2,
 
     //Mui Icons
     CheckCircleIcon,
@@ -62,5 +61,8 @@ export {
     CloseOutlinedIcon,
     ArrowDropDownIcon,
     ArrowRightIcon,
-    ArrowForwardIosIcon
+    ArrowForwardIosIcon,
+    RemoveRedEyeOutlinedIcon,
+    VisibilityOffOutlinedIcon,
+    ArrowForwardIosOutlinedIcon
 }
