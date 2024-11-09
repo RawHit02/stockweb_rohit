@@ -32,6 +32,7 @@ const AddNewBuyerDialog = () => {
             >
                 <DialogTitle className='flex items-start justify-between px-9 pt-9 pb-6'>
                     <Box>
+                        
                         <Typography className='text-2xl leading-6 font-semibold'>Add New Buyer</Typography>
                         <Typography className='text-secondary800 mt-2'>Enter details of your Vendor</Typography>
 
