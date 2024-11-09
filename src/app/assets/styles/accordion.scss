@@ -1,0 +1,94 @@
+.MuiAccordion-root {
+    background-color: transparent !important;
+    border-bottom-left-radius: 8px !important;
+
+    .MuiAccordionSummary-root {
+        background-color: #37554A;
+        height: 44px;
+        min-height: 44px;
+        border-radius: 8px;
+
+        .vendor-m-icon-active {
+            @apply hidden
+        }
+
+        .arrow-down-icon {
+            @apply text-white
+        }
+
+        &.Mui-expanded {
+            height: 44px;
+            min-height: 44px;
+        }
+
+        &:hover {
+            .arrow-down-icon {
+                @apply text-primary
+            }
+
+            .vendor-m-icon-active {
+                @apply block
+            }
+
+            .vendor-m-icon {
+                @apply hidden
+            }
+
+            background-color: #F9F871;
+
+            .MuiAccordionSummary-content {
+                p {
+                    @apply text-primary
+                }
+            }
+        }
+
+        &.active {
+            .arrow-down-icon {
+                @apply text-primary
+            }
+
+            .vendor-m-icon-active {
+                @apply block
+            }
+
+            .vendor-m-icon {
+                @apply hidden
+            }
+
+            background-color: #F9F871;
+
+            .MuiAccordionSummary-content {
+                p {
+                    @apply text-primary
+                }
+            }
+        }
+
+        .MuiAccordionSummary-content {
+            p {
+                @apply text-white text-sm
+            }
+        }
+    }
+
+    .MuiAccordionDetails-root {
+        .side-nav-child {
+            &:hover {
+
+                .side-nav-child-label,
+                .side-nav-child-icon {
+                    @apply text-secondary100
+                }
+            }
+
+            &.active {
+
+                .side-nav-child-label,
+                .side-nav-child-icon {
+                    @apply text-secondary100
+                }
+            }
+        }
+    }
+}
