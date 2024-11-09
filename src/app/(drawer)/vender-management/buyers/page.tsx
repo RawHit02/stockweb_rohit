@@ -11,6 +11,7 @@ const Buyers = () => {
                     <AddNewBuyerDialog />
                 </Box>
             </Box>
+            
         </>
     )
 }
