@@ -23,7 +23,7 @@ const AddNewBuyerDialog = () => {
     };
     return (
         <>
-            <Button variant='contained' className='bg-primaryLight rounded-lg h-10 text-base' startIcon={<AddCircleOutlineOutlinedIcon />} onClick={handleClickOpen}>ADD BUYER</Button>
+            <Button variant='contained' className='bg-primary500 rounded-lg h-10 text-base' startIcon={<AddCircleOutlineOutlinedIcon />} onClick={handleClickOpen}>ADD BUYER</Button>
             <Dialog
                 onClose={handleClose}
                 aria-labelledby="customized-dialog-title"

@@ -17,49 +17,48 @@ import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
+import { DummyProfile } from '../assets';
+import Image from 'next/image';
 
 interface Data {
   id: number;
-  calories: number;
-  carbs: number;
-  fat: number;
   name: string;
-  protein: number;
+  contact: number;
+  whatsapp: number;
+  address: number;
 }
 
 
 function createData(
   id: number,
   name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
+  contact: number,
+  whatsapp: number,
+  address: number,
 ): Data {
   return {
     id,
     name,
-    calories,
-    fat,
-    carbs,
-    protein,
+    contact,
+    whatsapp,
+    address,
   };
 }
 
 const rows = [
-  createData(1, 'Cupcake', 305, 3.7, 67, 4.3),
-  createData(2, 'Donut', 452, 25.0, 51, 4.9),
-  createData(3, 'Eclair', 262, 16.0, 24, 6.0),
-  createData(4, 'Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData(5, 'Gingerbread', 356, 16.0, 49, 3.9),
-  createData(6, 'Honeycomb', 408, 3.2, 87, 6.5),
-  createData(7, 'Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData(8, 'Jelly Bean', 375, 0.0, 94, 0.0),
-  createData(9, 'KitKat', 518, 26.0, 65, 7.0),
-  createData(10, 'Lollipop', 392, 0.2, 98, 0.0),
-  createData(11, 'Marshmallow', 318, 0, 81, 2.0),
-  createData(12, 'Nougat', 360, 19.0, 9, 37.0),
-  createData(13, 'Oreo', 437, 18.0, 63, 4.0),
+  createData(1, 'Cupcake', 305, 3.7, 67),
+  createData(2, 'Donut', 452, 25.0, 51),
+  createData(3, 'Eclair', 262, 16.0, 24),
+  createData(4, 'Frozen yoghurt', 159, 6.0, 24),
+  createData(5, 'Gingerbread', 356, 16.0, 49),
+  createData(6, 'Honeycomb', 408, 3.2, 87),
+  createData(7, 'Ice cream sandwich', 237, 9.0, 37),
+  createData(8, 'Jelly Bean', 375, 0.0, 94),
+  createData(9, 'KitKat', 518, 26.0, 65),
+  createData(10, 'Lollipop', 392, 0.2, 98),
+  createData(11, 'Marshmallow', 318, 0, 81),
+  createData(12, 'Nougat', 360, 19.0, 9),
+  createData(13, 'Oreo', 437, 18.0, 63),
 ];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -97,33 +96,27 @@ const headCells: readonly HeadCell[] = [
   {
     id: 'name',
     numeric: false,
-    disablePadding: true,
-    label: 'Dessert (100g serving)',
+    disablePadding: false,
+    label: 'Name/ Email',
   },
   {
-    id: 'calories',
-    numeric: true,
+    id: 'contact',
+    numeric: false,
     disablePadding: false,
-    label: 'Calories',
+    label: 'Contact Number',
   },
   {
-    id: 'fat',
-    numeric: true,
+    id: 'whatsapp',
+    numeric: false,
     disablePadding: false,
-    label: 'Fat (g)',
+    label: 'WhatsApp Number',
   },
   {
-    id: 'carbs',
-    numeric: true,
+    id: 'address',
+    numeric: false,
     disablePadding: false,
-    label: 'Carbs (g)',
-  },
-  {
-    id: 'protein',
-    numeric: true,
-    disablePadding: false,
-    label: 'Protein (g)',
-  },
+    label: 'Address',
+  }
 ];
 
 interface EnhancedTableProps {
@@ -172,65 +165,11 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   );
 }
 
-interface EnhancedTableToolbarProps {
-  numSelected: number;
-}
-
-function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { numSelected } = props;
-  return (
-    <Toolbar
-      sx={[
-        {
-          pl: { sm: 2 },
-          pr: { xs: 1, sm: 1 },
-        },
-        numSelected > 0 && {
-          bgcolor: (theme) =>
-            alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-        },
-      ]}
-    >
-      {numSelected > 0 ? (
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          Nutrition
-        </Typography>
-      )}
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
-    </Toolbar>
-  );
-}
 
 
 const PrimaryTable = () => {
   const [order, setOrder] = useState<Order>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('calories');
+  const [orderBy, setOrderBy] = useState<keyof Data>('contact');
   const [selected, setSelected] = useState<readonly number[]>([]);
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
@@ -305,7 +244,7 @@ const PrimaryTable = () => {
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
-            size="medium"
+            size="small"
           >
             <EnhancedTableHead
               numSelected={selected.length}
@@ -330,18 +269,20 @@ const PrimaryTable = () => {
                     selected={isItemSelected}
                     sx={{ cursor: 'pointer' }}
                   >
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
-                    >
-                      {row.name}
+                    <TableCell component="th" id={labelId} scope="row" >
+                      <Box className="flex items-center gap-[10px]">
+                        <Box className="w-[32px] h-[32px] rounded-full overflow-hidden">
+                          <Image className='w-full h-full' src={DummyProfile} alt="img" />
+                        </Box>
+                        <Box>
+                          <Typography className='text-sm'>{row.name}</Typography>
+                          <Typography className='text-xs text-gray200'>test123@email.com</Typography>
+                        </Box>
+                      </Box>
                     </TableCell>
-                    <TableCell align="right">{row.calories}</TableCell>
-                    <TableCell align="right">{row.fat}</TableCell>
-                    <TableCell align="right">{row.carbs}</TableCell>
-                    <TableCell align="right">{row.protein}</TableCell>
+                    <TableCell align="left">{row.contact}</TableCell>
+                    <TableCell align="left">{row.whatsapp}</TableCell>
+                    <TableCell align="left">{row.address}</TableCell>
                   </TableRow>
                 );
               })}

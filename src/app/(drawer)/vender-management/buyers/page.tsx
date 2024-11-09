@@ -10,9 +10,11 @@ const Buyers = () => {
                     <Typography className='text-2xl font-bold'>Vendor Management / Buyers</Typography>
                     <AddNewBuyerDialog />
                 </Box>
-                    <PrimaryTable/>
+                <Box className="mt-4">
+                    <PrimaryTable />
+                </Box>
             </Box>
-            
+
         </>
     )
 }
