@@ -8,12 +8,18 @@ import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import UploadImageIcon from './images/upload-image-icon.svg';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-
+import logo from './images/logo.svg'
+import password from './images/password.svg'
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+ 
 
 export {
     LoginBackground,
     NotificationIcon,
     SearchIcon,
+    KeyboardArrowRightIcon,
+    password,
+    logo,
     Logo1,
     Hamburger,
     AddCircleOutlineOutlinedIcon,
