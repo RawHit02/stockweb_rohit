@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Typography } from '@mui/material'
-import { AddNewBuyerDialog } from '@/app/components'
+import { AddNewBuyerDialog, PrimaryTable } from '@/app/components'
 
 const Buyers = () => {
     return (
@@ -10,7 +10,11 @@ const Buyers = () => {
                     <Typography className='text-2xl font-bold'>Vendor Management / Buyers</Typography>
                     <AddNewBuyerDialog />
                 </Box>
+                <Box className="mt-4">
+                    <PrimaryTable />
+                </Box>
             </Box>
+
         </>
     )
 }

@@ -1,0 +1,39 @@
+.primary-table {
+    .MuiTableContainer-root {
+        .MuiTable-root {
+            .MuiTableHead-root {
+                .MuiTableRow-root {
+                    .MuiTableCell-root {
+                        @apply bg-primary500 border-none;
+
+                        &:first-child {
+                            border-radius: 8px 0 0 8px;
+                        }
+
+                        &:last-child {
+                            border-radius: 0 8px 8px 0;
+                        }
+
+                        .MuiButtonBase-root {
+                            @apply text-white text-sm font-normal;
+
+                            .MuiSvgIcon-root {
+                                @apply text-white;
+                            }
+                        }
+                    }
+                }
+            }
+            .MuiTableBody-root {
+                .MuiTableRow-root {
+                    .MuiTableCell-root {
+                       @apply text-sm font-normal border-primary100;
+                    }
+                }
+                .MuiTableRow-hover:hover {
+                    @apply bg-primaryExtraLight;
+                }
+            }
+        }
+    }
+}

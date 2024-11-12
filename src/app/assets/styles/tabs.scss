@@ -1,0 +1,16 @@
+.primary-tabs {
+    .MuiTabs-root {
+        .MuiTabs-flexContainer {
+            .MuiTab-root {
+                min-height: 44px;
+                @apply text-sm font-normal text-[#090A0B] capitalize opacity-100;
+                &.Mui-selected {
+                    @apply bg-primaryExtraLight rounded-lg text-primary;
+                }
+            }
+        }
+        .MuiTabs-indicator {
+            @apply hidden;
+        }
+    }
+}

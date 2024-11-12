@@ -18,6 +18,12 @@ import StockIconActive from './images/stock-m-icon-active.svg'
 import CoinsImg from './images/coins-img.png'
 import DummyProfile from "./images/dummy-profile.jpeg"
 import Logo2 from './images/Logo2.svg'
+import UserProfileIcon from './images/user-profile-icon.svg'
+import TransactionIcon from './images/transaction-icon.svg'
+import DiamondImage from './images/diamond-img.png'
+import WhatsappIcon from './images/whatsapp-icon.png'
+import AddressIcon from './images/address-icon.png'
+import DeleteIcon from './images/delete-icon.svg'
 
 //Mui Icons
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
@@ -30,7 +36,13 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
- 
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import EmailIcon from '@mui/icons-material/Email';
+import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import BlockIcon from '@mui/icons-material/Block';
+
 
 export {
     //images
@@ -53,6 +65,12 @@ export {
     CoinsImg,
     DummyProfile,
     Logo2,
+    UserProfileIcon,
+    TransactionIcon,
+    DiamondImage,
+    WhatsappIcon,
+    AddressIcon,
+    DeleteIcon,
 
     //Mui Icons
     CheckCircleIcon,
@@ -64,5 +82,11 @@ export {
     ArrowForwardIosIcon,
     RemoveRedEyeOutlinedIcon,
     VisibilityOffOutlinedIcon,
-    ArrowForwardIosOutlinedIcon
+    ArrowForwardIosOutlinedIcon,
+    ArrowBackIcon,
+    EditOutlinedIcon,
+    EmailIcon,
+    LocalPhoneIcon,
+    ContentCopyIcon,
+    BlockIcon,
 }

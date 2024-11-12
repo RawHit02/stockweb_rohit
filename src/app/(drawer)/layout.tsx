@@ -2,6 +2,7 @@
 import React from "react";
 import { Header, SideNav } from "../components";
 import { Box } from "@mui/material";
+// import SecondaryHeader from "../components/SecondaryHeader";
 
 export default function Layout({
   children,
@@ -16,7 +17,8 @@ export default function Layout({
             <SideNav />
           </Box>
           <Box className="w-calc(100%-286px) flex flex-col gap-3 w-full">
-            <Header />
+            <Header/>
+            {/* <SecondaryHeader /> */}
             {children}
           </Box>
         </Box>

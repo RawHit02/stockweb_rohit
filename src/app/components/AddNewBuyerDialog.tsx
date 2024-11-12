@@ -23,7 +23,7 @@ const AddNewBuyerDialog = () => {
     };
     return (
         <>
-            <Button variant='contained' className='bg-primaryLight rounded-lg h-10 text-base' startIcon={<AddCircleOutlineOutlinedIcon />} onClick={handleClickOpen}>ADD BUYER</Button>
+            <Button variant='contained' className='bg-primary500 rounded-lg h-10 text-base' startIcon={<AddCircleOutlineOutlinedIcon />} onClick={handleClickOpen}>ADD BUYER</Button>
             <Dialog
                 onClose={handleClose}
                 aria-labelledby="customized-dialog-title"
@@ -32,6 +32,7 @@ const AddNewBuyerDialog = () => {
             >
                 <DialogTitle className='flex items-start justify-between px-9 pt-9 pb-6'>
                     <Box>
+                        
                         <Typography className='text-2xl leading-6 font-semibold'>Add New Buyer</Typography>
                         <Typography className='text-secondary800 mt-2'>Enter details of your Vendor</Typography>
 
