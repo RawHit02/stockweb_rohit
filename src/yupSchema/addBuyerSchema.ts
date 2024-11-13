@@ -1,17 +1,21 @@
-// src/yupSchema/addBuyerSchema.ts
 import * as Yup from "yup";
-import { ValidationError } from "@/constants/ValidationError";
 
 export const addBuyerSchema = Yup.object().shape({
-    name: Yup.string().required(ValidationError.NAMEREQUIRED),
+    name: Yup.string().required("Please enter the buyer's name"),
     contactNumber: Yup.string()
-        .required(ValidationError.CONTACTNUMBERREQUIRED)
-        .matches(/^[0-9]{10}$/, ValidationError.CONTACTNUMBERINVALID),
+        .required("Contact number is required")
+        .matches(/^[0-9]+$/, "Contact number not Valid ")
+        .min(10, "Contact number must be at least 10 digits")
+        .max(15, "Contact number can't exceed 15 digits"),
     whatsappNumber: Yup.string()
-        .required(ValidationError.WHATSAPPNUMBERREQUIRED)
-        .matches(/^[0-9]{10}$/, ValidationError.WHATSAPPNUMBERINVALID),
+        .required("WhatsApp number is required")
+        .matches(/^[0-9]+$/, "WhatsApp Number not Valid ")
+        .min(10, "WhatsApp number must be at least 10 digits")
+        .max(15, "WhatsApp number can't exceed 15 digits"),
     email: Yup.string()
-        .required(ValidationError.EMAILREQUIRED)
-        .email(ValidationError.EMAILINVALID),
-    address: Yup.string().required(ValidationError.ADDRESSREQUIRED),
+        .email("Please enter a valid email address")
+        .required("Email is required"),
+    address: Yup.string().required("Address is required"),
+    profileImage: Yup.mixed()
+        .nullable()
 });
