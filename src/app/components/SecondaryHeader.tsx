@@ -1,7 +1,6 @@
-import { Box, Button, InputAdornment, OutlinedInput, Typography } from '@mui/material'
-import Image from 'next/image'
+import { Box, Button, Typography } from '@mui/material'
 import React from 'react'
-import { EditOutlinedIcon, NotificationIcon, SearchIcon } from '../assets'
+import { EditOutlinedIcon} from '../assets'
 import { ArrowBack } from '@mui/icons-material'
 
 const SecondaryHeader = () => {

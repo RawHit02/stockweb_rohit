@@ -28,4 +28,14 @@ export const ValidationError = {
 
   // Booking
   VALID_ODOMETER_READING: "Please enter valid odometer reading",
+
+
+    NAMEREQUIRED: "Please enter the name",
+    CONTACTNUMBERREQUIRED: "Please enter contact number",
+    CONTACTNUMBERINVALID: "Contact number should be a 10-digit number",
+    WHATSAPPNUMBERREQUIRED: "Please enter whatsapp number",
+    WHATSAPPNUMBERINVALID: "WhatsApp number should be a 10-digit number",
+    EMAILREQUIRED: "Please enter email address",
+    EMAILINVALID: "Please enter valid email address",
+    ADDRESSREQUIRED :  "Please enter address",
 };
