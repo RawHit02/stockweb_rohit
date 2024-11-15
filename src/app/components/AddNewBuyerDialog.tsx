@@ -16,6 +16,7 @@ import {
     Snackbar,
 } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Data } from "@/types/types"; // Import Data type for Omit
 import Image from "next/image";
 import {
     AddCircleOutlineOutlinedIcon,
@@ -35,18 +36,9 @@ interface BuyerFormValues {
     profileImage: File | null;
 }
 
-interface Data {
-    id: number;
-    name: string;
-    contactNumber: string;
-    whatsappNumber: string;
-    email: string;
-    address: string;
-    profileImage?: string; // For image URL
-}
-
+// Define the props including the onAddBuyer function, omitting `id` for dynamic ID assignment
 interface AddNewBuyerDialogProps {
-    onAddBuyer: (buyer: Data) => void;
+    onAddBuyer: (buyer: Omit<Data, 'id'>) => void;
 }
 
 const AddNewBuyerDialog: React.FC<AddNewBuyerDialogProps> = ({ onAddBuyer }) => {
@@ -54,17 +46,9 @@ const AddNewBuyerDialog: React.FC<AddNewBuyerDialogProps> = ({ onAddBuyer }) => 
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [uploadedImage, setUploadedImage] = useState<string | null>(null);
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const handleSnackbarClose = () => {
-        setSnackbarOpen(false);
-    };
+    const handleClickOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+    const handleSnackbarClose = () => setSnackbarOpen(false);
 
     const handleImageUpload = (
         event: React.ChangeEvent<HTMLInputElement>,
@@ -79,17 +63,16 @@ const AddNewBuyerDialog: React.FC<AddNewBuyerDialogProps> = ({ onAddBuyer }) => 
     };
 
     const handleSubmit = (values: BuyerFormValues, { resetForm }: { resetForm: () => void }) => {
-        const newBuyer: Data = {
-            id: Date.now(), // Unique ID
+        const newBuyer = {
             name: values.name,
             contactNumber: values.contactNumber,
             whatsappNumber: values.whatsappNumber,
             email: values.email,
             address: values.address,
-            profileImage: uploadedImage ?? undefined, // Use the image URL
+            profileImage: uploadedImage ?? undefined,
         };
 
-        onAddBuyer(newBuyer); // Send data to parent component
+        onAddBuyer(newBuyer); // Pass the new buyer to the onAddBuyer function
         resetForm();
         setUploadedImage(null);
         setSnackbarOpen(true);
@@ -98,7 +81,14 @@ const AddNewBuyerDialog: React.FC<AddNewBuyerDialogProps> = ({ onAddBuyer }) => 
 
     return (
         <>
-            <Button variant='contained' className='bg-primary500 rounded-lg h-10 text-base' startIcon={<AddCircleOutlineOutlinedIcon />} onClick={handleClickOpen}>ADD BUYER</Button>
+            <Button
+                variant="contained"
+                className="bg-primary500 rounded-lg h-10 text-base"
+                startIcon={<AddCircleOutlineOutlinedIcon />}
+                onClick={handleClickOpen}
+            >
+                ADD BUYER
+            </Button>
             <Dialog
                 onClose={handleClose}
                 aria-labelledby="customized-dialog-title"
@@ -107,14 +97,14 @@ const AddNewBuyerDialog: React.FC<AddNewBuyerDialogProps> = ({ onAddBuyer }) => 
             >
                 <DialogTitle className="flex items-start justify-between px-9 pt-9 pb-6">
                     <Box>
-                        <Typography className='text-2xl leading-6 font-semibold'>Add New Buyer</Typography>
-                        <Typography className='text-secondary800 mt-2'>Enter details of your Vendor</Typography>
+                        <Typography className="text-2xl leading-6 font-semibold">Add New Buyer</Typography>
+                        <Typography className="text-secondary800 mt-2">Enter details of your Vendor</Typography>
                     </Box>
                     <IconButton onClick={handleClose} className="p-0">
                         <CloseOutlinedIcon />
                     </IconButton>
                 </DialogTitle>
-                
+
                 <Formik
                     initialValues={{
                         name: "",
@@ -130,7 +120,6 @@ const AddNewBuyerDialog: React.FC<AddNewBuyerDialogProps> = ({ onAddBuyer }) => 
                     {({ touched, errors, setFieldValue, resetForm }) => (
                         <Form>
                             <DialogContent className="px-9">
-                                {/* Profile Picture Upload */}
                                 <Box className="flex items-center gap-6 mb-4">
                                     <Box className="border-[6px] border-primary200 bg-primaryExtraLight rounded-full overflow-hidden w-[120px] h-[120px] flex items-center justify-center relative">
                                         {uploadedImage ? (
@@ -207,7 +196,11 @@ const AddNewBuyerDialog: React.FC<AddNewBuyerDialogProps> = ({ onAddBuyer }) => 
                                             placeholder="Enter contact number"
                                             fullWidth
                                             className="mt-1"
-                                            startAdornment={<InputAdornment position="start"><Typography className="text-secondary800 text-sm">+1</Typography></InputAdornment>}
+                                            startAdornment={
+                                                <InputAdornment position="start">
+                                                    <Typography className="text-secondary800 text-sm">+1</Typography>
+                                                </InputAdornment>
+                                            }
                                             error={touched.contactNumber && Boolean(errors.contactNumber)}
                                         />
                                         <ErrorMessage name="contactNumber" component="div" className="text-red-600" />
@@ -220,7 +213,11 @@ const AddNewBuyerDialog: React.FC<AddNewBuyerDialogProps> = ({ onAddBuyer }) => 
                                             placeholder="Enter WhatsApp number"
                                             fullWidth
                                             className="mt-1"
-                                            startAdornment={<InputAdornment position="start"><Typography className="text-secondary800 text-sm">+1</Typography></InputAdornment>}
+                                            startAdornment={
+                                                <InputAdornment position="start">
+                                                    <Typography className="text-secondary800 text-sm">+1</Typography>
+                                                </InputAdornment>
+                                            }
                                             error={touched.whatsappNumber && Boolean(errors.whatsappNumber)}
                                         />
                                         <ErrorMessage name="whatsappNumber" component="div" className="text-red-600" />
@@ -264,7 +261,13 @@ const AddNewBuyerDialog: React.FC<AddNewBuyerDialogProps> = ({ onAddBuyer }) => 
                                 >
                                     Reset
                                 </Button>
-                                <Button type="submit" variant="contained" color="primary" size="large" startIcon={<CheckCircleIcon className="text-[20px]" />}>
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary"
+                                    size="large"
+                                    startIcon={<CheckCircleIcon className="text-[20px]" />}
+                                >
                                     Save
                                 </Button>
                             </DialogActions>
