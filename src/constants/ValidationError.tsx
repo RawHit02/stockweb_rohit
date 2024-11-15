@@ -31,11 +31,11 @@ export const ValidationError = {
 
 
     NAMEREQUIRED: "Please enter the name",
-    CONTACTNUMBERREQUIRED: "Please enter the contact number",
+    CONTACTNUMBERREQUIRED: "Please enter contact number",
     CONTACTNUMBERINVALID: "Contact number should be a 10-digit number",
-    WHATSAPPNUMBERREQUIRED: "Please enter the WhatsApp number",
+    WHATSAPPNUMBERREQUIRED: "Please enter whatsapp number",
     WHATSAPPNUMBERINVALID: "WhatsApp number should be a 10-digit number",
-    EMAILREQUIRED: "Please enter an email address",
-    EMAILINVALID: "Please enter a valid email address",
-    ADDRESSREQUIRED :  "Please enter an address",
+    EMAILREQUIRED: "Please enter email address",
+    EMAILINVALID: "Please enter valid email address",
+    ADDRESSREQUIRED :  "Please enter address",
 };

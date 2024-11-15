@@ -1,7 +1,6 @@
 // pages/login.js
 import React from "react";
 import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
 import { TextField, Button, Box, Typography } from "@mui/material";
 import { LoginSchema } from "@/yupSchema/LoginSchema";
 

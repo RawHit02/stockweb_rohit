@@ -14,11 +14,8 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import {
-  ArrowForwardIosOutlinedIcon,
-  RemoveRedEyeOutlinedIcon,
-  VisibilityOffOutlinedIcon,
-} from "../assets";
+
+import { RemoveRedEyeOutlinedIcon, VisibilityOffOutlinedIcon, ArrowForwardIosOutlinedIcon } from "../assets"; 
 import Image from "next/image";
 import { Logo2, LoginBackground } from "../assets";
 import { login } from "@/redux/slices/authSlice";
@@ -35,7 +32,7 @@ const SignIn = () => {
     password: Yup.string().required("Please enter your password"),
   });
 
-  const handleLogin = (values: { username: string; password: string }) => {
+  const handleLogin = () => {
     // Dispatch login action
     dispatch(login());
     // Navigate to the dashboard
@@ -133,45 +130,6 @@ const SignIn = () => {
           </Box>
         </Box>
       </Box>
-      {/* <Box className="flex items-center justify-center w-full h-screen">
-      <Box className="max-w-[492px] w-full bg-white rounded-2xl pt-[61px] pl-[42px] pr-[42px] pb-[42px] flex flex-col gap-[24px]">
-        <Box className="  flex flex-row items-center gap-2">
-          <Image src={logo} alt="img" />
-          <Typography variant='h1'>STOCKS</Typography>
-        </Box>
-        <Box>
-          <Typography variant="h2">LOGIN</Typography>
-          <Typography variant="body1">Enter your credentials for login</Typography>
-        </Box>
-        <Box>
-          <Typography variant="subtitle1">Username</Typography>
-          <TextField placeholder="Enter here" variant="outlined" size='small' className="w-full" ></TextField>
-        </Box>
-        <Box>
-          <Typography variant="subtitle1">Password</Typography>
-          <OutlinedInput placeholder="Enter here" size="small" className="w-full"
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton className="text-black">
-                  <VisibilityIcon />
-                </IconButton>
-              </InputAdornment>
-            }
-          ></OutlinedInput>
-        </Box>
-        <Box>
-          <Button variant='contained' size="medium" className=" w-full py-2">
-            <Typography variant="h5" className="text-white">LOGIN</Typography>
-          </Button>
-        </Box>
-        <Box >
-          <Link href='#' className="w-full flex items-center justify-between" >
-            <Typography variant="h5"> FORGOT PASSWORD</Typography>
-            <KeyboardArrowRightIcon />
-          </Link>
-        </Box>
-      </Box>
-    </Box> */}
     </Box>
   );
 };
