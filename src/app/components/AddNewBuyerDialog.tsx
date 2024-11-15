@@ -36,7 +36,6 @@ interface BuyerFormValues {
     profileImage: File | null;
 }
 
-// Define the props including the onAddBuyer function, omitting `id` for dynamic ID assignment
 interface AddNewBuyerDialogProps {
     onAddBuyer: (buyer: Omit<Data, 'id'>) => void;
 }

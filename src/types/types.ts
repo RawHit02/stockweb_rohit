@@ -5,5 +5,5 @@ export interface Data {
     whatsappNumber: string;
     email: string;
     address: string;
-    profileImage?: string; // Optional property for image URL
+    profileImage?: string; 
 }

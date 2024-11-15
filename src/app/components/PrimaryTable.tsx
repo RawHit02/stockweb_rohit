@@ -13,7 +13,7 @@ import TableSortLabel from "@mui/material/TableSortLabel";
 import Typography from "@mui/material/Typography";
 // import { visuallyHidden } from "@mui/utils";
 import Image from "next/image";
-import { Data } from "@/types/types"; // Update path as needed
+import { Data } from "@/types/types";
 
 interface PrimaryTableProps {
     rows: Data[];
