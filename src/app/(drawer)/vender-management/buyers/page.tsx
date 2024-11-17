@@ -22,7 +22,7 @@ const Buyers = () => {
     };
 
     return (
-        <Box className="bg-white border border-[#E8EBED] rounded-xl p-6">
+        <Box className="bg-white border border-[#E8EBED] rounded-xl p-6 h-[calc(100vh-116px)] overflow-auto">
             <Box className="w-full flex items-center justify-between">
                 <Typography className="text-2xl font-bold">
                     Vendor Management / Buyers

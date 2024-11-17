@@ -24,6 +24,7 @@ import DiamondImage from './images/diamond-img.png'
 import WhatsappIcon from './images/whatsapp-icon.png'
 import AddressIcon from './images/address-icon.png'
 import DeleteIcon from './images/delete-icon.svg'
+import DeleteRed from './images/delete-error200.svg'
 
 //Mui Icons
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
@@ -45,6 +46,7 @@ import BlockIcon from '@mui/icons-material/Block';
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 
 export {
@@ -74,6 +76,7 @@ export {
     WhatsappIcon,
     AddressIcon,
     DeleteIcon,
+    DeleteRed,
 
     //Mui Icons
     CheckCircleIcon,
@@ -95,4 +98,5 @@ export {
     ShareOutlinedIcon,
     SearchIcon,
     KeyboardArrowDownIcon,
+    MoreVertIcon
 }
