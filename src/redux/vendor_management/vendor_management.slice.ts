@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { SignInModel } from "@/models/SignInModel";
 import { InitialBuyersModelState } from "@/models/req-model/VendorManagementBuyerModel";
-import { createBuyer, getAllBuyers } from "./vendor_management.actions";
+import { createBuyer, getAllBuyersAction } from "./vendor_management.actions";
 
 const initialState: InitialBuyersModelState = {
   message: "",
@@ -39,19 +39,19 @@ export const manageVendorManagementSlice = createSlice({
     });
 
     // Get All Vehicles Points
-    builder.addCase(getAllBuyers.pending, (state, action) => {
+    builder.addCase(getAllBuyersAction.pending, (state, action) => {
       state.getAllBuyerLoading = true;
       state.userError = "";
       state.createBuyerRes = "";
     });
-    builder.addCase(getAllBuyers.fulfilled, (state, action) => {
+    builder.addCase(getAllBuyersAction.fulfilled, (state, action) => {
       state.getAllBuyerLoading = false;
       state.userError = "";
       state.getAllBuyers = action.payload.data;
       state.itemCount = action.payload.itemCount;
       state.createBuyerRes = "";
     });
-    builder.addCase(getAllBuyers.rejected, (state, action) => {
+    builder.addCase(getAllBuyersAction.rejected, (state, action) => {
       state.getAllBuyerLoading = false;
       state.userError = action.error.message;
       state.createBuyerRes = "";

@@ -38,7 +38,7 @@ export const createBuyer = createAsyncThunk<
   }
 );
 
-export const getAllBuyers = createAsyncThunk<
+export const getAllBuyersAction = createAsyncThunk<
   { data: VendorManagementBuyerModel[]; itemCount: number },
   {
     commonApiParamModel: GetAllBuyersRequest;
