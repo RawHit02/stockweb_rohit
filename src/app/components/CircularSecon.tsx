@@ -62,7 +62,7 @@ export default function CircularWithValueLabel() {
   return (
     <CircularProgressWithLabel
       value={21}
-      size="80px"
+      size="88px"
       className="text-[#00A870]"
     />
   );

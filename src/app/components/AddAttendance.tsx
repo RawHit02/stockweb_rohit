@@ -108,7 +108,6 @@ const AddEmployeeDialog = () => {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={["TimePicker"]}>
                     <TimePicker
-                      label="__:__"
                       className="p-[0px] overflow-hidden lg:w-[520px]"
                       slotProps={{
                         // Targets the `IconButton` component.
@@ -131,8 +130,7 @@ const AddEmployeeDialog = () => {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={["TimePicker"]}>
                     <TimePicker
-                      label="__:__"
-                      className="p-[0px] overflow-hidden lg:w-[520px]"
+                      className="p-[0px] overflow-hidden lg:w-[520px] border-primary500"
                       slotProps={{
                         // Targets the `IconButton` component.
                         openPickerButton: {

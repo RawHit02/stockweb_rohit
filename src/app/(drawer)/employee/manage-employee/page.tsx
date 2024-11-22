@@ -4,11 +4,11 @@ import React from "react";
 import { Box, Typography } from "@mui/material";
 import { AddEmployeeDialog, PrimaryTableExample } from "@/app/components";
 
-const manageEmployee = () => {
+const ManageEmployee = () => {
   return (
     <Box className="bg-white border border-[#E8EBED] rounded-xl p-6 h-[calc(100vh-116px)] overflow-auto">
       <Box className="w-full flex items-center justify-between">
-        <Typography variant="h1">Manage Employees</Typography>
+        <Typography className="text-2xl font-bold">Manage Employees</Typography>
         <Box>
           <AddEmployeeDialog />
         </Box>
@@ -20,4 +20,4 @@ const manageEmployee = () => {
   );
 };
 
-export default manageEmployee;
+export default ManageEmployee;

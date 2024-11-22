@@ -5,24 +5,24 @@ import { AddAttendance, PrimaryTableExample } from "@/app/components";
 import { CircularProgress } from "@/app/components";
 import { CircularSecon } from "@/app/components";
 
-const todaysAttendance = () => {
+const TodaysAttendance = () => {
   return (
     <Box className="bg-white border border-[#E8EBED] rounded-xl p-6 h-[calc(100vh-116px)] overflow-auto">
-      <Box className="flex flex-col gap-[16px]">
+      <Box className="flex flex-col gap-4">
         <Box className="w-full flex items-center justify-between">
-          <Typography variant="h1">Today's Attendance</Typography>
+          <Typography className="text-2xl font-bold">Today's Attendance</Typography>
           <Box>
             <AddAttendance />
           </Box>
         </Box>
-        <Box className="flex flex-row gap-[16px]">
-          <Box className="rounded-[16px] p-[24px] flex flex-col gap-[16px] border-[1px] border-[#255435]">
+        <Box className="flex flex-row gap-4">
+          <Box className="rounded-2xl p-6 flex flex-col gap-4 border border-primary500">
             <CircularProgress />
             <Typography variant="body1" className="flex flex-row self-center">
               Total:42
             </Typography>
           </Box>
-          <Box className="rounded-[16px] p-[24px] border-[1px] flex flex-col gap-[16px] border-[#255435]">
+          <Box className="rounded-2xl p-6 border flex flex-col gap-4 border-primary500">
             <CircularSecon />
             <Typography variant="body1" className="flex flex-row self-center">
               Total:10
@@ -37,4 +37,4 @@ const todaysAttendance = () => {
   );
 };
 
-export default todaysAttendance;
+export default TodaysAttendance;
