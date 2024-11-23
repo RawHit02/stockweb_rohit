@@ -27,7 +27,7 @@ const Sellers = () => {
         <Typography className="text-2xl font-bold">
           Vendor Management / Sellers
         </Typography>
-        <AddNewBuyerDialog />
+        {/* <AddNewBuyerDialog /> */}
       </Box>
       <Box className="mt-4">
         <PrimaryTable rows={buyers} />
