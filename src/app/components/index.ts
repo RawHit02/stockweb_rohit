@@ -6,6 +6,10 @@ import PrimaryTable from "./PrimaryTable";
 import SecondaryTable from "./SecondaryTable";
 import AddStockEntryDialog from "./AddStockEntryrDialog";
 import PrimaryTableExample from "./PrimaryTableExample";
+import AddEmployeeDialog from "./AddEmployeeDialog";
+import CircularProgress from "./CircularProgress";
+import CircularSecon from "./CircularSecon"
+import AddAttendance from "./AddAttendance";
+import DateAttendanceSheet from "./DateAttendanceSheet";
 
-
-export { Header, SideNav, AddNewBuyerDialog, SignIn, PrimaryTable, SecondaryTable, AddStockEntryDialog, PrimaryTableExample } 
+export { Header, SideNav, DateAttendanceSheet, AddNewBuyerDialog, SignIn, AddEmployeeDialog, PrimaryTable, AddAttendance, CircularProgress, CircularSecon,  SecondaryTable, AddStockEntryDialog, PrimaryTableExample } 

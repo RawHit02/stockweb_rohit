@@ -25,6 +25,10 @@ import WhatsappIcon from './images/whatsapp-icon.png'
 import AddressIcon from './images/address-icon.png'
 import DeleteIcon from './images/delete-icon.svg'
 import DeleteRed from './images/delete-error200.svg'
+import imagepic from './images/imagepic.svg'
+import upload from './images/upload.svg'
+import close from './images/close.svg'
+import search from './images/search.svg'
 
 //Mui Icons
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
@@ -47,6 +51,7 @@ import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+
 
 
 export {
@@ -77,6 +82,10 @@ export {
     AddressIcon,
     DeleteIcon,
     DeleteRed,
+    imagepic,
+    upload,
+    close,
+    search,
 
     //Mui Icons
     CheckCircleIcon,

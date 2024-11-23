@@ -1,12 +1,13 @@
 "use client"
 
+import { Padding, RoundedCorner } from "@mui/icons-material";
 import { createTheme } from "@mui/material";
 
 const theme = createTheme({
     typography: {
         h1: {
-            fontSize: '25px',
-            fontWeight: 'bold'
+            fontSize: '24px',
+            fontWeight: '700',
         },
         h2: {
             fontSize: '23px',
@@ -22,10 +23,10 @@ const theme = createTheme({
         },
         h5: {
             fontSize: '14px',
+            fontWeight: '400',
         },
         h6: {
             fontSize: '13px',
-            fontFamily: 'sans-serif',
         },
         subtitle2: {
             fontSize: '15px',
@@ -36,16 +37,33 @@ const theme = createTheme({
             fontWeight: 'light'
         },
         body1: {
-            fontSize: '13px',
-            fontWeight: 'light'
-        },
-        body2: {
-            fontSize: '13px',
-            fontWeight: 'bold'
+            fontSize: '16px',
+            fontWeight: '500',
         },
 
+        body2: {
+            fontSize: '12px',
+            fontWeight: '400',
+        },
+},
+    palette:{
+        primary:{
+            main:'rgba(75, 125, 71, 1)',
+        }
     },
     components: {
+        MuiTextField:{
+            styleOverrides:{
+                root:{
+                    placeholder:{
+                        fontSize: '14px',
+                        fontFamily:'Poppins',
+                        fontWeight: '400',
+                        color:'#4B7D47',
+                    },
+                },
+            },
+        },
         MuiButton: {
             styleOverrides: {
                 root: {
@@ -202,7 +220,7 @@ const theme = createTheme({
                     }
                 }
             },
-        }
+        },
     },
 });
 
