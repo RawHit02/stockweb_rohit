@@ -15,13 +15,13 @@ export interface VendorManagementBuyerModel {
 }
 
 export interface InitialBuyersModelState {
-  getAllBuyers: VendorManagementBuyerModel[];
   message: string;
+  itemCount: number;
+  userError: string | undefined;
+  getAllBuyers: VendorManagementBuyerModel[];
   createBuyerRes: string;
   createBuyerLoading: boolean;
   getAllBuyerLoading: boolean;
-  itemCount: number;
-  userError: string | undefined;
 }
 
 export interface GetAllBuyersRequest extends ApiParamModel {

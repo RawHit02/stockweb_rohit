@@ -14,7 +14,7 @@ import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
-import { visuallyHidden } from "@mui/utils";
+//import { visuallyHidden } from "@mui/utils";
 import {
   DeleteRed,
   DummyProfile,
@@ -24,13 +24,12 @@ import {
 import Image from "next/image";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "@/redux/store";
-import { GetAllBuyersRequest } from "@/models/req-model/VendorManagementBuyerModel";
+import { GetAllSellersRequest } from "@/models/req-model/VendorManagementSellerModel";
 import {
-  deleteBuyerAction,
-  getAllBuyersAction,
+  deleteSellerAction,
+  getAllSellersAction,
 } from "@/redux/vendor_management/vendor_management.actions";
-import { VendorManagementBuyerModel } from "@/models/req-model/VendorManagementBuyerModel";
-
+import { VendorManagementSellerModel } from "@/models/req-model/VendorManagementSellerModel";
 const ITEM_HEIGHT = 48;
 
 const headCells = [
@@ -41,10 +40,15 @@ const headCells = [
   { id: "address", label: "Address", numeric: false },
 ];
 
-const VendorManagementBuyers = ({
-  onEditBuyer,
+
+interface VendorManagementSellersProps {
+  onEditSeller: (seller: VendorManagementSellerModel) => void;
+}
+
+const VendorManagementSeller = ({
+  onEditSeller,
 }: {
-  onEditBuyer: (row: VendorManagementBuyerModel) => void;
+  onEditSeller: (row: VendorManagementSellerModel) => void;
 }) => {
   const [order, setOrder] = useState<"asc" | "desc">("asc");
   const [orderBy, setOrderBy] = useState<string>("name");
@@ -52,23 +56,23 @@ const VendorManagementBuyers = ({
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const [selectedBuyerId, setSelectedBuyerId] = useState<string | null>(null); // Buyer ID for the menu actions
+  const [selectedSellerId, setSelectedSellerId] = useState<string | null>(null); // Seller ID for the menu actions
   const dispatch = useDispatch<AppDispatch>();
-  const { getAllBuyers, itemCount } = useAppSelector(
-    (state) => state.VendorManagementReducer.buyers
+  const { getAllSellers, itemCount } = useAppSelector(
+    (state) => state.VendorManagementReducer.sellers
   );
 
   const fetchData = async () => {
     try {
-      const params: GetAllBuyersRequest = {
+      const params: GetAllSellersRequest = {
         page: page + 1,
         take: rowsPerPage,
         order,
         orderBy,
       };
-      await dispatch(getAllBuyersAction({ commonApiParamModel: params }));
+      await dispatch(getAllSellersAction({ commonApiParamModel: params }));
     } catch (error) {
-      console.error("Error fetching buyers:", error);
+      console.error("Error fetching Sellers:", error);
     }
   };
 
@@ -78,33 +82,33 @@ const VendorManagementBuyers = ({
 
   const handleClickMenu = (
     event: React.MouseEvent<HTMLElement>,
-    buyerId: string
+    SellerId: string
   ) => {
     setAnchorEl(event.currentTarget);
-    setSelectedBuyerId(buyerId); // Set the buyer ID for menu actions
+    setSelectedSellerId(SellerId); // Set the Seller ID for menu actions
   };
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
-    setSelectedBuyerId(null); // Clear selected buyer
+    setSelectedSellerId(null); // Clear selected Seller
   };
 
-  const handleEditClick = (row: VendorManagementBuyerModel) => {
-    onEditBuyer(row);
+  const handleEditClick = (row: VendorManagementSellerModel) => {
+    onEditSeller(row);
     handleCloseMenu(); 
     // setIsEditing(row.id); // Enable edit mode for the specific row
     //setEditedRow({...row }); // Copy current row data for editing
     //handleCloseMenu();
   };
 
-  const handleDeleteBuyer = async () => {
-    if (selectedBuyerId) {
-      if (window.confirm("Are you sure you want to delete this buyer?")) {
+  const handleDeleteSeller = async () => {
+    if (selectedSellerId) {
+      if (window.confirm("Are you sure you want to delete this Seller?")) {
         try {
-          await dispatch(deleteBuyerAction(selectedBuyerId)).unwrap();
+          await dispatch(deleteSellerAction(selectedSellerId)).unwrap();
           fetchData(); // Refresh data after deletion
         } catch (error) {
-          console.error("Failed to delete buyer:", error);
+          console.error("Failed to delete Seller:", error);
         }
       }
       handleCloseMenu();
@@ -165,7 +169,7 @@ const VendorManagementBuyers = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {getAllBuyers.map((row: VendorManagementBuyerModel, index: number) => (
+            {getAllSellers.map((row: VendorManagementSellerModel, index: number) => (
               <TableRow key={row.id || `${index}`} className="hover:cursor-pointer">
                 <TableCell>
                   <Box className="flex items-center gap-2">
@@ -200,14 +204,14 @@ const VendorManagementBuyers = ({
                   </IconButton>
                   <Menu
                     anchorEl={anchorEl}
-                    open={open && selectedBuyerId === row.id}
+                    open={open && selectedSellerId === row.id}
                     onClose={handleCloseMenu}
                   >
                     <MenuItem onClick={() => handleEditClick(row)}>
                       <EditOutlinedIcon />
                       Edit
                     </MenuItem>
-                    <MenuItem onClick={handleDeleteBuyer}>
+                    <MenuItem onClick={handleDeleteSeller}>
                       <Image src={DeleteRed} alt="Delete" />
                       Delete
                     </MenuItem>
@@ -231,4 +235,4 @@ const VendorManagementBuyers = ({
   );
 };
 
-export default VendorManagementBuyers;
+export default VendorManagementSeller;
