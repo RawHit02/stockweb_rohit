@@ -25,6 +25,7 @@ import WhatsappIcon from './images/whatsapp-icon.png'
 import AddressIcon from './images/address-icon.png'
 import DeleteIcon from './images/delete-icon.svg'
 import DeleteRed from './images/delete-error200.svg'
+import ShortLogo from './images/short-logo.svg'
 
 //Mui Icons
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
@@ -77,6 +78,7 @@ export {
     AddressIcon,
     DeleteIcon,
     DeleteRed,
+    ShortLogo,
 
     //Mui Icons
     CheckCircleIcon,

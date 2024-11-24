@@ -5,6 +5,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
+  Button,
   Divider,
   Typography,
 } from "@mui/material";
@@ -22,6 +23,7 @@ import {
   EmployeeIconActive,
   Hamburger,
   Logo1,
+  ShortLogo,
   StockIcon,
   StockIconActive,
   VendorManagementicon,
@@ -32,10 +34,27 @@ import localSessionStorage from "@/hooks/localSessionStorage";
 import { useRouter } from "next/navigation";
 import { StorageConstants } from "@/constants/StorageConstants";
 import { NavDrawerItemsConstants } from "@/constants/NavDrawerItemsConstants";
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 
-const SideNav = () => {
+type SideNavProps = {
+  onPress: () => void;
+  navOpen: boolean; // Define navOpen prop
+};
+
+const SideNav: React.FC<SideNavProps> = ({ onPress, navOpen }) => {
   // save Nav drawer info in Session Storage
-  const { getItem, setItem } = localSessionStorage();
+  const { setItem } = localSessionStorage();
+
+  const [anchorElVendor, setAnchorElVendor] = React.useState<null | HTMLElement>(null);
+  const [anchorElEmployee, setAnchorElEmployee] = React.useState<null | HTMLElement>(null);
+  const [anchorElStock, setAnchorElStock] = React.useState<null | HTMLElement>(null);
+  const [anchorElAdmin, setAnchorElAdmin] = React.useState<null | HTMLElement>(null);
+  const openVendor = Boolean(anchorElVendor);
+  const openEmployee = Boolean(anchorElEmployee);
+  const openStock = Boolean(anchorElStock);
+  const openAdmin = Boolean(anchorElAdmin);
+
 
   // Adding Router
   const router = useRouter();
@@ -47,20 +66,49 @@ const SideNav = () => {
     setItem(StorageConstants.NAV_DRAWER_ITEM, item);
   };
 
+  const handleClickVendor = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorElVendor(event.currentTarget);
+  };
+  const handleCloseVendor = () => {
+    setAnchorElVendor(null);
+  };
+
+  const handleClickEmployee = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorElEmployee(event.currentTarget);
+  };
+  const handleCloseEmployee = () => {
+    setAnchorElEmployee(null);
+  };
+
+  const handleClickStock = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorElStock(event.currentTarget);
+  };
+  const handleCloseStock = () => {
+    setAnchorElStock(null);
+  };
+
+  const handleClickAdmin = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorElAdmin(event.currentTarget);
+  };
+  const handleCloseAdmin = () => {
+    setAnchorElAdmin(null);
+  };
+
+
   return (
     <>
       <Box className="w-full bg-primary h-[calc(100vh-32px)] rounded-xl px-4 pt-9 pb-4 flex flex-col justify-between overflow-auto">
         <Box>
-          <Box className="flex items-center justify-between">
+          <Box className={`flex items-center ${navOpen ? "justify-between" : "justify-center gap-2"}`}>
             <Box>
-              <Image src={Logo1} alt="logo" />
+              <Image src={navOpen ? Logo1 : ShortLogo} alt="logo" />
             </Box>
-            <Box className="cursor-pointer">
+            <Box className="cursor-pointer" onClick={onPress}>
               <Image src={Hamburger} alt="logo" />
             </Box>
           </Box>
           <Box className="mt-9 flex flex-col gap-2">
-            <Box className="flex items-center gap-[6px] p-3 rounded-lg cursor-pointer bg-primary300 nav-item active">
+            <Box className={`flex items-center gap-[6px] p-3 rounded-lg cursor-pointer bg-primary300 nav-item active ${!navOpen && "justify-center"}`}>
               <Image
                 src={DashboardIcon}
                 alt="dashboard"
@@ -71,17 +119,20 @@ const SideNav = () => {
                 alt="dashboard"
                 className="nav-item-icon-active"
               />
-              <Typography className="text-sm text-white nav-item-label">
-                Dashboard
-              </Typography>
+              {
+                navOpen &&
+                  <Typography className="text-sm text-white nav-item-label">
+                    Dashboard
+                  </Typography>
+              }
             </Box>
             <Box>
-              <Accordion elevation={0}>
+              <Accordion elevation={0} className={`${navOpen ? "" : "hidden"}`}>
                 <AccordionSummary
                   expandIcon={<ArrowDropDownIcon className="arrow-down-icon" />}
                   aria-controls="panel1-content"
                   id="panel1-header"
-                  // className='active'
+                // className='active'
                 >
                   <Box className="flex items-center gap-[6px]">
                     <Image
@@ -131,14 +182,45 @@ const SideNav = () => {
                   <Box></Box>
                 </AccordionDetails>
               </Accordion>
+              <Box className={`${!navOpen ? "" : "hidden"}`}>
+                <Button
+                  id="basic-button"
+                  aria-haspopup="true"
+                  onClick={handleClickVendor}
+                  className="h-[44px] w-[60px] bg-primary300 nav-item active"
+                >
+                  <Image
+                    src={VendorManagementicon}
+                    alt="vendor"
+                    className="nav-item-icon"
+                  />
+                  <Image
+                    src={VendorManagementiconActive}
+                    alt="vendor"
+                    className="nav-item-icon-active"
+                  />
+                </Button>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorElVendor}
+                  open={openVendor}
+                  onClose={handleCloseVendor}
+                  MenuListProps={{
+                    'aria-labelledby': 'basic-button',
+                  }}
+                >
+                  <MenuItem onClick={handleCloseVendor}>Buyers</MenuItem>
+                  <MenuItem onClick={handleCloseVendor}>Sellers</MenuItem>
+                </Menu>
+              </Box>
             </Box>
             <Box>
-              <Accordion elevation={0}>
+              <Accordion elevation={0} className={`${navOpen ? "" : "hidden"}`}>
                 <AccordionSummary
                   expandIcon={<ArrowDropDownIcon className="arrow-down-icon" />}
                   aria-controls="panel1-content"
                   id="panel1-header"
-                  // className='active'
+                // className='active'
                 >
                   <Box className="flex items-center gap-[6px]">
                     <Image
@@ -178,14 +260,46 @@ const SideNav = () => {
                   <Box></Box>
                 </AccordionDetails>
               </Accordion>
+              <Box className={`${!navOpen ? "" : "hidden"}`}>
+                <Button
+                  id="basic-button"
+                  aria-haspopup="true"
+                  onClick={handleClickEmployee}
+                  className="h-[44px] w-[60px] bg-primary300 nav-item"
+                >
+                  <Image
+                    src={EmployeeIcon}
+                    alt="vendor"
+                    className="nav-item-icon"
+                  />
+                  <Image
+                    src={EmployeeIconActive}
+                    alt="vendor"
+                    className="nav-item-icon-active"
+                  />
+                </Button>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorElEmployee}
+                  open={openEmployee}
+                  onClose={handleCloseEmployee}
+                  MenuListProps={{
+                    'aria-labelledby': 'basic-button',
+                  }}
+                >
+                  <MenuItem onClick={handleCloseEmployee}>Manage Employee</MenuItem>
+                  <MenuItem onClick={handleCloseEmployee}>Today Attendance</MenuItem>
+                  <MenuItem onClick={handleCloseEmployee}>Attendance Sheet</MenuItem>
+                </Menu>
+              </Box>
             </Box>
             <Box>
-              <Accordion elevation={0}>
+              <Accordion elevation={0} className={`${navOpen ? "" : "hidden"}`}>
                 <AccordionSummary
                   expandIcon={<ArrowDropDownIcon className="arrow-down-icon" />}
                   aria-controls="panel1-content"
                   id="panel1-header"
-                  // className='active'
+                // className='active'
                 >
                   <Box className="flex items-center gap-[6px]">
                     <Image
@@ -219,14 +333,45 @@ const SideNav = () => {
                   <Box></Box>
                 </AccordionDetails>
               </Accordion>
+              <Box className={`${!navOpen ? "" : "hidden"}`}>
+                <Button
+                  id="basic-button"
+                  aria-haspopup="true"
+                  onClick={handleClickStock}
+                  className="h-[44px] p-0 w-[60px] bg-primary300 nav-item"
+                >
+                  <Image
+                    src={StockIcon}
+                    alt="vendor"
+                    className="nav-item-icon"
+                  />
+                  <Image
+                    src={StockIconActive}
+                    alt="vendor"
+                    className="nav-item-icon-active"
+                  />
+                </Button>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorElStock}
+                  open={openStock}
+                  onClose={handleCloseStock}
+                  MenuListProps={{
+                    'aria-labelledby': 'basic-button',
+                  }}
+                >
+                  <MenuItem onClick={handleCloseStock}>Inward</MenuItem>
+                  <MenuItem onClick={handleCloseStock}>Outward</MenuItem>
+                </Menu>
+              </Box>
             </Box>
             <Box>
-              <Accordion elevation={0}>
+              <Accordion elevation={0} className={`${navOpen ? "" : "hidden"}`}>
                 <AccordionSummary
                   expandIcon={<ArrowDropDownIcon className="arrow-down-icon" />}
                   aria-controls="panel1-content"
                   id="panel1-header"
-                  // className='active'
+                // className='active'
                 >
                   <Box className="flex items-center gap-[6px]">
                     <Image
@@ -259,17 +404,52 @@ const SideNav = () => {
                   </Box>
                 </AccordionDetails>
               </Accordion>
+              <Box className={`${!navOpen ? "" : "hidden"}`}>
+                <Button
+                  id="basic-button"
+                  aria-haspopup="true"
+                  onClick={handleClickAdmin}
+                  className="h-[44px] p-0 w-[60px] bg-primary300 nav-item"
+                >
+                  <Image
+                    src={AdminIcon}
+                    alt="vendor"
+                    className="nav-item-icon"
+                  />
+                  <Image
+                    src={AdminIconActive}
+                    alt="vendor"
+                    className="nav-item-icon-active"
+                  />
+                </Button>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorElAdmin}
+                  open={openAdmin}
+                  onClose={handleCloseAdmin}
+                  MenuListProps={{
+                    'aria-labelledby': 'basic-button',
+                  }}
+                >
+                  <MenuItem onClick={handleCloseAdmin}>Users</MenuItem>
+                  <MenuItem onClick={handleCloseAdmin}>Role & Permission</MenuItem>
+                </Menu>
+              </Box>
             </Box>
           </Box>
         </Box>
         <Box className="flex flex-col items-center cursor-pointer">
-          <Image src={CoinsImg} alt="coins" />
+          {
+            navOpen ?
+              <Image src={CoinsImg} alt="coins" /> :
+              ""
+          }
           <Divider className="border-primary200 w-[95%] mb-4" />
-          <Box className="flex items-center gap-[10px] w-full">
+          <Box className={`flex items-center gap-[10px] w-full ${navOpen ? "" : "justify-center"}`}>
             <Box className="w-[50px] h-[50px] rounded-full overflow-hidden">
               <Image src={DummyProfile} alt="prifile image" />
             </Box>
-            <Box>
+            <Box className={`${navOpen ? "" : "hidden"}`}>
               <Typography className="text-white font-medium">
                 JOHN CARTER
               </Typography>
@@ -277,7 +457,7 @@ const SideNav = () => {
                 john@gmail.com
               </Typography>
             </Box>
-            <ArrowForwardIosIcon className="text-white text-sm" />
+            <ArrowForwardIosIcon className={`text-white text-sm ${navOpen ? "" : "hidden"}`} />
           </Box>
         </Box>
       </Box>
