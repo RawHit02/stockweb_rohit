@@ -24,7 +24,9 @@ const Buyers = () => {
       orderBy: "name",
     };
     try {
-      await dispatch(getAllBuyersAction({ commonApiParamModel: params })).unwrap();
+      await dispatch(
+        getAllBuyersAction({ commonApiParamModel: params })
+      ).unwrap();
     } catch (error) {
       console.error("Error fetching buyers:", error);
     }
@@ -36,9 +38,8 @@ const Buyers = () => {
   };
 
   const normalizeNumberForEdit = (number: string) => {
-  return number.startsWith("+91") ? number.slice(3) : number;
-};
-
+    return number.startsWith("+91") ? number.slice(3) : number;
+  };
 
   // Handle edit button click
   const handleEditBuyer = (buyer: VendorManagementBuyerModel) => {
@@ -46,7 +47,7 @@ const Buyers = () => {
       id: buyer.id,
       name: buyer.name,
       contactNumber: normalizeNumberForEdit(buyer.contactNumber),
-    whatsappNumber: normalizeNumberForEdit(buyer.whatsappNumber),
+      whatsappNumber: normalizeNumberForEdit(buyer.whatsappNumber),
       email: buyer.email,
       address: buyer.address,
       profileImage: null, // Handle profile image as needed
@@ -75,7 +76,9 @@ const Buyers = () => {
     <Box className="bg-white border border-[#E8EBED] rounded-xl p-6 h-[calc(100vh-116px)] overflow-auto">
       {/* Header */}
       <Box className="w-full flex items-center justify-between">
-        <Typography className="text-2xl font-bold">Vendor Management / Buyers</Typography>
+        <Typography className="text-2xl font-bold">
+          Vendor Management / Buyers
+        </Typography>
         <Button
           variant="contained"
           className="bg-primary500 rounded-lg h-10 text-base"

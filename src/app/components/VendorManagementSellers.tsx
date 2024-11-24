@@ -34,12 +34,11 @@ const ITEM_HEIGHT = 48;
 
 const headCells = [
   { id: "name", label: "Name/Email", numeric: false },
-  //{ id: "email", label: "Email", numeric: false }, 
+  //{ id: "email", label: "Email", numeric: false },
   { id: "contact", label: "Contact Number", numeric: false },
   { id: "whatsapp", label: "WhatsApp Number", numeric: false },
   { id: "address", label: "Address", numeric: false },
 ];
-
 
 interface VendorManagementSellersProps {
   onEditSeller: (seller: VendorManagementSellerModel) => void;
@@ -95,7 +94,7 @@ const VendorManagementSeller = ({
 
   const handleEditClick = (row: VendorManagementSellerModel) => {
     onEditSeller(row);
-    handleCloseMenu(); 
+    handleCloseMenu();
     // setIsEditing(row.id); // Enable edit mode for the specific row
     //setEditedRow({...row }); // Copy current row data for editing
     //handleCloseMenu();
@@ -169,56 +168,61 @@ const VendorManagementSeller = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {getAllSellers.map((row: VendorManagementSellerModel, index: number) => (
-              <TableRow key={row.id || `${index}`} className="hover:cursor-pointer">
-                <TableCell>
-                  <Box className="flex items-center gap-2">
-                    <Box className="w-8 h-8 rounded-full overflow-hidden bg-gray-200">
-                      <Image
-                        src={row.profileImage || DummyProfile}
-                        alt={row.name || "Profile"}
-                        width={32}
-                        height={32}
-                        className="object-cover w-full h-full"
-                      />
+            {getAllSellers.map(
+              (row: VendorManagementSellerModel, index: number) => (
+                <TableRow
+                  key={row.id || `${index}`}
+                  className="hover:cursor-pointer"
+                >
+                  <TableCell>
+                    <Box className="flex items-center gap-2">
+                      <Box className="w-8 h-8 rounded-full overflow-hidden bg-gray-200">
+                        <Image
+                          src={row.profileImage || DummyProfile}
+                          alt={row.name || "Profile"}
+                          width={32}
+                          height={32}
+                          className="object-cover w-full h-full"
+                        />
+                      </Box>
+                      <Box>
+                        <Typography className="font-semibold text-sm">
+                          {row.name}
+                        </Typography>
+                        <Typography className="text-xs text-gray-500">
+                          {row.email}
+                        </Typography>
+                      </Box>
                     </Box>
-                     <Box>
-                <Typography className="font-semibold text-sm">
-                  {row.name}
-                </Typography>
-                <Typography className="text-xs text-gray-500">
-                  {row.email}
-                </Typography>
-              </Box>  
-              </Box>
-                </TableCell>
-                <TableCell>{row.contactNumber}</TableCell>
-                <TableCell>{row.whatsappNumber}</TableCell>
-                <TableCell>{row.address}</TableCell>
-                <TableCell>
-                  <IconButton
-                    onClick={(event) => handleClickMenu(event, row.id)}
-                    aria-label="more"
-                  >
-                    <MoreVertIcon />
-                  </IconButton>
-                  <Menu
-                    anchorEl={anchorEl}
-                    open={open && selectedSellerId === row.id}
-                    onClose={handleCloseMenu}
-                  >
-                    <MenuItem onClick={() => handleEditClick(row)}>
-                      <EditOutlinedIcon />
-                      Edit
-                    </MenuItem>
-                    <MenuItem onClick={handleDeleteSeller}>
-                      <Image src={DeleteRed} alt="Delete" />
-                      Delete
-                    </MenuItem>
-                  </Menu>
-                </TableCell>
-              </TableRow>
-            ))}
+                  </TableCell>
+                  <TableCell>{row.contactNumber}</TableCell>
+                  <TableCell>{row.whatsappNumber}</TableCell>
+                  <TableCell>{row.address}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      onClick={(event) => handleClickMenu(event, row.id)}
+                      aria-label="more"
+                    >
+                      <MoreVertIcon />
+                    </IconButton>
+                    <Menu
+                      anchorEl={anchorEl}
+                      open={open && selectedSellerId === row.id}
+                      onClose={handleCloseMenu}
+                    >
+                      <MenuItem onClick={() => handleEditClick(row)}>
+                        <EditOutlinedIcon />
+                        Edit
+                      </MenuItem>
+                      <MenuItem onClick={handleDeleteSeller}>
+                        <Image src={DeleteRed} alt="Delete" />
+                        Delete
+                      </MenuItem>
+                    </Menu>
+                  </TableCell>
+                </TableRow>
+              )
+            )}
           </TableBody>
         </Table>
       </TableContainer>
