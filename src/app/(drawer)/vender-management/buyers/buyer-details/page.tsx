@@ -324,7 +324,7 @@ const BuyerDetails = () => {
                 <Button className='min-w-[121px] h-[42px]' variant='contained' size='large' color='primary' startIcon={<SearchIcon />}>Search</Button>
               </Box>
               <Box className="mt-4">
-                <SecondaryTable />
+                <SecondaryTable data={[]} />
               </Box>
             </Box>
           </TabPanel>

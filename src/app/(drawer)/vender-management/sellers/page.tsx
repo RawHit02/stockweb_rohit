@@ -74,7 +74,7 @@ const Sellers = () => {
     <Box className="bg-white border border-[#E8EBED] rounded-xl p-6 h-[calc(100vh-116px)] overflow-auto">
       {/* Header */}
       <Box className="w-full flex items-center justify-between">
-        <Typography className="text-2xl font-bold">Vendor Management / Sellers</Typography>
+        <Typography className="text-2xl font-bold">Vendor Management / Supplier</Typography>
         <Button
           variant="contained"
           className="bg-primary500 rounded-lg h-10 text-base"

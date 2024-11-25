@@ -191,7 +191,6 @@ const AddNewSellerDialog: React.FC<AddNewSellerDialogProps> = ({
           validationSchema={addSellerSchema}
           onSubmit={handleSubmit}
           enableReinitialize 
-
         >
           {({ touched, errors, setFieldValue, resetForm }) => (
             <Form>

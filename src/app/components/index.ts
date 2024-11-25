@@ -4,7 +4,7 @@ import AddNewBuyerDialog from "./AddNewBuyerDialog";
 import SignIn from "./SignIn";
 import PrimaryTable from "./PrimaryTable";
 import SecondaryTable from "./SecondaryTable";
-import AddStockEntryDialog from "./AddStockEntryrDialog";
+import AddStockEntryDialog from "./AddStockEntryDialog";
 import PrimaryTableExample from "./PrimaryTableExample";
 
 
