@@ -9,7 +9,7 @@ const TodaysAttendance = () => {
       <Box className="flex flex-col">
         <Box className="w-full flex items-center justify-between mb-4">
           <Typography className="text-2xl font-bold">
-            Today's Attendance
+            Today&apos;s Attendance
           </Typography>
           <Box>
             <AddAttendanceDialog />
