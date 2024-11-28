@@ -247,7 +247,7 @@ const SideNav: React.FC<SideNavProps> = ({ onPress, navOpen }) => {
                     <Box className="flex gap-2 text-white cursor-pointer side-nav-child">
                       <ArrowRightIcon className="side-nav-child-icon" />
                       <Typography className="side-nav-child-label text-sm">
-                        Today&aposs Attendance
+                        Today&apos;s Attendance
                       </Typography>
                     </Box>
                     <Box className="flex gap-2 text-white cursor-pointer side-nav-child">

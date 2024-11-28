@@ -86,3 +86,39 @@
     }
     
 }
+
+.primary-table-attendance {
+    .MuiTableContainer-root {
+        .MuiTable-root {
+            .MuiTableHead-root {
+                .MuiTableRow-root {
+                    .MuiTableCell-root {
+                        @apply bg-primary500 border border-primary100 text-white;
+
+                       
+
+                        .MuiButtonBase-root {
+                            @apply text-white text-sm font-normal;
+
+                            .MuiSvgIcon-root {
+                                @apply text-white;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .MuiTableBody-root {
+                .MuiTableRow-root {
+                    .MuiTableCell-root {
+                        @apply text-sm font-normal border border-primary100;
+                    }
+                }
+
+                .MuiTableRow-hover:hover {
+                    @apply bg-primaryExtraLight;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,22 @@
+.attendance-select {
+    .MuiInputBase-root {
+        @apply border-none;
+
+        .MuiSelect-select {
+            @apply p-0;
+
+        }
+
+        .MuiSelect-icon {
+            @apply hidden;
+        }
+
+        .MuiSelect-nativeInput {
+            @apply hidden;
+        }
+
+        .MuiOutlinedInput-notchedOutline {
+            @apply hidden;
+        }
+    }
+}
