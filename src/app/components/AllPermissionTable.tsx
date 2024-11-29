@@ -110,7 +110,7 @@ const AllPermissionTable = () => {
             <TableRow className="border-b border-[#C5D4DB] pr-4 pl-4 ">
               <TableCell>
                 <Typography className="text-sm font-normal">
-                  Today's Attendance
+                  Today&apos;s Attendance
                 </Typography>
               </TableCell>
               <TableCell>

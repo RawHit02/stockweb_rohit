@@ -5,7 +5,7 @@ import { Box, Button, Typography, TextField } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { AllPermissionTable } from "@/app/components";
 import Image from "next/image";
-import { Backspace, KeyboardBackspaceIcon } from "@/app/assets";
+import { KeyboardBackspaceIcon } from "@/app/assets";
 import { useRouter } from "next/navigation";
 
 const AllPermission = () => {

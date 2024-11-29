@@ -39,5 +39,5 @@ export {
         ResetDialogue,
         UserManagement,
         AllPermissionTable,
-        AddUserDialog,F
+        AddUserDialog,
 } 
