@@ -48,6 +48,7 @@ import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 
 
 export {
@@ -100,5 +101,6 @@ export {
     ShareOutlinedIcon,
     SearchIcon,
     KeyboardArrowDownIcon,
-    MoreVertIcon
+    MoreVertIcon,
+    KeyboardBackspaceIcon,
 }

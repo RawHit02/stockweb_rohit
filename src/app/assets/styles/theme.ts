@@ -46,6 +46,15 @@ const theme = createTheme({
 
     },
     components: {
+        MuiTextField:{
+            styleOverrides: {
+                root: {
+            placeholder:{
+                color:'#4B7D47',
+            },
+        },
+            },
+                },
         MuiButton: {
             styleOverrides: {
                 root: {
@@ -202,7 +211,7 @@ const theme = createTheme({
                     }
                 }
             },
-        }
+        },
     },
 });
 

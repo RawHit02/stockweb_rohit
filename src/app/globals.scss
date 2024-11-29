@@ -97,6 +97,15 @@
     }
 }
 
+// MUI checkbox
+.MuiCheckbox-root {
+    &.MuiCheckbox-colorPrimary {
+        &.Mui-checked {
+            color: #092E20 !important;
+        }
+    }
+}
+
 //scrollbar design
 
 ::-webkit-scrollbar {

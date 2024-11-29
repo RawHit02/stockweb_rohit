@@ -6,6 +6,24 @@ import PrimaryTable from "./PrimaryTable";
 import SecondaryTable from "./SecondaryTable";
 import AddStockEntryDialog from "./AddStockEntryrDialog";
 import PrimaryTableExample from "./PrimaryTableExample";
+import AddUserDialog from "./AddUserDialog";
+import UserManagement from "./UserManagement";
+import ResetDialogue from "./ResetDialogue";
+import AllPermissionTable from "./AllPermissionTable";
 
 
-export { Header, SideNav, AddNewBuyerDialog, SignIn, PrimaryTable, SecondaryTable, AddStockEntryDialog, PrimaryTableExample } 
+
+export {
+    Header,
+    ResetDialogue,
+    SideNav,
+    AddNewBuyerDialog,
+    SignIn,
+    UserManagement,
+    AllPermissionTable,
+    PrimaryTable,
+    SecondaryTable,
+    AddUserDialog,
+    AddStockEntryDialog,
+    PrimaryTableExample
+} 
