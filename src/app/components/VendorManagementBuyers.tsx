@@ -30,6 +30,7 @@ import {
   getAllBuyersAction,
 } from "@/redux/vendor_management/vendor_management.actions";
 import { VendorManagementBuyerModel } from "@/models/req-model/VendorManagementBuyerModel";
+import DeleteDialog from "./DeleteDialog";
 
 const ITEM_HEIGHT = 48;
 
@@ -51,6 +52,7 @@ const VendorManagementBuyers = ({
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [openDelete, setOpenDelete] = useState(false);
   const open = Boolean(anchorEl);
   const [selectedBuyerId, setSelectedBuyerId] = useState<string | null>(null); // Buyer ID for the menu actions
   const dispatch = useDispatch<AppDispatch>();
@@ -91,7 +93,7 @@ const VendorManagementBuyers = ({
 
   const handleEditClick = (row: VendorManagementBuyerModel) => {
     onEditBuyer(row);
-    handleCloseMenu(); 
+    handleCloseMenu();
     // setIsEditing(row.id); // Enable edit mode for the specific row
     //setEditedRow({...row }); // Copy current row data for editing
     //handleCloseMenu();
@@ -99,15 +101,14 @@ const VendorManagementBuyers = ({
 
   const handleDeleteBuyer = async () => {
     if (selectedBuyerId) {
-      if (window.confirm("Are you sure you want to delete this buyer?")) {
-        try {
-          await dispatch(deleteBuyerAction(selectedBuyerId)).unwrap();
-          fetchData(); // Refresh data after deletion
-        } catch (error) {
-          console.error("Failed to delete buyer:", error);
-        }
+      try {
+        await dispatch(deleteBuyerAction(selectedBuyerId)).unwrap();
+        fetchData(); // Refresh data after deletion
+      } catch (error) {
+        console.error("Failed to delete buyer:", error);
       }
       handleCloseMenu();
+      handleCloseDeleteDialog();
     }
   };
 
@@ -133,6 +134,11 @@ const VendorManagementBuyers = ({
     setPage(0);
     fetchData();
   };
+
+  const handleCloseDeleteDialog = () => {
+    setOpenDelete(false);
+  }
+
 
   return (
     <Box className="w-full primary-table">
@@ -178,15 +184,15 @@ const VendorManagementBuyers = ({
                         className="object-cover w-full h-full"
                       />
                     </Box>
-                     <Box>
-                <Typography className="font-semibold text-sm">
-                  {row.name}
-                </Typography>
-                <Typography className="text-xs text-gray-500">
-                  {row.email}
-                </Typography>
-              </Box>  
-              </Box>
+                    <Box>
+                      <Typography className="font-semibold text-sm">
+                        {row.name}
+                      </Typography>
+                      <Typography className="text-xs text-gray-500">
+                        {row.email}
+                      </Typography>
+                    </Box>
+                  </Box>
                 </TableCell>
                 <TableCell>{row.contactNumber}</TableCell>
                 <TableCell>{row.whatsappNumber}</TableCell>
@@ -207,7 +213,7 @@ const VendorManagementBuyers = ({
                       <EditOutlinedIcon />
                       Edit
                     </MenuItem>
-                    <MenuItem onClick={handleDeleteBuyer}>
+                    <MenuItem onClick={() => setOpenDelete(true)}>
                       <Image src={DeleteRed} alt="Delete" />
                       Delete
                     </MenuItem>
@@ -227,6 +233,15 @@ const VendorManagementBuyers = ({
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
+      {
+        openDelete &&
+        <DeleteDialog
+          handleCloseDeleteDialog={handleCloseDeleteDialog}
+          openDelete={openDelete}
+          handleDeleteAction={handleDeleteBuyer}
+          dialogueTitle="Delete Buyer"
+          dialogueDescription="Are you sure you want to delete this buyer?" />
+      }
     </Box>
   );
 };

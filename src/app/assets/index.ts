@@ -25,7 +25,12 @@ import WhatsappIcon from './images/whatsapp-icon.png'
 import AddressIcon from './images/address-icon.png'
 import DeleteIcon from './images/delete-icon.svg'
 import DeleteRed from './images/delete-error200.svg'
+import imagepic from './images/imagepic.svg'
+import upload from './images/upload.svg'
+import close from './images/close.svg'
+import search from './images/search.svg'
 import ShortLogo from './images/short-logo.svg'
+import StarIcon from './images/star-icon.svg'
 
 //Mui Icons
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
@@ -48,6 +53,11 @@ import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+
 
 
 export {
@@ -78,7 +88,12 @@ export {
     AddressIcon,
     DeleteIcon,
     DeleteRed,
+    imagepic,
+    upload,
+    close,
+    search,
     ShortLogo,
+    StarIcon,
 
     //Mui Icons
     CheckCircleIcon,
@@ -100,5 +115,9 @@ export {
     ShareOutlinedIcon,
     SearchIcon,
     KeyboardArrowDownIcon,
-    MoreVertIcon
+    MoreVertIcon,
+    KeyboardBackspaceIcon,
+    PanoramaFishEyeIcon,
+    CheckCircleOutlineIcon,
+    CancelOutlinedIcon,
 }
