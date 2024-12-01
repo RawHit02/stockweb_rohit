@@ -271,7 +271,7 @@ const AddNewSellerDialog: React.FC<AddNewSellerDialogProps> = ({
                     <ErrorMessage
                       name="name"
                       component="div"
-                      className="text-red-600"
+                      className="text-red-600 text-[12px]"
                     />
                   </Box>
                   <Box>
@@ -299,7 +299,7 @@ const AddNewSellerDialog: React.FC<AddNewSellerDialogProps> = ({
                     <ErrorMessage
                       name="contactNumber"
                       component="div"
-                      className="text-red-600"
+                      className="text-red-600 text-[12px]"
                     />
                   </Box>
                   <Box>
@@ -327,7 +327,7 @@ const AddNewSellerDialog: React.FC<AddNewSellerDialogProps> = ({
                     <ErrorMessage
                       name="whatsappNumber"
                       component="div"
-                      className="text-red-600"
+                      className="text-red-600 text-[12px]"
                     />
                   </Box>
                   <Box>
@@ -346,7 +346,7 @@ const AddNewSellerDialog: React.FC<AddNewSellerDialogProps> = ({
                     <ErrorMessage
                       name="email"
                       component="div"
-                      className="text-red-600"
+                      className="text-red-600 text-[12px]"
                     />
                   </Box>
                   <Box>
@@ -364,7 +364,7 @@ const AddNewSellerDialog: React.FC<AddNewSellerDialogProps> = ({
                     <ErrorMessage
                       name="address"
                       component="div"
-                      className="text-red-600"
+                      className="text-red-600 text-[12px]"
                     />
                   </Box>
                 </Box>

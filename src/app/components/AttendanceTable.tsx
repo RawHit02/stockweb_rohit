@@ -23,7 +23,7 @@ const AttendanceTable = () => {
     return (
         <>
             <Box sx={{ width: '100%' }} className="primary-table-attendance">
-                <TableContainer className="primary-table">
+                <TableContainer className="h-[calc(100vh-246px)] overflow-auto">
                     <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
                         <TableHead>
                             <TableRow>
