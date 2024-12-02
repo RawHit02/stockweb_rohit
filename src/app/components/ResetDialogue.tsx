@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Box,
   Button,
@@ -10,12 +10,9 @@ import {
   DialogActions,
   IconButton,
   Typography,
-  SelectChangeEvent,
   TextField,
-  Menu,
-  MenuItem,
 } from "@mui/material";
-import { CheckCircleIcon, CloseOutlinedIcon, MoreVertIcon } from "../assets";
+import { CheckCircleIcon, CloseOutlinedIcon } from "../assets";
 
 interface DialogueProps {
   isOpen: boolean;
