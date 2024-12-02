@@ -18,7 +18,6 @@ import DateAttendanceSheet from "./DateAttendanceSheet";
 import AttendanceTable from "./AttendanceTable";
 import DeleteDialog from "./DeleteDialog";
 import EditDetailsDialog from "./EditDetailsDialog";
-import ResetPasswordDialog from "./ResetPasswordDialog";
 
 
 
@@ -43,5 +42,4 @@ export {
     AllPermissionTable,
     AddUserDialog,
     EditDetailsDialog,
-    ResetPasswordDialog,
 } 
