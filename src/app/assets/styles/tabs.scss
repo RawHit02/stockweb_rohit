@@ -14,3 +14,17 @@
         }
     }
 }
+
+.secondary-tabs {
+    .MuiTabs-root {
+        .MuiTabs-flexContainer {
+            .MuiTab-root {
+                min-height: 43px;
+                @apply text-[13px] font-normal text-primary500 capitalize opacity-100;
+            }
+        }
+        .MuiTabs-indicator {
+            @apply bg-primary500 ;
+        }
+    }
+}

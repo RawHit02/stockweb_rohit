@@ -17,27 +17,29 @@ import AddAttendanceDialog from "./AddAttendanceDialog";
 import DateAttendanceSheet from "./DateAttendanceSheet";
 import AttendanceTable from "./AttendanceTable";
 import DeleteDialog from "./DeleteDialog";
+import EditDetailsDialog from "./EditDetailsDialog";
 
 
 
 export {
-        Header,
-        SideNav,
-        DateAttendanceSheet,
-        AddNewBuyerDialog,
-        SignIn,
-        AddEmployeeDialog,
-        PrimaryTable,
-        AddAttendanceDialog,
-        TotalPresentPercentage,
-        TotalAbsentPercentage,
-        SecondaryTable,
-        AddStockEntryDialog,
-        PrimaryTableExample,
-        AttendanceTable,
-        DeleteDialog,
-        ResetDialogue,
-        UserManagement,
-        AllPermissionTable,
-        AddUserDialog,
+    Header,
+    SideNav,
+    DateAttendanceSheet,
+    AddNewBuyerDialog,
+    SignIn,
+    AddEmployeeDialog,
+    PrimaryTable,
+    AddAttendanceDialog,
+    TotalPresentPercentage,
+    TotalAbsentPercentage,
+    SecondaryTable,
+    AddStockEntryDialog,
+    PrimaryTableExample,
+    AttendanceTable,
+    DeleteDialog,
+    ResetDialogue,
+    UserManagement,
+    AllPermissionTable,
+    AddUserDialog,
+    EditDetailsDialog,
 } 
