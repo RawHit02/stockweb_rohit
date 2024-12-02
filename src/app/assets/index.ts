@@ -31,6 +31,7 @@ import close from './images/close.svg'
 import search from './images/search.svg'
 import ShortLogo from './images/short-logo.svg'
 import StarIcon from './images/star-icon.svg'
+import NotificationItemIcon from './images/notification-item-icon.svg'
 import Email from './images/Email.svg'
 import Password from './images/Password.svg'
 
@@ -97,6 +98,7 @@ export {
     search,
     ShortLogo,
     StarIcon,
+    NotificationItemIcon,
     Email,
     Password,
 
