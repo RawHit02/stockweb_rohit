@@ -6,6 +6,10 @@ import PrimaryTable from "./PrimaryTable";
 import SecondaryTable from "./SecondaryTable";
 import AddStockEntryDialog from "./AddStockEntryrDialog";
 import PrimaryTableExample from "./PrimaryTableExample";
+import AddUserDialog from "./AddUserDialog";
+import UserManagement from "./UserManagement";
+import ResetDialogue from "./ResetDialogue";
+import AllPermissionTable from "./AllPermissionTable";
 import AddEmployeeDialog from "./AddEmployeeDialog";
 import TotalPresentPercentage from "./TotalPresentPercentage";
 import TotalAbsentPercentage from "./TotalAbsentPercentage"
@@ -15,6 +19,8 @@ import AttendanceTable from "./AttendanceTable";
 import DeleteDialog from "./DeleteDialog";
 import EditDetailsDialog from "./EditDetailsDialog";
 import ResetPasswordDialog from "./ResetPasswordDialog";
+
+
 
 export {
     Header,
@@ -32,6 +38,10 @@ export {
     PrimaryTableExample,
     AttendanceTable,
     DeleteDialog,
+    ResetDialogue,
+    UserManagement,
+    AllPermissionTable,
+    AddUserDialog,
     EditDetailsDialog,
     ResetPasswordDialog,
 } 

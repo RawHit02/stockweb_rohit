@@ -78,7 +78,7 @@ const SignIn = () => {
                   <ErrorMessage
                     name="username"
                     component="div"
-                    className="text-red-600"
+                    className="text-red-600 text-[12px]"
                   />
                 </Box>
                 <Box className="mt-6">
@@ -108,7 +108,7 @@ const SignIn = () => {
                   <ErrorMessage
                     name="password"
                     component="div"
-                    className="text-red-600"
+                    className="text-red-600 text-[12px]"
                   />
                 </Box>
                 <Button

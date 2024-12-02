@@ -55,6 +55,7 @@ import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
@@ -120,6 +121,7 @@ export {
     SearchIcon,
     KeyboardArrowDownIcon,
     MoreVertIcon,
+    KeyboardBackspaceIcon,
     PanoramaFishEyeIcon,
     CheckCircleOutlineIcon,
     CancelOutlinedIcon,
