@@ -33,11 +33,12 @@ import {
 } from "@/yupSchema/stockEntrySchema"; // Import the validation schema
 import { FieldProps } from "formik";
 import { StockManagementInwardModel } from "@/models/req-model/StockManagementInwardModel";
+import { StockManagementOutwardModel } from "@/models/req-model/StockManagementOutwardModel";
 
 interface StockEntryProps {
   stock: boolean;
   isEditMode?: boolean;
-  initialValues?: StockManagementInwardModel;
+  initialValues?: StockManagementInwardModel | StockManagementOutwardModel;
   onClose: () => void;
   onInwardCreated?: () => void;
   onOutwardCreated?: () => void;
