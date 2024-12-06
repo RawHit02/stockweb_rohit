@@ -26,4 +26,6 @@ export const FETCH_OUTWARD_STOCK = `${BASE_URL}/stockManagement/getStock/outward
 export const DELETE_STOCK = `${BASE_URL}/stockManagement/deleteStock`;
 export const UPDATE_STOCK = `${BASE_URL}/stockManagement/updateStock`;
 
+// Get both Buyers and Sellers (combined endpoint for dynamic fetching based on type)
+export const GET_ALL_BUYERS_AND_SUPPLIERS = `${BASE_URL}/vendorManagement/getVendorNP`; // This API will be used for fetching both buyers and sellers dynamically
 

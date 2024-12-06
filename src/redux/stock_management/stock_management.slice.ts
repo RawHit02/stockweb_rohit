@@ -7,7 +7,6 @@ import {
   StockManagementOutwardModel,
   InitialOutwardsModelState,
 } from "@/models/req-model/StockManagementOutwardModel";
-
 import {
   createInward,
   getAllInwardsAction,
@@ -17,11 +16,15 @@ import {
   getAllOutwardsAction,
   deleteOutwardAction,
   editOutwardAction,
+  fetchBuyersAndSuppliers,
 } from "./stock_management.actions";
 
 interface CombinedState {
   inwards: InitialInwardsModelState;
   outwards: InitialOutwardsModelState;
+  buyers: any[]; // Stores all buyers
+  suppliers: any[]; // Stores all suppliers
+  selectedVendorId: string | null; //  track the selected vendor (supplier or buyer)
 }
 
 const initialState: CombinedState = {
@@ -35,6 +38,7 @@ const initialState: CombinedState = {
     getAllInwardLoading: false,
   },
   outwards: {
+    // selectedSupplierId: null,
     message: "",
     itemCount: 0,
     userError: undefined,
@@ -43,15 +47,24 @@ const initialState: CombinedState = {
     createOutwardLoading: false,
     getAllOutwardLoading: false,
   },
+  buyers: [], // Initially empty array for buyers
+  suppliers: [], // Initially empty array for suppliers
+  selectedVendorId: null, // Add this line to initialize the selectedVendorId
 };
 
 export const stockManagementSlice = createSlice({
   name: "stock_management_slice",
   initialState,
   reducers: {
-    clearAllStockManagement: () => {
-      return initialState;
+
+    setSelectedVendorId: (state, action) => {
+      state.selectedVendorId = action.payload;
     },
+    clearSelectedVendorId: (state) => {
+      state.selectedVendorId = null;
+    },
+
+    clearAllStockManagement: () =>  initialState,
   },
   extraReducers: (builder) => {
     // Inward Actions
@@ -98,7 +111,7 @@ export const stockManagementSlice = createSlice({
     });
 
     builder.addCase(deleteInwardAction.fulfilled, (state, action) => {
-      const deletedInwardId = action.meta.arg; // inwardId
+      const deletedInwardId = action.meta.arg;
       state.inwards.getAllInwards = state.inwards.getAllInwards.filter(
         (inward) => inward.id !== deletedInwardId
       );
@@ -150,13 +163,23 @@ export const stockManagementSlice = createSlice({
     });
 
     builder.addCase(deleteOutwardAction.fulfilled, (state, action) => {
-      const deletedOutwardId = action.meta.arg; // outwardId
+      const deletedOutwardId = action.meta.arg;
       state.outwards.getAllOutwards = state.outwards.getAllOutwards.filter(
         (outward) => outward.id !== deletedOutwardId
       );
     });
+
+    // Buyers and Suppliers Action
+    builder.addCase(fetchBuyersAndSuppliers.fulfilled, (state, action) => {
+      const { buyers, suppliers } = action.payload.data;
+      if (action.meta.arg === "supplier") {
+        state.suppliers = suppliers;
+      } else if (action.meta.arg === "buyer") {
+        state.buyers = buyers;
+      }
+    });
   },
 });
 
-export const { clearAllStockManagement } = stockManagementSlice.actions;
+export const { clearAllStockManagement , setSelectedVendorId , clearSelectedVendorId } = stockManagementSlice.actions;
 export default stockManagementSlice.reducer;

@@ -84,10 +84,10 @@ const Inward = () => {
       <AddStockEntryDialog
         stock={true} // Indicates it's for inward
         onInwardCreated={refreshInwards} // Refresh inwards after dialog submission
-        initialValues={editedInward || undefined} // Prefill data for edit
-        isEditMode={Boolean(editedInward?.id)} // Indicate edit mode
-        open={isAddInwardDialogOpen} // Dialog visibility control
-        onClose={handleCloseDialog} // Close dialog handler
+        initialValues={editedInward || ({} as StockManagementInwardModel)}
+        isEditMode={Boolean(editedInward?.id)}
+        open={isAddInwardDialogOpen}
+        onClose={handleCloseDialog}
       />
     </Box>
   );

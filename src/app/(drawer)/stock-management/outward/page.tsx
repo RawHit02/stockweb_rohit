@@ -61,7 +61,9 @@ const Outward = () => {
     <Box className="bg-white border border-[#E8EBED] rounded-xl p-6 h-[calc(100vh-116px)] overflow-auto">
       {/* Header */}
       <Box className="w-full flex items-center justify-between">
-        <Typography className="text-2xl font-bold">Stock Management / Outward</Typography>
+        <Typography className="text-2xl font-bold">
+          Stock Management / Outward
+        </Typography>
         <Button
           variant="contained"
           className="bg-primary500 rounded-lg h-10 text-base"
@@ -80,10 +82,12 @@ const Outward = () => {
       {/* Add/Edit Dialog */}
       <AddStockEntryDialog
         stock={false} // Indicates it's for outward
-        isEditMode={isEditMode} // Indicate edit mode
-        initialValues={dialogInitialValues || undefined} // Prefill data for edit
-        open={dialogOpen} // Dialog visibility control
-        onClose={handleCloseDialog} // Close dialog handler
+        isEditMode={isEditMode}
+        initialValues={
+          dialogInitialValues || ({} as StockManagementOutwardModel)
+        }
+        open={dialogOpen}
+        onClose={handleCloseDialog}
         onOutwardCreated={refreshOutwards} // Refresh outwards after dialog submission
       />
     </Box>
