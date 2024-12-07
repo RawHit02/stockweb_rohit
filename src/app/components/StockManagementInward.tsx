@@ -64,7 +64,7 @@ const StockManagementInward = ({
   const [selectedInwardId, setSelectedInwardId] = useState<string | null>(null); // Inward ID for the menu actions
   const dispatch = useDispatch<AppDispatch>();
   const { getAllInwards, itemCount } = useAppSelector(
-    (state) => state.stockManagementReducer.inwards
+    (state) => state.stockManagement.inwards
   );
 
   const fetchData = async () => {
@@ -187,7 +187,6 @@ const StockManagementInward = ({
                   </TableCell>
                   <TableCell>{row.createdDate}</TableCell>
                   <TableCell>{row.supplierName || "N/A"}</TableCell>{" "}
-                  {/* Display supplierName */}
                   <TableCell>{row.description}</TableCell>
                   <TableCell>{row.itemType}</TableCell>
                   <TableCell>{row.quantity}</TableCell>

@@ -5,6 +5,7 @@ import {
   DELETE_STOCK,
   FETCH_INWARD_STOCK,
   FETCH_OUTWARD_STOCK,
+  GET_ALL_BUYERS_AND_SUPPLIERS, // Updated API route for fetching buyers and suppliers
 } from "@/base-url/apiRoutes";
 import {
   CreateStockInwardPayload,
@@ -17,8 +18,56 @@ import {
   StockManagementOutwardModel,
 } from "@/models/req-model/StockManagementOutwardModel";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { RootState, AppDispatch } from "@/redux/store"; // Import types here
 
-import { GET_ALL_BUYERS, GET_ALL_SELLERS } from "@/base-url/apiRoutes"; // You need to define these API routes
+
+
+// fetch the Buyers and the Suppliers from here 
+export const fetchBuyersAndSuppliers = createAsyncThunk<
+  {
+    data: {
+      buyers: { id: string; name: string }[];
+      suppliers: { id: string; name: string }[];
+    };
+  },
+  "buyer" | "supplier", // Action input type
+  { state: RootState; dispatch: AppDispatch }
+>(
+  "stockManagement/fetchBuyersAndSuppliers",
+  async (type, { rejectWithValue }) => {
+    try {
+      const url =
+        type === "supplier"
+          ? "http://localhost:8001/api/v1/vendorManagement/getVendorNP/supplier"
+          : "http://localhost:8001/api/v1/vendorManagement/getVendorNP/buyer";
+
+      const res = await apiClient.get(url);
+
+      // Transforming the response to only include 'id' and 'name'
+      const data = res.data.data.map((item: { id: string; name: string }) => ({
+        id: item.id,
+        name: item.name,
+      }));
+
+      return {
+        data:
+          type === "supplier"
+            ? { suppliers: data, buyers: [] }
+            : { buyers: data, suppliers: [] },
+      };
+    } catch (error: any) {
+      console.error(`Error occurred while fetching ${type}s:`, error);
+      return rejectWithValue({
+        message: error.response?.data?.message || `Failed to fetch ${type}s`,
+      });
+    }
+  }
+);
+
+export const setSelectedVendorId = (vendor: string) => ({
+  type: "stockManagement/setSelectedVendorId",
+  payload: vendor,
+});
 
 // Create Inward
 export const createInward = createAsyncThunk<
@@ -27,11 +76,14 @@ export const createInward = createAsyncThunk<
   { rejectValue: { message: string; status?: number } }
 >(
   "stockManagement/createInward",
-  async ({ createInwardPayload }, { rejectWithValue }) => {
+  async ({ createInwardPayload }, { rejectWithValue, getState }) => {
     try {
+      // Retrieve the selected vendor ID from the Redux state
+      const selectedVendorId = (getState() as RootState).stockManagement.selectedVendorId;
+
       const body = {
         stockType: "inward",
-        transId: createInwardPayload.transId,
+        // transId: createInwardPayload.transId,
         description: createInwardPayload.description,
         itemType: createInwardPayload.itemType,
         quantity: createInwardPayload.quantity,
@@ -39,13 +91,14 @@ export const createInward = createAsyncThunk<
         unitPrice: createInwardPayload.unitPrice,
         totalValue: createInwardPayload.totalValue,
         batchNumber: createInwardPayload.batchNumber,
-        receivedBy: createInwardPayload.receivedBy,
+        // receivedBy: createInwardPayload.receivedBy,
         location: createInwardPayload.location,
         notes: createInwardPayload.notes,
-        vendor: "981b68ef-db0f-44fb-9993-570f8a8a9fce",
+        vendor: selectedVendorId, // Use the selected vendor ID
       };
+
       const res = await apiClient.post(CREATE_STOCK, body);
-      console.log(res);
+      console.log(res); // Debug log
       return { data: res.data.data, message: res.data.message };
     } catch (error: any) {
       console.error(
@@ -71,9 +124,29 @@ export const createOutward = createAsyncThunk<
   { rejectValue: { message: string; status?: number } }
 >(
   "stockManagement/createOutward",
-  async ({ createOutwardPayload }, { rejectWithValue }) => {
+  async ({ createOutwardPayload }, { rejectWithValue, getState }) => {
     try {
-      const res = await apiClient.post(CREATE_STOCK, createOutwardPayload);
+      // Retrieve the selected vendor ID from the Redux state
+      const selectedVendorId = (getState() as RootState).stockManagement.selectedVendorId;
+      
+    
+      const body = {
+       stockType: "outward",
+        // transId: createOutwardPayload.transId,
+        description: createOutwardPayload.description,
+        itemType: createOutwardPayload.itemType,
+        quantity: createOutwardPayload.quantity,
+        commission: createOutwardPayload.commission,
+        unitPrice: createOutwardPayload.unitPrice,
+        totalValue: createOutwardPayload.totalValue,
+        batchNumber: createOutwardPayload.batchNumber,
+        // receivedBy: createOutwardPayload.receivedBy,
+        location: createOutwardPayload.location,
+        notes: createOutwardPayload.notes,
+        vendor: selectedVendorId, // Use the selected vendor ID
+      };
+      const res = await apiClient.post(CREATE_STOCK, body);
+      console.log("Create Outward Response:", res); // Debug log
       return { data: res.data.data, message: res.data.message };
     } catch (error: any) {
       console.error("Error occurred while creating outward entry:", error);
@@ -85,12 +158,12 @@ export const createOutward = createAsyncThunk<
   }
 );
 
+
+
 // Get All Inwards
 export const getAllInwardsAction = createAsyncThunk<
   { data: StockManagementInwardModel[]; itemCount: number },
-  {
-    commonApiParamModel: GetAllInwardsRequest;
-  },
+  { commonApiParamModel: GetAllInwardsRequest },
   { rejectValue: { message: string; status?: number } }
 >(
   "stockManagement/getInwards",
@@ -107,7 +180,7 @@ export const getAllInwardsAction = createAsyncThunk<
       };
       const res = await apiClient.get(FETCH_INWARD_STOCK, options);
       let data: StockManagementInwardModel[] = [];
-      if (res?.data?.data.data) data = res.data.data.data;
+      if (res?.data?.data?.data) data = res.data.data.data;
       return { data, itemCount: res.data.data.meta.itemCount };
     } catch (error: any) {
       console.error("Error occurred while fetching inwards:", error);
@@ -144,16 +217,20 @@ export const getAllOutwardsAction = createAsyncThunk<
         },
       };
       const res = await apiClient.get(FETCH_OUTWARD_STOCK, options);
-      console.log("Outward API Response:", res.data); // Debug log
-      return {
-        data: res.data.data || [], // Fallback to empty array if data is undefined
-        itemCount: res.data.meta?.itemCount || 0, // Ensure itemCount is valid
-      };
+      let data: StockManagementOutwardModel[] = [];
+      if (res?.data?.data?.data) data = res.data.data.data;
+      return { data, itemCount: res.data.data.meta.itemCount };
     } catch (error: any) {
-      console.error("Error fetching outwards:", error);
+      console.error("Error occurred while fetching inwards:", error);
+      const status = error.response?.status || 500;
+      CustomToast.ErrorToast(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Failed to fetch outwards"
+      );
       return rejectWithValue({
-        message: error.response?.data?.message || "Failed to fetch outwards",
-        status: error.response?.status || 500,
+        message: "Failed to fetch outwards",
+        status,
       });
     }
   }
@@ -258,44 +335,3 @@ export const deleteOutwardAction = createAsyncThunk<
     });
   }
 });
-
-// // Fetch Buyers
-// export const fetchBuyers = createAsyncThunk<
-//   { data: any[] },
-//   void,
-//   { rejectValue: { message: string } }
-// >(
-//   "stockManagement/fetchBuyers",
-//   async (_, { rejectWithValue }) => {
-//     try {
-//       const res = await apiClient.get(GET_ALL_BUYERS);
-//       return { data: res.data.data };
-//     } catch (error: any) {
-//       console.error("Error occurred while fetching buyers:", error);
-//       return rejectWithValue({
-//         message: error.response?.data?.message || "Failed to fetch buyers",
-//       });
-//     }
-//   }
-// );
-
-// // Fetch Sellers
-// export const fetchSellers = createAsyncThunk<
-//   { data: any[] },
-//   void,
-//   { rejectValue: { message: string } }
-// >(
-//   "stockManagement/fetchSellers",
-//   async (_, { rejectWithValue }) => {
-//     try {
-//       const res = await apiClient.get(GET_ALL_SELLERS);
-//       return { data: res.data.data };
-//     } catch (error: any) {
-//       console.error("Error occurred while fetching sellers:", error);
-//       return rejectWithValue({
-//         message: error.response?.data?.message || "Failed to fetch sellers",
-//       });
-//     }
-//   }
-// );
-// export { GET_ALL_BUYERS, GET_ALL_SELLERS };

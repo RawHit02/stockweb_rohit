@@ -12,7 +12,8 @@ export const store = configureStore({
     auth: authReducer,
     buyer: buyerReducer,
     VendorManagementReducer,
-    stockManagementReducer,
+    stockManagement: stockManagementReducer, // Updated to 'stockManagement'
+    
   },
   devTools: true, // Enable Redux DevTools in development
 });
