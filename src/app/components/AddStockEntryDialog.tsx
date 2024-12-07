@@ -31,7 +31,7 @@ import {
   inwardStockSchema,
   outwardStockSchema,
 } from "@/yupSchema/stockEntrySchema"; // Import the validation schema
-import { StockManagementInwardModel } from "@/models/req-model/StockManagementInwardModel";
+import { CreateStockInwardPayload, StockManagementInwardModel } from "@/models/req-model/StockManagementInwardModel";
 import { StockManagementOutwardModel } from "@/models/req-model/StockManagementOutwardModel";
 
 // Define the type for props
@@ -72,7 +72,6 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
     name: string;
   }
 
-
   const CustomErrorMessage: React.FC<CustomErrorMessageProps> = ({ name }) => (
     <ErrorMessage name={name}>
       {(msg) => <div style={{ color: "red" }}>{msg}</div>}
@@ -98,65 +97,30 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
   ) => {
     try {
       // payload including vendorId (captured from dropdown)
-      const payload = {
-        ...values,
-        stockType,
-        vendor: selectedVendorId,
-        supplierName:
-          buyersAndSuppliers?.find(
-            (item: Vendor) => item.id === selectedVendorId
-          )?.name || "",
-        buyerName:
-          stockType === "outward"
-            ? buyersAndSuppliers?.find(
-                (item: Vendor) => item.id === selectedVendorId
-              )?.name || ""
-            : "",
+      const payload: CreateStockInwardPayload = {
+      ...values,
+      vendor : selectedVendorId,
       };
 
       // create or edit based on whether it's an edit mode or not
       if (props.isEditMode && props.initialValues?.id) {
-        if (stockType === "inward") {
-          await dispatch(
-            editInwardAction({
-              editInwardPayload: payload,
-              inwardId: props.initialValues.id,
-            })
-          ).unwrap();
-          enqueueSnackbar("Inward stock updated successfully!", {
-            variant: "success",
-          });
-        } else {
-          await dispatch(
-            editOutwardAction({
-              editOutwardPayload: payload,
-              outwardId: props.initialValues.id,
-            })
-          ).unwrap();
-          enqueueSnackbar("Outward stock updated successfully!", {
-            variant: "success",
-          });
-        }
+        await dispatch(
+          editInwardAction({
+            editInwardPayload: payload,
+            inwardId: props.initialValues.id,
+          })
+        ).unwrap();
+        enqueueSnackbar("Inward stock updated successfully!", {
+          variant: "success",
+        });
       } else {
-        if (stockType === "inward") {
-          await dispatch(
-            createInward({ createInwardPayload: payload })
-          ).unwrap();
-          enqueueSnackbar("Inward stock added successfully!", {
-            variant: "success",
-          });
-          if (props.onInwardCreated) props.onInwardCreated();
-        } else {
-          await dispatch(
-            createOutward({ createOutwardPayload: payload })
-          ).unwrap();
-          enqueueSnackbar("Outward stock added successfully!", {
-            variant: "success",
-          });
-          if (props.onOutwardCreated) props.onOutwardCreated();
-        }
+        await dispatch(createInward({ createInwardPayload: payload })).unwrap();
+        enqueueSnackbar("Inward stock added successfully!", {
+          variant: "success",
+        });
+        if (props.onInwardCreated) props.onInwardCreated();
       }
-      props.onClose(); // Close the dialog after submission
+      props.onClose(); 
     } catch (error) {
       console.error("Error submitting stock entry:", error);
       enqueueSnackbar("Failed to submit stock entry. Please try again.", {
@@ -225,7 +189,7 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                   </Grid>
 
                   {/* Dynamic Fields Based on Stock Type */}
-                  {stockType === "Gold" &&  (
+                  {stockType === "Gold" && (
                     <>
                       <Grid size={6}>
                         <Box>
@@ -342,37 +306,41 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                         </Box>
                       </Grid>
 
-                      <Grid size={6}>
-                        <Box>
-                          <Typography className="text-sm text-primary mb-1">
-                            Location
-                          </Typography>
-                          <Field
-                            name="location"
-                            as={OutlinedInput}
-                            fullWidth
-                            placeholder="Enter location"
-                          />
-                          <CustomErrorMessage name="location" />
-                        </Box>
-                      </Grid>
+                      {props.stock && (
+                        <>
+                          <Grid size={6}>
+                            <Box>
+                              <Typography className="text-sm text-primary mb-1">
+                                Location
+                              </Typography>
+                              <Field
+                                name="location"
+                                as={OutlinedInput}
+                                fullWidth
+                                placeholder="Enter location"
+                              />
+                              <CustomErrorMessage name="location" />
+                            </Box>
+                          </Grid>
 
-                      <Grid size={6}>
-                        <Box>
-                          <Typography className="text-sm text-primary mb-1">
-                            Purchase Margin
-                          </Typography>
-                          <Field
-                            name="purchaseMargin"
-                            as={OutlinedInput}
-                            fullWidth
-                            placeholder="Enter purchase margin"
-                          />
-                          <CustomErrorMessage name="purchaseMargin" />
-                        </Box>
-                      </Grid>
-                      {/* Vendor Dropdown */}
-                      <Grid size={12}>
+                          <Grid size={6}>
+                            <Box>
+                              <Typography className="text-sm text-primary mb-1">
+                                Purchase Margin
+                              </Typography>
+                              <Field
+                                name="purchaseMargin"
+                                as={OutlinedInput}
+                                fullWidth
+                                placeholder="Enter purchase margin"
+                              />
+                              <CustomErrorMessage name="purchaseMargin" />
+                            </Box>
+                          </Grid>
+                        </>
+                      )}
+
+                      <Grid size={props.stock ? 12 : 6}>
                         <Box>
                           <Typography className="text-sm text-primary mb-1">
                             {props.stock ? "Supplier Name" : "Buyer Name"}
@@ -409,6 +377,58 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                         </Box>
                       </Grid>
 
+                      {!props.stock && (
+                        <Grid size={6}>
+                          <Box>
+                            <Typography className="text-sm text-primary mb-1">
+                              Commission
+                            </Typography>
+                            <Field
+                              name="commission"
+                              as={OutlinedInput}
+                              fullWidth
+                              placeholder="Enter commission"
+                            />
+                            <CustomErrorMessage name="commission" />
+                          </Box>
+                        </Grid>
+                      )}
+
+                      {!props.stock && (
+                        <Grid size={6}>
+                          <Box>
+                            <Typography className="text-sm text-primary mb-1">
+                              Payment Status
+                            </Typography>
+                            <Field as={Select} name="paymentStatus" fullWidth>
+                              <MenuItem value="pending">Pending</MenuItem>
+                              <MenuItem value="completed">Completed</MenuItem>
+                              <MenuItem value="partial">partial done</MenuItem>
+                            </Field>
+                            <CustomErrorMessage name="paymentStatus" />
+                          </Box>
+                        </Grid>
+                      )}
+
+                      {!props.stock && (
+                        <Grid size={6}>
+                          <Box>
+                            <Typography className="text-sm text-primary mb-1">
+                              Amount Received
+                            </Typography>
+                            <Field
+                              name="amountReceived"
+                              as={OutlinedInput}
+                              fullWidth
+                              placeholder="Enter Amount"
+                            />
+                            <CustomErrorMessage name="amountReceived" />
+                          </Box>
+                        </Grid>
+                      )}
+
+                      {/* Vendor Dropdown */}
+
                       <Grid size={12}>
                         <Box>
                           <Typography className="text-sm text-primary mb-1">
@@ -426,10 +446,7 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                     </>
                   )}
 
-
-
-
-
+                  {/* Diamond type */}
 
                   {stockType === "Diamond" && (
                     <>
@@ -545,37 +562,41 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                         </Box>
                       </Grid>
 
-                      <Grid size={6}>
-                        <Box>
-                          <Typography className="text-sm text-primary mb-1">
-                            Location
-                          </Typography>
-                          <Field
-                            name="location"
-                            as={OutlinedInput}
-                            fullWidth
-                            placeholder="Enter location"
-                          />
-                          <CustomErrorMessage name="location" />
-                        </Box>
-                      </Grid>
+                      {props.stock && (
+                        <>
+                          <Grid size={6}>
+                            <Box>
+                              <Typography className="text-sm text-primary mb-1">
+                                Location
+                              </Typography>
+                              <Field
+                                name="location"
+                                as={OutlinedInput}
+                                fullWidth
+                                placeholder="Enter location"
+                              />
+                              <CustomErrorMessage name="location" />
+                            </Box>
+                          </Grid>
 
-                      <Grid size={6}>
-                        <Box>
-                          <Typography className="text-sm text-primary mb-1">
-                            Purchase Margin
-                          </Typography>
-                          <Field
-                            name="purchaseMargin"
-                            as={OutlinedInput}
-                            fullWidth
-                            placeholder="Enter purchase margin"
-                          />
-                          <CustomErrorMessage name="purchaseMargin" />
-                        </Box>
-                      </Grid>
+                          <Grid size={6}>
+                            <Box>
+                              <Typography className="text-sm text-primary mb-1">
+                                Purchase Margin
+                              </Typography>
+                              <Field
+                                name="purchaseMargin"
+                                as={OutlinedInput}
+                                fullWidth
+                                placeholder="Enter purchase margin"
+                              />
+                              <CustomErrorMessage name="purchaseMargin" />
+                            </Box>
+                          </Grid>
+                        </>
+                      )}
 
-                      <Grid size={12}>
+                      <Grid size={props.stock ? 12 : 6}>
                         <Box>
                           <Typography className="text-sm text-primary mb-1">
                             {props.stock ? "Supplier Name" : "Buyer Name"}
@@ -612,6 +633,56 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                         </Box>
                       </Grid>
 
+                      {!props.stock && (
+                        <Grid size={6}>
+                          <Box>
+                            <Typography className="text-sm text-primary mb-1">
+                              Commission
+                            </Typography>
+                            <Field
+                              name="commission"
+                              as={OutlinedInput}
+                              fullWidth
+                              placeholder="Enter commission"
+                            />
+                            <CustomErrorMessage name="commission" />
+                          </Box>
+                        </Grid>
+                      )}
+
+                      {!props.stock && (
+                        <Grid size={6}>
+                          <Box>
+                            <Typography className="text-sm text-primary mb-1">
+                              Payment Status
+                            </Typography>
+                            <Field as={Select} name="paymentStatus" fullWidth>
+                              <MenuItem value="pending">Pending</MenuItem>
+                              <MenuItem value="completed">Completed</MenuItem>
+                              <MenuItem value="partial">partial done</MenuItem>
+                            </Field>
+                            <CustomErrorMessage name="paymentStatus" />
+                          </Box>
+                        </Grid>
+                      )}
+
+                      {!props.stock && (
+                        <Grid size={6}>
+                          <Box>
+                            <Typography className="text-sm text-primary mb-1">
+                              Amount Received
+                            </Typography>
+                            <Field
+                              name="amountReceived"
+                              as={OutlinedInput}
+                              fullWidth
+                              placeholder="Enter Amount"
+                            />
+                            <CustomErrorMessage name="amountReceived" />
+                          </Box>
+                        </Grid>
+                      )}
+
                       <Grid size={12}>
                         <Box>
                           <Typography className="text-sm text-primary mb-1">
@@ -629,6 +700,7 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                     </>
                   )}
 
+                  {/* Silver type  */}
                   {stockType === "Silver" && (
                     <>
                       <Grid size={6}>
@@ -661,8 +733,7 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                         </Box>
                       </Grid>
 
-
-                       <Grid size={6}>
+                      <Grid size={6}>
                         <Box>
                           <Typography className="text-sm text-primary mb-1">
                             Select Clarity
@@ -679,12 +750,6 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                           <CustomErrorMessage name="clarity" />
                         </Box>
                       </Grid>
-
-
-
-
-
-
                       <Grid size={6}>
                         <Box>
                           <Typography className="text-sm text-primary mb-1">
@@ -745,37 +810,41 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                         </Box>
                       </Grid>
 
-                      <Grid size={6}>
-                        <Box>
-                          <Typography className="text-sm text-primary mb-1">
-                            Location
-                          </Typography>
-                          <Field
-                            name="location"
-                            as={OutlinedInput}
-                            fullWidth
-                            placeholder="Enter location"
-                          />
-                          <CustomErrorMessage name="location" />
-                        </Box>
-                      </Grid>
+                      {props.stock && (
+                        <>
+                          <Grid size={6}>
+                            <Box>
+                              <Typography className="text-sm text-primary mb-1">
+                                Location
+                              </Typography>
+                              <Field
+                                name="location"
+                                as={OutlinedInput}
+                                fullWidth
+                                placeholder="Enter location"
+                              />
+                              <CustomErrorMessage name="location" />
+                            </Box>
+                          </Grid>
 
-                      <Grid size={6}>
-                        <Box>
-                          <Typography className="text-sm text-primary mb-1">
-                            Purchase Margin
-                          </Typography>
-                          <Field
-                            name="purchaseMargin"
-                            as={OutlinedInput}
-                            fullWidth
-                            placeholder="Enter purchase margin"
-                          />
-                          <CustomErrorMessage name="purchaseMargin" />
-                        </Box>
-                      </Grid>
+                          <Grid size={6}>
+                            <Box>
+                              <Typography className="text-sm text-primary mb-1">
+                                Purchase Margin
+                              </Typography>
+                              <Field
+                                name="purchaseMargin"
+                                as={OutlinedInput}
+                                fullWidth
+                                placeholder="Enter purchase margin"
+                              />
+                              <CustomErrorMessage name="purchaseMargin" />
+                            </Box>
+                          </Grid>
+                        </>
+                      )}
 
-                      <Grid size={12}>
+                      <Grid size={props.stock ? 12 : 6}>
                         <Box>
                           <Typography className="text-sm text-primary mb-1">
                             {props.stock ? "Supplier Name" : "Buyer Name"}
@@ -812,6 +881,55 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                         </Box>
                       </Grid>
 
+                      {!props.stock && (
+                        <Grid size={6}>
+                          <Box>
+                            <Typography className="text-sm text-primary mb-1">
+                              Commission
+                            </Typography>
+                            <Field
+                              name="commission"
+                              as={OutlinedInput}
+                              fullWidth
+                              placeholder="Enter commission"
+                            />
+                            <CustomErrorMessage name="commission" />
+                          </Box>
+                        </Grid>
+                      )}
+
+                      {!props.stock && (
+                        <Grid size={6}>
+                          <Box>
+                            <Typography className="text-sm text-primary mb-1">
+                              Payment Status
+                            </Typography>
+                            <Field as={Select} name="paymentStatus" fullWidth>
+                              <MenuItem value="pending">Pending</MenuItem>
+                              <MenuItem value="completed">Completed</MenuItem>
+                              <MenuItem value="partial">partial done</MenuItem>
+                            </Field>
+                            <CustomErrorMessage name="paymentStatus" />
+                          </Box>
+                        </Grid>
+                      )}
+
+                      {!props.stock && (
+                        <Grid size={6}>
+                          <Box>
+                            <Typography className="text-sm text-primary mb-1">
+                              Amount Received
+                            </Typography>
+                            <Field
+                              name="amountReceived"
+                              as={OutlinedInput}
+                              fullWidth
+                              placeholder="Enter Amount"
+                            />
+                            <CustomErrorMessage name="amountReceived" />
+                          </Box>
+                        </Grid>
+                      )}
                       <Grid size={12}>
                         <Box>
                           <Typography className="text-sm text-primary mb-1">

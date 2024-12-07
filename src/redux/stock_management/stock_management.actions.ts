@@ -79,36 +79,31 @@ export const createInward = createAsyncThunk<
   async ({ createInwardPayload }, { rejectWithValue, getState }) => {
     try {
       // Retrieve the selected vendor ID from the Redux state
-      const selectedVendorId = (getState() as RootState).stockManagement.selectedVendorId;
+      const selectedVendorId = (getState() as RootState).stockManagement
+        .selectedVendorId;
 
       const body = {
         stockType: "inward",
-        // transId: createInwardPayload.transId,
+        transId: createInwardPayload.transId,
         description: createInwardPayload.description,
         itemType: createInwardPayload.itemType,
         quantity: createInwardPayload.quantity,
-        commission: createInwardPayload.commission,
         unitPrice: createInwardPayload.unitPrice,
+        commission: createInwardPayload.commission,
         totalValue: createInwardPayload.totalValue,
         batchNumber: createInwardPayload.batchNumber,
-        // receivedBy: createInwardPayload.receivedBy,
+        receivedBy: createInwardPayload.receivedBy,
         location: createInwardPayload.location,
         notes: createInwardPayload.notes,
-        vendor: selectedVendorId, // Use the selected vendor ID
+        vendor: selectedVendorId,
+        //other fields
       };
-
+      console.log("Payload for API Call:", body); // Log the payload
       const res = await apiClient.post(CREATE_STOCK, body);
-      console.log(res); // Debug log
       return { data: res.data.data, message: res.data.message };
     } catch (error: any) {
-      console.error(
-        "Error occurred while creating inward entry:",
-        error.response?.data || error.message
-      );
+      console.error("Error occurred while creating inward entry:", error);
       const status = error.response?.status || 500;
-      CustomToast.ErrorToast(
-        error?.response?.data?.message || "Something went wrong"
-      );
       return rejectWithValue({
         message: error.response?.data?.message || "Failed to create inward",
         status,
@@ -131,20 +126,27 @@ export const createOutward = createAsyncThunk<
       
     
       const body = {
-       stockType: "outward",
-        // transId: createOutwardPayload.transId,
+        stockType: "outward",
+        transId: createOutwardPayload.transId,
         description: createOutwardPayload.description,
         itemType: createOutwardPayload.itemType,
         quantity: createOutwardPayload.quantity,
-        commission: createOutwardPayload.commission,
         unitPrice: createOutwardPayload.unitPrice,
+        commission: createOutwardPayload.commission,
         totalValue: createOutwardPayload.totalValue,
         batchNumber: createOutwardPayload.batchNumber,
-        // receivedBy: createOutwardPayload.receivedBy,
+        receivedBy: createOutwardPayload.receivedBy,
         location: createOutwardPayload.location,
         notes: createOutwardPayload.notes,
         vendor: selectedVendorId, // Use the selected vendor ID
+        goldType: createOutwardPayload.goldType,
+        diamondType: createOutwardPayload.diamondType,
+        clarity: createOutwardPayload.clarity,
+        colorGrade: createOutwardPayload.colorGrade,
+        issuedBy: createOutwardPayload.issuedBy,
+        silverType: createOutwardPayload.silverType,
       };
+
       const res = await apiClient.post(CREATE_STOCK, body);
       console.log("Create Outward Response:", res); // Debug log
       return { data: res.data.data, message: res.data.message };

@@ -41,28 +41,23 @@ export interface InitialInwardsModelState {
 export interface GetAllInwardsRequest extends ApiParamModel {
   TransId?: string;
 }
-
 export interface CreateStockInwardPayload {
- // stockType: string;
-  transId: string;
-  description: string;
-  itemType: string;
-  quantity: string;
-  unitPrice: string;
-  commission: string;
-  totalValue: string;
-  batchNumber: string;
-  supplierName?: string;
-  receivedBy: string;
-  goldType: string;
-  diamondType: string;
-  clarity: string;
-  colorGrade: string;
-  issuedBy: string;
-
-  silverType: string;
-
-  location: string;
-  notes: string;
-  vendor?: string;
+  transId: string; // Required
+  description: string; // Required
+  itemType: string; // Required
+  quantity: string; // Required
+  unitPrice: string; // Required
+  commission: string; // Required
+  totalValue: string; // Required
+  batchNumber: string; // Required
+  receivedBy: string; // Required
+  goldType: string; // Required
+  diamondType: string; // Required
+  clarity: string; // Required
+  colorGrade: string; // Required
+  issuedBy: string; // Required
+  silverType: string; // Required
+  location: string; // Required
+  notes: string; // Optional
+  vendor?: string; // Optional
 }

@@ -46,24 +46,24 @@ export interface GetAllOutwardsRequest extends ApiParamModel {
 }
 
 export interface CreateStockOutwardPayload {
-  stockType: string;
-  transId: string;
-  description: string;
-  itemType: string;
-  quantity: string;
-  unitPrice: string;
-  commission: string;
-  totalValue: string;
-  batchNumber: string;
-  receivedBy: string;
-  issuedBy : string;
-  goldType: string;
-  diamondType: string;
-  clarity: string;
-  colorGrade: string;
-  silverType: string;
-  buyerName?: string;
-  location: string;
-  notes: string;
-  vendor?: string;
+  stockType: string; // Required
+  transId: string; // Required
+  description: string; // Required
+  itemType: string; // Required
+  quantity: string; // Required
+  unitPrice: string; // Required
+  commission: string; // Required
+  totalValue: string; // Required
+  batchNumber: string; // Required
+  receivedBy: string; // Required
+  issuedBy: string; // Required
+  goldType: string; // Required
+  diamondType: string; // Required
+  clarity: string; // Required
+  colorGrade: string; // Required
+  silverType: string; // Required
+  buyerName?: string; // Optional
+  location: string; // Required
+  notes: string; // Optional
+  vendor?: string; // Optional
 }
