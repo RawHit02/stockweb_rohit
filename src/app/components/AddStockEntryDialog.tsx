@@ -59,7 +59,7 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
 
   // Fetch suppliers/buyers from Redux store
   const buyersAndSuppliers = useSelector((state: any) =>
-    stockType === "inward"
+    props.stock
       ? state.stockManagement.suppliers
       : state.stockManagement.buyers
   );
