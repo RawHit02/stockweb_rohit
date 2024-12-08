@@ -6,12 +6,12 @@ export const addSellerSchema = Yup.object().shape({
         .required("Contact number is required")
         .matches(/^[0-9]+$/, "Contact number not Valid ")
         .min(10, "Contact number must be at least 10 digits")
-        .max(10, "Contact number can't exceed 15 digits"),
+        .max(10, "Contact number can't exceed 10 digits"),
     whatsappNumber: Yup.string()
         .required("WhatsApp number is required")
         .matches(/^[0-9]+$/, "WhatsApp Number not Valid ")
         .min(10, "WhatsApp number must be at least 10 digits")
-        .max(10, "WhatsApp number can't exceed 15 digits"),
+        .max(10, "WhatsApp number can't exceed 10 digits"),
     email: Yup.string()
         .email("Please enter a valid email address")
         .required("Email is required"),
