@@ -5,6 +5,7 @@ import buyerReducer from "./slices/buyerSlice"; // Buyer slice
 import authReducer from "./slices/authSlice"; // Authentication slice
 import VendorManagementReducer from "./vendor_management/vendor_management.slice";
 import stockManagementReducer from "@/redux/stock_management/stock_management.slice";
+import EmployeeManagementReducer from "./employee_management/employee_management.slice"; // Import the employee management reducer
 
 // Configure the Redux store
 export const store = configureStore({
@@ -13,7 +14,7 @@ export const store = configureStore({
     buyer: buyerReducer,
     VendorManagementReducer,
     stockManagement: stockManagementReducer, // Updated to 'stockManagement'
-    
+    EmployeeManagementReducer, // Add employee management reducer
   },
   devTools: true, // Enable Redux DevTools in development
 });

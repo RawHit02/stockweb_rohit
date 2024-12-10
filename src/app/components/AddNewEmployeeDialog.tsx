@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState } from "react";
 import {
   Box,
@@ -13,17 +12,20 @@ import {
   InputAdornment,
   OutlinedInput,
   Snackbar,
+  Select,
+  MenuItem,
+  
 } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import { createBuyer } from "@/redux/vendor_management/vendor_management.actions";
-import { addBuyerSchema } from "@/yupSchema/addBuyerSchema";
-import { editBuyerAction } from "@/redux/vendor_management/vendor_management.actions";
+import { createEmployee } from "@/redux/employee_management/employee_management.actions";
+import { employeeSchema } from "@/yupSchema/addEmployeeSchema"; // Add your validation schema here
+import { editEmployeeAction } from "@/redux/employee_management/employee_management.actions";
 import { useSnackbar } from "notistack";
 
-//import * as Yup from "yup";
 import Image from "next/image";
+
 import {
   // AddCircleOutlineOutlinedIcon,
   CheckCircleIcon,
@@ -32,33 +34,33 @@ import {
   UploadImageIcon,
 } from "../assets";
 
-export interface BuyerFormValues {
+export interface EmployeeFormValues {
   id?: string;
   name: string;
-  contactNumber: string;
-  whatsappNumber: string;
+  phoneNumber: string;
   email: string;
   address: string;
+  employeeShift: string;
   profileImage: File | null;
 }
 
-interface AddNewBuyerDialogProps {
-  onBuyerCreated?: () => void;
-  initialValues?: BuyerFormValues; // Prefilled data
+interface AddNewEmployeeDialogProps {
+  onEmployeeCreated?: () => void;
+  initialValues?: EmployeeFormValues; // Prefilled data
   isEditMode?: boolean; // differentiate between add/edit
   open: boolean;
   onClose: () => void;
 }
 
-const AddNewBuyerDialog: React.FC<AddNewBuyerDialogProps> = ({
-  onBuyerCreated,
+const AddNewEmployeeDialog: React.FC<AddNewEmployeeDialogProps> = ({
+  onEmployeeCreated,
   initialValues = {
     id: undefined,
     name: "",
-    contactNumber: "",
-    whatsappNumber: "",
+    phoneNumber: "",
     email: "",
     address: "",
+    employeeShift: "",
     profileImage: null,
   },
   isEditMode = false,
@@ -80,6 +82,7 @@ const AddNewBuyerDialog: React.FC<AddNewBuyerDialogProps> = ({
     }
     setSnackbarOpen(false); // Close the Snackbar
   };
+
   const handleImageUpload = (
     event: React.ChangeEvent<HTMLInputElement>,
     setFieldValue: (field: string, value: File | null) => void
@@ -94,62 +97,60 @@ const AddNewBuyerDialog: React.FC<AddNewBuyerDialogProps> = ({
     }
   };
 
-  const handleSubmit = async (
-    values: BuyerFormValues,
-    { resetForm }: { resetForm: () => void }
-  ) => {
-    try {
-      if (isEditMode && initialValues?.id) {
-        // Edit Buyer
-        const editPayload = {
-          buyerId: initialValues.id, // Use the id from initialValues
-          editBuyerPayload: {
-            vendorType: "buyer",
-            name: values.name,
-            contactNumber: values.contactNumber.startsWith("+91")
-              ? values.contactNumber
-              : `+91${values.contactNumber}`,
-            whatsappNumber: values.whatsappNumber.startsWith("+91")
-              ? values.whatsappNumber
-              : `+91${values.whatsappNumber}`,
-            email: values.email,
-            address: values.address,
-          },
-        };
-        await dispatch(editBuyerAction(editPayload)).unwrap();
-        enqueueSnackbar("Buyer updated successfully!", { variant: "success" });
-      } else {
-        // Add Buyer
-        const buyerPayload = {
-          vendorType: "buyer", // Buyer type
-          name: values.name,
-          contactNumber: values.contactNumber,
-          whatsappNumber: values.whatsappNumber,
-          email: values.email,
-          address: values.address,
-        };
-        await dispatch(
-          createBuyer({ createBuyerPayload: buyerPayload })
-        ).unwrap();
-        enqueueSnackbar("Buyer added successfully!", { variant: "success" });
-      }
+ const handleSubmit = async (
+   values: EmployeeFormValues,
+   { resetForm }: { resetForm: () => void }
+ ) => {
+   console.log("Form submitted with values:", values); // Debugging line
+   try {
+     const employeePayload = {
+       name: values.name,
+       phoneNumber:
+         typeof values.phoneNumber === "string" &&
+         values.phoneNumber.startsWith("+91")
+           ? values.phoneNumber
+           : `+91${values.phoneNumber}`, // Phone number is always prefixed
+       email: values.email,
+       address: values.address,
+       employeeShift: values.employeeShift,
+     };
 
-      // Reset form and close dialog
-      resetForm();
-      setUploadedImage(null);
-      setSnackbarOpen(true);
-      onClose();
+     console.log("Payload to be sent:", employeePayload); // Debugging line
 
-      // Refresh list on success
-      if (onBuyerCreated) onBuyerCreated();
-    } catch (error: any) {
-      console.error("Failed to add buyer:", error);
-      enqueueSnackbar(error?.message || "Add to add buyer", {
-        variant: "error",
-      });
-      setSnackbarOpen(true);
-    }
-  };
+     if (isEditMode && initialValues?.id) {
+       // Edit Employee
+       const editPayload = {
+         EmployeeId: initialValues.id,
+         editEmployeePayload: employeePayload,
+       };
+       console.log("Edit Payload:", editPayload); // Debugging line
+       await dispatch(editEmployeeAction(editPayload)).unwrap();
+       enqueueSnackbar("Employee updated successfully!", {
+         variant: "success",
+       });
+     } else {
+       // Add Employee
+       await dispatch(
+         createEmployee({ createEmployeePayload: employeePayload })
+       ).unwrap();
+       enqueueSnackbar("Employee added successfully!", { variant: "success" });
+     }
+
+     // Reset form and close dialog
+     resetForm();
+     setUploadedImage(null);
+     onClose();
+
+     // Refresh list on success
+     if (onEmployeeCreated) onEmployeeCreated();
+   } catch (error: any) {
+     console.error("Failed to add Employee:", error); // Debugging line
+     enqueueSnackbar({
+       message: "Failed to add Employee",
+       variant: "error",
+     });
+   }
+ };
 
   return (
     <>
@@ -162,10 +163,10 @@ const AddNewBuyerDialog: React.FC<AddNewBuyerDialogProps> = ({
         <DialogTitle className="flex items-start justify-between px-9 pt-9 pb-6">
           <Box>
             <Typography className="text-2xl leading-6 font-semibold">
-              Add New Buyer
+              Add New Employee
             </Typography>
             <Typography className="text-secondary800 mt-2">
-              Enter details of your Vendor
+              Enter details of your Employee
             </Typography>
           </Box>
           <IconButton onClick={onClose} className="p-0">
@@ -176,23 +177,21 @@ const AddNewBuyerDialog: React.FC<AddNewBuyerDialogProps> = ({
         <Formik
           initialValues={{
             name: initialValues?.name || "",
-            contactNumber: initialValues?.contactNumber?.startsWith("+91")
-              ? initialValues.contactNumber.slice(3)
-              : initialValues?.contactNumber || "",
-            whatsappNumber: initialValues?.whatsappNumber?.startsWith("+91")
-              ? initialValues.whatsappNumber.slice(3)
-              : initialValues?.whatsappNumber || "",
+            phoneNumber: initialValues?.phoneNumber?.startsWith("+91")
+              ? initialValues.phoneNumber.slice(3)
+              : initialValues?.phoneNumber || "",
             email: initialValues?.email || "",
             address: initialValues?.address || "",
+            employeeShift: initialValues?.employeeShift || "",
             profileImage: initialValues?.profileImage || null,
           }}
-          validationSchema={addBuyerSchema}
+          validationSchema={employeeSchema}
           onSubmit={handleSubmit}
           enableReinitialize
         >
           {({ touched, errors, setFieldValue, resetForm }) => (
             <Form>
-              <DialogContent className="!px-9 !pt-0">
+              <DialogContent className="px-9">
                 <Box className="flex items-center gap-6 mb-4">
                   <Box className="border-[6px] border-primary200 bg-primaryExtraLight rounded-full overflow-hidden w-[120px] h-[120px] flex items-center justify-center relative">
                     {uploadedImage ? (
@@ -268,18 +267,18 @@ const AddNewBuyerDialog: React.FC<AddNewBuyerDialogProps> = ({
                     <ErrorMessage
                       name="name"
                       component="div"
-                      className="text-red-600 text-[12px]"
+                      className="text-red-600"
                     />
                   </Box>
                   <Box>
                     <Typography className="text-sm text-primary">
-                      Contact Number
+                      Phone Number
                     </Typography>
                     <Field
                       as={OutlinedInput}
-                      name="contactNumber"
+                      name="phoneNumber"
                       type="number"
-                      placeholder="Enter contact number"
+                      placeholder="Enter phone number"
                       fullWidth
                       className="mt-1"
                       startAdornment={
@@ -289,42 +288,12 @@ const AddNewBuyerDialog: React.FC<AddNewBuyerDialogProps> = ({
                           </Typography>
                         </InputAdornment>
                       }
-                      error={
-                        touched.contactNumber && Boolean(errors.contactNumber)
-                      }
+                      error={touched.phoneNumber && Boolean(errors.phoneNumber)}
                     />
                     <ErrorMessage
-                      name="contactNumber"
+                      name="phoneNumber"
                       component="div"
-                      className="text-red-600 text-[12px]"
-                    />
-                  </Box>
-                  <Box>
-                    <Typography className="text-sm text-primary">
-                      WhatsApp Number
-                    </Typography>
-                    <Field
-                      as={OutlinedInput}
-                      name="whatsappNumber"
-                      type="number"
-                      placeholder="Enter WhatsApp number"
-                      fullWidth
-                      className="mt-1"
-                      startAdornment={
-                        <InputAdornment position="start">
-                          <Typography className="text-secondary800 text-sm">
-                            +91
-                          </Typography>
-                        </InputAdornment>
-                      }
-                      error={
-                        touched.whatsappNumber && Boolean(errors.whatsappNumber)
-                      }
-                    />
-                    <ErrorMessage
-                      name="whatsappNumber"
-                      component="div"
-                      className="text-red-600 text-[12px]"
+                      className="text-red-600"
                     />
                   </Box>
                   <Box>
@@ -343,7 +312,7 @@ const AddNewBuyerDialog: React.FC<AddNewBuyerDialogProps> = ({
                     <ErrorMessage
                       name="email"
                       component="div"
-                      className="text-red-600 text-[12px]"
+                      className="text-red-600"
                     />
                   </Box>
                   <Box>
@@ -361,7 +330,38 @@ const AddNewBuyerDialog: React.FC<AddNewBuyerDialogProps> = ({
                     <ErrorMessage
                       name="address"
                       component="div"
-                      className="text-red-600 text-[12px]"
+                      className="text-red-600"
+                    />
+                  </Box>
+
+                  <Box>
+                    <Typography className="text-sm text-primary">
+                      Employee Shift
+                    </Typography>
+                    <Field name="employeeShift">
+                      {({ field, meta }: any) => (
+                        <Select
+                          {...field}
+                          fullWidth
+                          className="mt-1"
+                          error={meta.touched && Boolean(meta.error)}
+                          displayEmpty
+                          inputProps={{
+                            "aria-label": "Employee Shift",
+                          }}
+                        >
+                          <MenuItem value="" disabled>
+                            Select Shift
+                          </MenuItem>
+                          <MenuItem value="Day">Day</MenuItem>
+                          <MenuItem value="Night">Night</MenuItem>
+                        </Select>
+                      )}
+                    </Field>
+                    <ErrorMessage
+                      name="employeeShift"
+                      component="div"
+                      className="text-red-600"
                     />
                   </Box>
                 </Box>
@@ -372,20 +372,11 @@ const AddNewBuyerDialog: React.FC<AddNewBuyerDialogProps> = ({
                   size="large"
                   startIcon={<CloseOutlinedIcon />}
                   onClick={() => {
-                    resetForm({
-                      values: {
-                        name: initialValues?.name || "",
-                        contactNumber: initialValues?.contactNumber || "",
-                        whatsappNumber: initialValues?.whatsappNumber || "",
-                        email: initialValues?.email || "",
-                        address: initialValues?.address || "",
-                        profileImage: initialValues?.profileImage || null,
-                      },
-                    });
                     setUploadedImage(null);
+                    onClose();
                   }}
                 >
-                  Reset
+                  Cancel
                 </Button>
                 <Button
                   type="submit"
@@ -411,4 +402,4 @@ const AddNewBuyerDialog: React.FC<AddNewBuyerDialogProps> = ({
   );
 };
 
-export default AddNewBuyerDialog;
+export default AddNewEmployeeDialog;

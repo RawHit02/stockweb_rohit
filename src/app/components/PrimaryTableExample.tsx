@@ -26,8 +26,6 @@ interface Data {
     whatsapp: number;
     address: number;
 }
-
-
 function createData(
     id: number,
     name: string,

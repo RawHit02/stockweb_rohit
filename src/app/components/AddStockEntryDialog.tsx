@@ -33,6 +33,7 @@ import {
 } from "@/yupSchema/stockEntrySchema"; // Import the validation schema
 import { CreateStockInwardPayload, StockManagementInwardModel } from "@/models/req-model/StockManagementInwardModel";
 import { StockManagementOutwardModel } from "@/models/req-model/StockManagementOutwardModel";
+import AddNewItem from "./AddNewItem";
 
 // Define the type for props
 interface AddStockEntryDialogProps {
@@ -67,6 +68,156 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
   const selectedVendorId = useSelector(
     (state: any) => state.stockManagement.selectedVendorId
   );
+
+
+  const [goldTypes, setGoldTypes] = useState([
+    "Yellow Gold",
+    "White Gold",
+    "Rose Gold",
+    "Green Gold",
+  ]);
+  const [formOfGold, setFormOfGold] = useState(["Bar", "Coin", "Jewellery"]); // State for form of gold
+  
+
+  const [diamondTypes, setDiamondTypes] = useState([
+    "Round",
+    "Princess",
+    "Emerald",
+    "Cushion",
+    "Asscher",
+    "Oval",
+    "Radiant",
+  ]);
+
+
+    const [diamondClarity, setDiamondClarity] = useState([
+      "IF",
+      "VVS1",
+      "VVS2",
+      "VS1",
+      "VS2",
+      "SI1",
+      "SI2",
+    ]);
+
+     const [diamondColorGrade, setDiamondColorGrade] = useState([
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+  ]);
+
+   const [diamondCutGrade, setDiamondCutGrade] = useState([
+     "Excellent",
+     "Very Good",
+     "Good",
+     "Fair",
+     "Poor",
+   ]);
+
+
+
+  const [silverTypes, setSilverTypes] = useState([
+    "Sterling",
+    "Argentium",
+    "Coin Silver",
+  ]);
+
+
+  const [silverClarity, setSilverClarity] = useState([
+    "IF",
+    "VVS1",
+    "VVS2",
+    "VS1",
+    "VS2",
+    "SI1",
+    "SI2",
+  ]);
+
+
+  const [purities, setPurities] = useState(["24K", "22K", "18K", "14K", "10K"]);
+
+
+  const addGoldType = (newType : string) => {
+    setGoldTypes((prev) => [...prev, newType]);
+  };
+
+   const addFormOfGold = (newType: string) => {
+     setFormOfGold((prev) => [...prev, newType]); // Function to add new form of gold
+   };
+
+
+  const addDiamondType = (newType: string) => {
+    setDiamondTypes((prev) => [...prev, newType]);
+  };
+
+
+   const addDiamondClarity = (newClarity: string) => {
+     setDiamondClarity((prev) => [...prev, newClarity]);
+   };
+
+   const addDiamondColorGrade = (newColorGrade: string) => {
+     setDiamondColorGrade((prev) => [...prev, newColorGrade]);
+   };
+
+
+   const addDiamondCutGrade = (newCutGrade: string) => {
+     setDiamondCutGrade((prev) => [...prev, newCutGrade]);
+   };
+
+
+   const addSilverClarity = (newClarity: string) => {
+     setSilverClarity((prev) => [...prev, newClarity]);
+   };
+
+
+  const addSilverType = (newType: string) => {
+    setSilverTypes((prev) => [...prev, newType]);
+  };
+
+
+   const [goldFormTypes, setGoldFormTypes] = useState([""]);
+  const addGoldForm = (newType: string) => {
+    setGoldFormTypes((prev) => [...prev, newType]);
+  };
+
+  const [diamondFormTypes, setDiamondFormTypes] = useState([""]);
+  const addDiamondForm = (newType: string) => {
+    setDiamondFormTypes((prev) => [...prev, newType]);
+  };
+
+   const [silverFormTypes, setSilverFormTypes] = useState([""]);
+  const addSilverForm = (newType: string) => {
+    setSilverFormTypes((prev) => [...prev, newType]);
+  };
+
+
+  const addPurity = (newPurity: string) => {
+    setPurities((prev) => [...prev, newPurity]);
+  };
+
+
+   const addCutGrade = (newPurity: string) => {
+     setPurities((prev) => [...prev, newPurity]);
+   };
+
+
+     const addClarity = (newPurity: string) => {
+     setPurities((prev) => [...prev, newPurity]);
+   };
+
+
+   const addColorGrade = (newPurity: string) => {
+     setPurities((prev) => [...prev, newPurity]);
+   };
+
+   
+
+
+
 
   interface CustomErrorMessageProps {
     name: string;
@@ -140,9 +291,13 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
       <DialogTitle className="flex items-start justify-between px-9 pt-9 pb-6">
         <Box>
           <Typography className="text-2xl leading-6 font-semibold">
-            Add Stock
+            Add New Stock
+          </Typography>
+          <Typography className="text-secondary800 mt-2">
+            Enter details of new stock
           </Typography>
         </Box>
+        
         <IconButton onClick={props.onClose} className="p-0">
           <CloseOutlinedIcon />
         </IconButton>
@@ -197,11 +352,14 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                             Gold Type
                           </Typography>
                           <Field as={Select} name="goldType" fullWidth>
-                            <MenuItem value="Yellow Gold">Yellow Gold</MenuItem>
-                            <MenuItem value="White Gold">White Gold</MenuItem>
-                            <MenuItem value="Rose Gold">Rose Gold</MenuItem>
-                            <MenuItem value="Green Gold">Green Gold</MenuItem>
-                            <MenuItem value="addNew">+ Add New</MenuItem>
+                            {goldTypes.map((type) => (
+                              <MenuItem key={type} value={type}>
+                                {type}
+                              </MenuItem>
+                            ))}
+                            <MenuItem className=" flex flex-row justify-center w-full">
+                              <AddNewItem onAddItem={addGoldType} />
+                            </MenuItem>
                           </Field>
                           <CustomErrorMessage name="goldType" />
                         </Box>
@@ -212,18 +370,17 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                           <Typography className="text-sm text-primary mb-1">
                             Form of Gold
                           </Typography>
-                          <Field
-                            as={Select}
-                            name="formOfGold"
-                            fullWidth
-                            placeholder="Enter form of Gold"
-                          >
-                            <MenuItem value="Bar">Bar</MenuItem>
-                            <MenuItem value="Coin">Coin</MenuItem>
-                            <MenuItem value="Jewelry">Jewelry</MenuItem>
-                            <MenuItem value="Bullion">Bullion</MenuItem>
-                            <MenuItem value="Dust/Powder">Dust/Powder</MenuItem>
-                            <MenuItem value="addNew">+ Add New</MenuItem>
+                          <Field as={Select} name="formOfGold" fullWidth>
+                            {formOfGold.map((type) => (
+                              <MenuItem key={type} value={type}>
+                                {type}
+                              </MenuItem>
+                            ))}
+                            <MenuItem className=" flex flex-row justify-center w-full">
+                              <AddNewItem onAddItem={addFormOfGold} />
+                            </MenuItem>
+                            {/* <AddNewItem onAddItem={addFormOfGold} />{" "} */}
+                            {/* Use the correct function */}
                           </Field>
                           <CustomErrorMessage name="formOfGold" />
                         </Box>
@@ -250,12 +407,14 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                             Purity (Karat Rating)
                           </Typography>
                           <Field as={Select} name="purity" fullWidth>
-                            <MenuItem value="24K">24K</MenuItem>
-                            <MenuItem value="22K">22K</MenuItem>
-                            <MenuItem value="18K">18K</MenuItem>
-                            <MenuItem value="14K">14K</MenuItem>
-                            <MenuItem value="10K">10K</MenuItem>
-                            <MenuItem value="addNew">+ Add New</MenuItem>
+                            {purities.map((type) => (
+                              <MenuItem key={type} value={type}>
+                                {type}
+                              </MenuItem>
+                            ))}
+                            <MenuItem className=" flex flex-row justify-center w-full">
+                              <AddNewItem onAddItem={addPurity} />
+                            </MenuItem>{" "}
                           </Field>
                           <CustomErrorMessage name="purity" />
                         </Box>
@@ -456,14 +615,14 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                             Diamond Type
                           </Typography>
                           <Field as={Select} name="diamondType" fullWidth>
-                            <MenuItem value="Round">Round</MenuItem>
-                            <MenuItem value="Princess">Princess</MenuItem>
-                            <MenuItem value="Emerald">Emerald</MenuItem>
-                            <MenuItem value="Cushion">Cushion</MenuItem>
-                            <MenuItem value="Asscher">Asscher</MenuItem>
-                            <MenuItem value="Oval">Oval</MenuItem>
-                            <MenuItem value="Radiant">Radiant</MenuItem>
-                            <MenuItem value="addNew">+ Add New</MenuItem>
+                            {diamondTypes.map((type) => (
+                              <MenuItem key={type} value={type}>
+                                {type}
+                              </MenuItem>
+                            ))}
+                            <MenuItem className=" flex flex-row justify-center w-full">
+                              <AddNewItem onAddItem={addDiamondType} />
+                            </MenuItem>
                           </Field>
                           <CustomErrorMessage name="diamondType" />
                         </Box>
@@ -490,13 +649,14 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                             Select Clarity
                           </Typography>
                           <Field as={Select} name="clarity" fullWidth>
-                            <MenuItem value="FL">FL (Flawless)</MenuItem>
-                            <MenuItem value="IF">
-                              IF (Internally Flawless)
+                            {diamondClarity.map((clarity) => (
+                              <MenuItem key={clarity} value={clarity}>
+                                {clarity}
+                              </MenuItem>
+                            ))}
+                            <MenuItem className=" flex flex-row justify-center w-full">
+                              <AddNewItem onAddItem={addDiamondClarity} />
                             </MenuItem>
-                            <MenuItem value="VVS1">VVS1</MenuItem>
-                            <MenuItem value="VVS2">VVS2</MenuItem>
-                            <MenuItem value="addNew">+ Add New</MenuItem>
                           </Field>
                           <CustomErrorMessage name="clarity" />
                         </Box>
@@ -508,11 +668,17 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                             Color Grade
                           </Typography>
                           <Field as={Select} name="colorGrade" fullWidth>
-                            <MenuItem value="D">D (Colorless)</MenuItem>
-                            <MenuItem value="E">E (Colorless)</MenuItem>
-                            <MenuItem value="F">F (Colorless)</MenuItem>
-                            <MenuItem value="addNew">+ Add New</MenuItem>
+                            {diamondColorGrade.map((color) => (
+                              <MenuItem key={color} value={color}>
+                                {color}
+                              </MenuItem>
+                            ))}
+
+                            <MenuItem className=" flex flex-row justify-center w-full">
+                              <AddNewItem onAddItem={addDiamondColorGrade} />
+                            </MenuItem>
                           </Field>
+
                           <CustomErrorMessage name="colorGrade" />
                         </Box>
                       </Grid>
@@ -523,10 +689,14 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                             Cut Grade
                           </Typography>
                           <Field as={Select} name="cutGrade" fullWidth>
-                            <MenuItem value="Very Good">Very Good</MenuItem>
-                            <MenuItem value="Good">Good</MenuItem>
-                            <MenuItem value="Fair">Fair</MenuItem>
-                            <MenuItem value="addNew">+ Add New</MenuItem>
+                            {diamondCutGrade.map((cut) => (
+                              <MenuItem key={cut} value={cut}>
+                                {cut}
+                              </MenuItem>
+                            ))}
+                            <MenuItem className=" flex flex-row justify-center w-full">
+                              <AddNewItem onAddItem={addDiamondCutGrade} />
+                            </MenuItem>
                           </Field>
                           <CustomErrorMessage name="cutGrade" />
                         </Box>
@@ -709,10 +879,12 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                             Silver Type
                           </Typography>
                           <Field as={Select} name="silverType" fullWidth>
-                            <MenuItem value="Sterling">Sterling</MenuItem>
-                            <MenuItem value="Argentium">Argentium</MenuItem>
-                            <MenuItem value="Coin Silver">Coin Silver</MenuItem>
-                            <MenuItem value="addNew">+ Add New</MenuItem>
+                            {silverTypes.map((type) => (
+                              <MenuItem key={type} value={type}>
+                                {type}
+                              </MenuItem>
+                            ))}
+                            <AddNewItem onAddItem={addSilverType} />
                           </Field>
                           <CustomErrorMessage name="silverType" />
                         </Box>
@@ -739,13 +911,14 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                             Select Clarity
                           </Typography>
                           <Field as={Select} name="clarity" fullWidth>
-                            <MenuItem value="FL">FL (Flawless)</MenuItem>
-                            <MenuItem value="IF">
-                              IF (Internally Flawless)
+                            {silverClarity.map((clarity) => (
+                              <MenuItem key={clarity} value={clarity}>
+                                {clarity}
+                              </MenuItem>
+                            ))}
+                            <MenuItem className=" flex flex-row justify-center w-full">
+                              <AddNewItem onAddItem={addSilverClarity} />
                             </MenuItem>
-                            <MenuItem value="VVS1">VVS1</MenuItem>
-                            <MenuItem value="VVS2">VVS2</MenuItem>
-                            <MenuItem value="addNew">+ Add New</MenuItem>
                           </Field>
                           <CustomErrorMessage name="clarity" />
                         </Box>

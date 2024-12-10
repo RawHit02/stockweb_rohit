@@ -10,7 +10,7 @@ import AddUserDialog from "./AddUserDialog";
 import UserManagement from "./UserManagement";
 import ResetDialogue from "./ResetDialogue";
 import AllPermissionTable from "./AllPermissionTable";
-import AddEmployeeDialog from "./AddEmployeeDialog";
+import AddEmployeeDialog from "./AddNewEmployeeDialog";
 import TotalPresentPercentage from "./TotalPresentPercentage";
 import TotalAbsentPercentage from "./TotalAbsentPercentage";
 import AddAttendanceDialog from "./AddAttendanceDialog";
