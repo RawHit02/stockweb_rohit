@@ -87,6 +87,7 @@
             &.MuiInputLabel-shrink {
                 transform: translate(14px, -9px) scale(0.75);
             }
+
             &.Mui-focused {
                 @apply text-primary
             }
@@ -108,24 +109,38 @@
     }
 }
 
+// Dashbard corner
+.dash-card {
+    .dash-corner {
+        transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+    }
+
+    &:hover {
+        .dash-corner {
+            transform: scale(1.6); /* Increase the size */
+            @apply bg-[#15B097]  /* Change color slightly */
+        }
+    }
+}
+
 //scrollbar design
 
 ::-webkit-scrollbar {
     width: 7px;
     height: 7px;
-  }
-  
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background: #f1f1f1; 
-  }
-   
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: #888; 
-  }
-  
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #555; 
-  }
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

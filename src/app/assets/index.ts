@@ -34,6 +34,12 @@ import StarIcon from './images/star-icon.svg'
 import NotificationItemIcon from './images/notification-item-icon.svg'
 import Email from './images/Email.svg'
 import Password from './images/Password.svg'
+import OverDueIcon from './images/overdue-icon.svg'
+import TotalSellerIcon from './images/total-seller-icon.svg'
+import DashEditIcon from './images/dash-edit-icon.svg'
+import ShieldPersonIcon from './images/shield-person-icon.svg'
+import DashChartIcon from './images/dash-chart-icon.svg'
+import DashSuitCaseIcon from './images/dash-suitcase-icon.svg'
 
 //Mui Icons
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
@@ -62,6 +68,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
+import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
 
 
 export {
@@ -101,6 +108,12 @@ export {
     NotificationItemIcon,
     Email,
     Password,
+    OverDueIcon,
+    TotalSellerIcon,
+    DashEditIcon,
+    ShieldPersonIcon,
+    DashChartIcon,
+    DashSuitCaseIcon,
 
     //Mui Icons
     CheckCircleIcon,
@@ -128,5 +141,6 @@ export {
     CheckCircleOutlineIcon,
     CancelOutlinedIcon,
     ContactsOutlinedIcon,
-    ManageAccountsOutlinedIcon
+    ManageAccountsOutlinedIcon,
+    LocalOfferOutlinedIcon,
 }
