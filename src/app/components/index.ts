@@ -22,6 +22,8 @@ import DiamodStock from "./DiamodStock";
 import GoldStock from "./GoldStock";
 import SilverStock from "./SilverStock";
 import EllipsesSvg from "./EllipsesSvg";
+import UpdatePriceDialog from "./UpdatePriceDialog";
+import PrimaryTableExample2 from "./PrimaryTableExample";
 
 export {
     Header,
@@ -47,5 +49,7 @@ export {
     DiamodStock,
     GoldStock,
     SilverStock,
-    EllipsesSvg
+    EllipsesSvg,
+    UpdatePriceDialog,
+    PrimaryTableExample2
 } 

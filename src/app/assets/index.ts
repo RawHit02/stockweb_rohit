@@ -43,6 +43,7 @@ import DashSuitCaseIcon from './images/dash-suitcase-icon.svg'
 import DiamondImg from './images/diamong-img.png'
 import GoldImg from './images/gold-img.png'
 import SilverImg from './images/silver-img.png'
+import CurrencyRupee from './images/currency-rupee.svg';
 
 //Mui Icons
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
@@ -120,6 +121,7 @@ export {
     DiamondImg,
     GoldImg,
     SilverImg,
+    CurrencyRupee,
 
     //Mui Icons
     CheckCircleIcon,

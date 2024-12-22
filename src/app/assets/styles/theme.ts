@@ -121,6 +121,14 @@ const theme = createTheme({
         MuiDialog: {
             variants: [
                 {
+                    props: { maxWidth: "xs" },
+                    style: {
+                        ".MuiPaper-root": {
+                            maxWidth: "272px",
+                        },
+                    },
+                },
+                {
                     props: { maxWidth: "sm" },
                     style: {
                         ".MuiPaper-root": {

@@ -1,6 +1,6 @@
 "use client"
 import { ContactsOutlinedIcon, DashChartIcon, DashEditIcon, DashSuitCaseIcon, DiamondImg, LocalOfferOutlinedIcon, OverDueIcon, ShieldPersonIcon, TotalSellerIcon } from "@/app/assets";
-import { DiamodStock, GoldStock, SilverStock } from "@/app/components";
+import { DiamodStock, GoldStock, PrimaryTableExample2, SilverStock, UpdatePriceDialog } from "@/app/components";
 import { Box, Typography, Grid2 as Grid } from "@mui/material";
 import Image from "next/image";
 
@@ -110,7 +110,7 @@ const Dashboard = () => {
                 <Typography className="text-[12px] text-primary max-w-[110px] w-full">Commodity Price for Suppliers</Typography>
                 <Typography className="text-2xl font-bold mt-4">$2,563</Typography>
                 <Typography className="text-[12px] text-secondary800 font-medium mt-[6px]">From <span className="text-success200">April 1st, 2024</span> To <span className="text-success200">Today</span></Typography>
-                <Typography className="mt-4">Update</Typography>
+                <UpdatePriceDialog title="Commodity Price for Suppliers" />
               </Box>
               <Box>
                 <Image src={DiamondImg} alt="coin" />
@@ -123,7 +123,7 @@ const Dashboard = () => {
                 <Typography className="text-[12px] text-primary max-w-[110px] w-full">Commodity Price for Suppliers</Typography>
                 <Typography className="text-2xl font-bold mt-4">$2,563</Typography>
                 <Typography className="text-[12px] text-secondary800 font-medium mt-[6px]">From <span className="text-success200">April 1st, 2024</span> To <span className="text-success200">Today</span></Typography>
-                <Typography className="mt-4">Update</Typography>
+                <UpdatePriceDialog title="Commodity Price for Suppliers" />
               </Box>
               <Box>
                 <Image src={DiamondImg} alt="coin" />
@@ -136,7 +136,7 @@ const Dashboard = () => {
                 <Typography className="text-[12px] text-primary max-w-[160px] w-full">Set Daily Commission for Commodities for Supplier</Typography>
                 <Typography className="text-2xl font-bold mt-4">$2,563</Typography>
                 <Typography className="text-[12px] text-secondary800 font-medium mt-[6px]">From <span className="text-success200">April 1st, 2024</span> To <span className="text-success200">Today</span></Typography>
-                <Typography className="mt-4">Update</Typography>
+                <UpdatePriceDialog title="Set Daily Commission for Commodities for Supplier" />
               </Box>
               <Box>
                 <Image src={DiamondImg} alt="coin" />
@@ -149,7 +149,7 @@ const Dashboard = () => {
                 <Typography className="text-[12px] text-primary max-w-[160px] w-full">Set Daily Commission for Commodities for Supplier</Typography>
                 <Typography className="text-2xl font-bold mt-4">$2,563</Typography>
                 <Typography className="text-[12px] text-secondary800 font-medium mt-[6px]">From <span className="text-success200">April 1st, 2024</span> To <span className="text-success200">Today</span></Typography>
-                <Typography className="mt-4">Update</Typography>
+                <UpdatePriceDialog title="Set Daily Commission for Commodities for Buyers" />
               </Box>
               <Box>
                 <Image src={DiamondImg} alt="coin" />
@@ -157,6 +157,12 @@ const Dashboard = () => {
             </Box>
           </Grid>
         </Grid>
+        <Box className="border border-primary100 rounded-lg p-4 mt-4">
+          <Typography>Today's Due</Typography>
+          <Box className="mt-6">
+            <PrimaryTableExample2 />
+          </Box>
+        </Box>
       </Box>
     </>
   );
