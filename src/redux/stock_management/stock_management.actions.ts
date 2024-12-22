@@ -5,7 +5,8 @@ import {
   DELETE_STOCK,
   FETCH_INWARD_STOCK,
   FETCH_OUTWARD_STOCK,
-  GET_ALL_BUYERS_AND_SUPPLIERS, // Updated API route for fetching buyers and suppliers
+  GET_ALL_BUYERS_AND_SUPPLIERS,
+  GET_ALL_ORNAMENTS, // Updated API route for fetching buyers and suppliers
 } from "@/base-url/apiRoutes";
 import {
   CreateStockInwardPayload,
@@ -18,11 +19,16 @@ import {
   StockManagementOutwardModel,
 } from "@/models/req-model/StockManagementOutwardModel";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { RootState, AppDispatch } from "@/redux/store"; // Import types here
+import { RootState, AppDispatch } from "@/redux/store"; 
+import {
+  GET_ORNAMENT_TYPES,
+  GET_ORNAMENT_FORMS,
+  GET_ORNAMENT_PURITY,
+  GET_ORNAMENT_COLORS,
+} from "@/base-url/apiRoutes";
 
 
-
-// fetch the Buyers and the Suppliers from here 
+// Fetch Buyers and Suppliers
 export const fetchBuyersAndSuppliers = createAsyncThunk<
   {
     data: {
@@ -30,7 +36,7 @@ export const fetchBuyersAndSuppliers = createAsyncThunk<
       suppliers: { id: string; name: string }[];
     };
   },
-  "buyer" | "supplier", // Action input type
+  "buyer" | "supplier",
   { state: RootState; dispatch: AppDispatch }
 >(
   "stockManagement/fetchBuyersAndSuppliers",
@@ -38,12 +44,10 @@ export const fetchBuyersAndSuppliers = createAsyncThunk<
     try {
       const url =
         type === "supplier"
-          ? "http://localhost:8001/api/v1/vendorManagement/getAllVendor/supplier"
-          : "http://localhost:8001/api/v1/vendorManagement/getAllVendor/buyer";
+          ? GET_ALL_BUYERS_AND_SUPPLIERS + "/supplier"
+          : GET_ALL_BUYERS_AND_SUPPLIERS + "/buyer";
 
       const res = await apiClient.get(url);
-
-      // Transforming the response to only include 'id' and 'name'
       const data = res.data.data.map((item: { id: string; name: string }) => ({
         id: item.id,
         name: item.name,
@@ -56,7 +60,7 @@ export const fetchBuyersAndSuppliers = createAsyncThunk<
             : { buyers: data, suppliers: [] },
       };
     } catch (error: any) {
-      console.error(`Error occurred while fetching ${type}s:`, error);
+      console.error(`Error fetching ${type}s:`, error);
       return rejectWithValue({
         message: error.response?.data?.message || `Failed to fetch ${type}s`,
       });
@@ -64,101 +68,222 @@ export const fetchBuyersAndSuppliers = createAsyncThunk<
   }
 );
 
+
 export const setSelectedVendorId = (vendor: string) => ({
   type: "stockManagement/setSelectedVendorId",
   payload: vendor,
 });
 
-// Create Inward
-export const createInward = createAsyncThunk<
-  { data: StockManagementInwardModel; message: string },
-  { createInwardPayload: CreateStockInwardPayload },
-  { rejectValue: { message: string; status?: number } }
->(
-  "stockManagement/createInward",
-  async ({ createInwardPayload }, { rejectWithValue, getState }) => {
-    try {
-      // Retrieve the selected vendor ID from the Redux state
-      const selectedVendorId = (getState() as RootState).stockManagement
-        .selectedVendorId;
 
-      const body = {
-        stockType: "inward",
-        transId: createInwardPayload.transId,
-        description: createInwardPayload.description,
-        itemType: createInwardPayload.itemType,
-        quantity: createInwardPayload.quantity,
-        unitPrice: createInwardPayload.unitPrice,
-        commission: createInwardPayload.commission,
-        totalValue: createInwardPayload.totalValue,
-        batchNumber: createInwardPayload.batchNumber,
-        receivedBy: createInwardPayload.receivedBy,
-        location: createInwardPayload.location,
-        notes: createInwardPayload.notes,
-        vendor: selectedVendorId,
-        //other fields
-      };
-      console.log("Payload for API Call:", body); // Log the payload
-      const res = await apiClient.post(CREATE_STOCK, body);
-      return { data: res.data.data, message: res.data.message };
+// fetch all Ornaments:
+export const fetchOrnaments = createAsyncThunk<
+  { data: { id: string; ornament: string }[] },
+  void,
+  { rejectValue: { message: string } }
+>("stockManagement/fetchOrnaments", async (_, { rejectWithValue }) => {
+  try {
+    const res = await apiClient.get(GET_ALL_ORNAMENTS);
+    return { data: res.data.data };
+  } catch (error: any) {
+    console.error("Error fetching ornaments:", error);
+    return rejectWithValue({
+      message: error.response?.data?.message || "Failed to fetch ornaments",
+    });
+  }
+});
+
+
+
+// Fetch Ornament Types
+export const fetchOrnamentTypes = createAsyncThunk<
+  { data: { id: string; ornamentType: string }[] },
+  void,
+  { rejectValue: { message: string } }
+>("stockManagement/fetchOrnamentTypes", async (_, { rejectWithValue }) => {
+  try {
+    const res = await apiClient.get(GET_ORNAMENT_TYPES);
+    return { data: res.data.data };
+  } catch (error: any) {
+    console.error("Error fetching ornament types:", error);
+    return rejectWithValue({
+      message:
+        error.response?.data?.message || "Failed to fetch ornament types",
+    });
+  }
+});
+
+
+
+// Fetch Forms
+export const fetchForms = createAsyncThunk<
+  { data: { id: string; ornamentForm: string }[] },
+  void,
+  { rejectValue: { message: string } }
+>("stockManagement/fetchForms", async (_, { rejectWithValue }) => {
+  try {
+    const res = await apiClient.get(GET_ORNAMENT_FORMS);
+    return { data: res.data.data };
+  } catch (error: any) {
+    console.error("Error fetching forms:", error);
+    return rejectWithValue({
+      message: error.response?.data?.message || "Failed to fetch forms",
+    });
+  }
+});
+
+
+
+// Fetch Purities
+export const fetchPurities = createAsyncThunk<
+  { data: { id: string; ornamentPurity: string }[] },
+  void,
+  { rejectValue: { message: string } }
+>("stockManagement/fetchPurities", async (_, { rejectWithValue }) => {
+  try {
+    const res = await apiClient.get(GET_ORNAMENT_PURITY);
+    return { data: res.data.data };
+  } catch (error: any) {
+    console.error("Error fetching purities:", error);
+    return rejectWithValue({
+      message: error.response?.data?.message || "Failed to fetch purities",
+    });
+  }
+});
+
+// Fetch Colors
+export const fetchColors = createAsyncThunk<
+  { data: { id: string; ornamentColor: string }[] },
+  void,
+  { rejectValue: { message: string } }
+>("stockManagement/fetchColors", async (_, { rejectWithValue }) => {
+  try {
+    const res = await apiClient.get(GET_ORNAMENT_COLORS);
+    return { data: res.data.data };
+  } catch (error: any) {
+    console.error("Error fetching colors:", error);
+    return rejectWithValue({
+      message: error.response?.data?.message || "Failed to fetch colors",
+    });
+  }
+});
+
+
+// Create Inward
+export const createInward = createAsyncThunk(
+  "stockManagement/createInward",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const res = await apiClient.post(CREATE_STOCK, payload);
+      return res.data;
     } catch (error: any) {
-      console.error("Error occurred while creating inward entry:", error);
-      const status = error.response?.status || 500;
-      return rejectWithValue({
-        message: error.response?.data?.message || "Failed to create inward",
-        status,
-      });
+      return rejectWithValue(error.response?.data?.message || "Failed to create inward");
     }
   }
 );
 
 // Create Outward
-export const createOutward = createAsyncThunk<
-  { data: StockManagementOutwardModel; message: string },
-  { createOutwardPayload: CreateStockOutwardPayload },
-  { rejectValue: { message: string; status?: number } }
->(
+export const createOutward = createAsyncThunk(
   "stockManagement/createOutward",
-  async ({ createOutwardPayload }, { rejectWithValue, getState }) => {
+  async (payload, { rejectWithValue }) => {
     try {
-      // Retrieve the selected vendor ID from the Redux state
-      const selectedVendorId = (getState() as RootState).stockManagement.selectedVendorId;
-      
-    
-      const body = {
-        stockType: "outward",
-        transId: createOutwardPayload.transId,
-        description: createOutwardPayload.description,
-        itemType: createOutwardPayload.itemType,
-        quantity: createOutwardPayload.quantity,
-        unitPrice: createOutwardPayload.unitPrice,
-        commission: createOutwardPayload.commission,
-        totalValue: createOutwardPayload.totalValue,
-        batchNumber: createOutwardPayload.batchNumber,
-        receivedBy: createOutwardPayload.receivedBy,
-        location: createOutwardPayload.location,
-        notes: createOutwardPayload.notes,
-        vendor: selectedVendorId, // Use the selected vendor ID
-        goldType: createOutwardPayload.goldType,
-        diamondType: createOutwardPayload.diamondType,
-        clarity: createOutwardPayload.clarity,
-        colorGrade: createOutwardPayload.colorGrade,
-        issuedBy: createOutwardPayload.issuedBy,
-        silverType: createOutwardPayload.silverType,
-      };
-
-      const res = await apiClient.post(CREATE_STOCK, body);
-      console.log("Create Outward Response:", res); // Debug log
-      return { data: res.data.data, message: res.data.message };
+      const res = await apiClient.post(CREATE_STOCK, payload);
+      return res.data;
     } catch (error: any) {
-      console.error("Error occurred while creating outward entry:", error);
-      return rejectWithValue({
-        message: error.response?.data?.message || "Failed to create outward",
-        status: error.response?.status || 500,
-      });
+      return rejectWithValue(error.response?.data?.message || "Failed to create outward");
     }
   }
 );
+
+// // Create Inward
+// export const createInward = createAsyncThunk<
+//   { data: StockManagementInwardModel; message: string },
+//   { createInwardPayload: CreateStockInwardPayload },
+//   { rejectValue: { message: string; status?: number } }
+// >(
+//   "stockManagement/createInward",
+//   async ({ createInwardPayload }, { rejectWithValue, getState }) => {
+//     try {
+//       // Retrieve the selected vendor ID from the Redux state
+//       const selectedVendorId = (getState() as RootState).stockManagement
+//         .selectedVendorId;
+
+//       const body = {
+//         stockType: "inward",
+//         transId: createInwardPayload.transId,
+//         description: createInwardPayload.description,
+//         itemType: createInwardPayload.itemType,
+//         quantity: createInwardPayload.quantity,
+//         unitPrice: createInwardPayload.unitPrice,
+//         commission: createInwardPayload.commission,
+//         totalValue: createInwardPayload.totalValue,
+//         batchNumber: createInwardPayload.batchNumber,
+//         receivedBy: createInwardPayload.receivedBy,
+//         location: createInwardPayload.location,
+//         notes: createInwardPayload.notes,
+//         vendor: selectedVendorId,
+//         //other fields
+//       };
+//       console.log("Payload for API Call:", body); // Log the payload
+//       const res = await apiClient.post(CREATE_STOCK, body);
+//       return { data: res.data.data, message: res.data.message };
+//     } catch (error: any) {
+//       console.error("Error occurred while creating inward entry:", error);
+//       const status = error.response?.status || 500;
+//       return rejectWithValue({
+//         message: error.response?.data?.message || "Failed to create inward",
+//         status,
+//       });
+//     }
+//   }
+// );
+
+// // Create Outward
+// export const createOutward = createAsyncThunk<
+//   { data: StockManagementOutwardModel; message: string },
+//   { createOutwardPayload: CreateStockOutwardPayload },
+//   { rejectValue: { message: string; status?: number } }
+// >(
+//   "stockManagement/createOutward",
+//   async ({ createOutwardPayload }, { rejectWithValue, getState }) => {
+//     try {
+//       // Retrieve the selected vendor ID from the Redux state
+//       const selectedVendorId = (getState() as RootState).stockManagement.selectedVendorId;
+      
+    
+//       const body = {
+//         stockType: "outward",
+//         transId: createOutwardPayload.transId,
+//         description: createOutwardPayload.description,
+//         itemType: createOutwardPayload.itemType,
+//         quantity: createOutwardPayload.quantity,
+//         unitPrice: createOutwardPayload.unitPrice,
+//         commission: createOutwardPayload.commission,
+//         totalValue: createOutwardPayload.totalValue,
+//         batchNumber: createOutwardPayload.batchNumber,
+//         receivedBy: createOutwardPayload.receivedBy,
+//         location: createOutwardPayload.location,
+//         notes: createOutwardPayload.notes,
+//         vendor: selectedVendorId, // Use the selected vendor ID
+//         goldType: createOutwardPayload.goldType,
+//         diamondType: createOutwardPayload.diamondType,
+//         clarity: createOutwardPayload.clarity,
+//         colorGrade: createOutwardPayload.colorGrade,
+//         issuedBy: createOutwardPayload.issuedBy,
+//         silverType: createOutwardPayload.silverType,
+//       };
+
+//       const res = await apiClient.post(CREATE_STOCK, body);
+//       console.log("Create Outward Response:", res); // Debug log
+//       return { data: res.data.data, message: res.data.message };
+//     } catch (error: any) {
+//       console.error("Error occurred while creating outward entry:", error);
+//       return rejectWithValue({
+//         message: error.response?.data?.message || "Failed to create outward",
+//         status: error.response?.status || 500,
+//       });
+//     }
+//   }
+// );
 
 
 

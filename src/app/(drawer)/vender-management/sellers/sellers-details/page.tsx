@@ -1,6 +1,4 @@
 "use client";
-
-
 import React, { useEffect, useState , Suspense } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -37,10 +35,10 @@ import { styled } from "@mui/material/styles";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { SecondaryTable } from "@/app/components";
 import {useSearchParams} from 'next/navigation';
 import {GET_ALL_SELLERS_NEW} from '@/base-url/apiRoutes';
 import { SellerDetailsModel } from "@/models/req-model/VendorManagementSellerModel";
+import TransactionTable from "@/app/components/TransactionTable";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -103,7 +101,6 @@ const PriceSlider = styled(Slider)(({ theme }) => ({
     color: "#0a84ff",
   }),
 }));
-
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
   return (
@@ -133,7 +130,8 @@ function a11yProps(index: number) {
 const SellersDetails = () => {
 
   const searchParams = useSearchParams();
-  const sellerId = searchParams.get("id");
+  const encodeId = searchParams.get("id");
+  const sellerId = encodeId ? atob(encodeId) : null;
 
   const [value, setValue] = useState(0);
   const [age, setAge] = useState("");
@@ -215,6 +213,7 @@ const SellersDetails = () => {
             />
           </Tabs>
           <Divider className="border-2 border-primaryExtraLight" />
+          
           <TabPanel value={value} index={0}>
             <Typography className="text-2xl font-bold mt-5">
               User Profile
@@ -438,7 +437,7 @@ const SellersDetails = () => {
                 </Button>
               </Box>
               <Box className="mt-4">
-                <SecondaryTable data={[]} />
+                <TransactionTable />
               </Box>
             </Box>
           </TabPanel>
@@ -449,7 +448,7 @@ const SellersDetails = () => {
 };
 
 const WrappedSellersDetails = () => (
-  <Suspense fallback={<Typography>Loading Suplier Details...</Typography>}>
+  <Suspense fallback={<Typography>Loading Supplier Details...</Typography>}>
     <SellersDetails />
   </Suspense>
 );

@@ -10,10 +10,10 @@ import { styled } from '@mui/material/styles';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { SecondaryTable } from '@/app/components';
 import { useSearchParams } from 'next/navigation';
 import { GET_ALL_BUYERS_NEW } from '@/base-url/apiRoutes';
 import { BuyerDetailsModel } from '@/models/req-model/VendorManagementBuyerModel';
+import TransactionTable from "@/app/components/TransactionTable";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -377,7 +377,7 @@ const BuyerDetails = () => {
                 <Button className='min-w-[121px] h-[42px]' variant='contained' size='large' color='primary' startIcon={<SearchIcon />}>Search</Button>
               </Box>
               <Box className="mt-4">
-                <SecondaryTable data={[]} />
+                <TransactionTable />
               </Box>
             </Box>
           </TabPanel>

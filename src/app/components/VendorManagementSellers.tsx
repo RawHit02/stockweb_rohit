@@ -38,27 +38,20 @@ interface VendorManagementSellersProps {
   onEditSeller: (row: VendorManagementSellerModel) => void; // Edit seller handler
 }
 
-
-
 const ITEM_HEIGHT = 48;
 
 const headCells = [
   { id: "name", label: "Name/Email", numeric: false },
-  //{ id: "email", label: "Email", numeric: false },
   { id: "contact", label: "Contact Number", numeric: false },
   { id: "whatsapp", label: "WhatsApp Number", numeric: false },
   { id: "address", label: "Address", numeric: false },
 ];
-
-
 
 const VendorManagementSellers : React.FC<VendorManagementSellersProps> = ({
   onEditSeller,
   onSellerClick,
   sellers,
 }) => {
-
-
    const router = useRouter();
   const [order, setOrder] = useState<"asc" | "desc">("asc");
   const [orderBy, setOrderBy] = useState<string>("name");
@@ -72,7 +65,6 @@ const VendorManagementSellers : React.FC<VendorManagementSellersProps> = ({
   const { getAllSellers, itemCount } = useAppSelector(
     (state) => state.VendorManagementReducer.sellers
   );
-
   const fetchData = useCallback(async () => {
     try {
       const params: GetAllSellersRequest = {
@@ -92,7 +84,8 @@ const VendorManagementSellers : React.FC<VendorManagementSellersProps> = ({
   }, [fetchData]);
 
   const handleRowClick = (sellerId: string) => {
-    router.push(`/vender-management/sellers/sellers-details?id=${sellerId}`);
+    const encodeId = btoa(sellerId);
+    router.push(`/vender-management/sellers/sellers-details?id=${encodeId}`);
   };
 
   const handleClickMenu = (

@@ -3,7 +3,7 @@ import SideNav from "./SideNav";
 import AddNewBuyerDialog from "./AddNewBuyerDialog";
 import SignIn from "./SignIn";
 import PrimaryTable from "./PrimaryTable";
-import SecondaryTable from "./SecondaryTable";
+import TransactionTable from "./TransactionTable";
 import AddStockEntryDialog from "./AddStockEntryDialog";
 import PrimaryTableExample from "./AttendanceTableRecords";
 import AddUserDialog from "./AddUserDialog";
@@ -30,7 +30,7 @@ export {
     AddAttendanceDialog,
     TotalPresentPercentage,
     TotalAbsentPercentage,
-    SecondaryTable,
+    TransactionTable,
     AddStockEntryDialog,
     PrimaryTableExample,
     AttendanceTable,

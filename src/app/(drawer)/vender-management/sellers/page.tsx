@@ -59,6 +59,7 @@ const Sellers = () => {
 
   const handleSellerClick = (supplierId: string) => {
     const url = `/vender-management/sellers/sellers-details?id=${supplierId}`;
+        console.log("Navigating to:", url);
     router.push(url);
   };
 
@@ -78,11 +79,7 @@ const Sellers = () => {
     setIsAddSellerDialogOpen(true);
   };
 
-  // // Handle add button click
-  // const handleAddSeller = () => {
-  //   setEditedSeller(null); // Reset edited seller
-  //   setIsAddSellerDialogOpen(true); // Open dialog for adding seller
-  // };
+
 
   // Close dialog handler
   const handleCloseDialog = () => {
