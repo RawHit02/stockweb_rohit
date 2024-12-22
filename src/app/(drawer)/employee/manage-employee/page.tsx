@@ -14,11 +14,9 @@ import AddNewEmployeeDialog, {
 import { EmployeeManagementEmployeeModel } from "@/models/req-model/EmployeeManagementEmployeeModel";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 
-
-
 const Employees = () => {
   const [editedEmployee, setEditedEmployee] =
-    useState<EmployeeFormValues | null>(null); 
+    useState<EmployeeFormValues | null>(null);
   const [isAddEmployeeDialogOpen, setIsAddEmployeeDialogOpen] = useState(false);
   const [refreshEmployeeList, setRefreshEmployeeList] = useState(false);
 

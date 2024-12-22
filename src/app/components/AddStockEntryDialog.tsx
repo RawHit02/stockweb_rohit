@@ -31,7 +31,10 @@ import {
   inwardStockSchema,
   outwardStockSchema,
 } from "@/yupSchema/stockEntrySchema"; // Import the validation schema
-import { CreateStockInwardPayload, StockManagementInwardModel } from "@/models/req-model/StockManagementInwardModel";
+import {
+  CreateStockInwardPayload,
+  StockManagementInwardModel,
+} from "@/models/req-model/StockManagementInwardModel";
 import { StockManagementOutwardModel } from "@/models/req-model/StockManagementOutwardModel";
 import AddNewItem from "./AddNewItem";
 
@@ -60,15 +63,12 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
 
   // Fetch suppliers/buyers from Redux store
   const buyersAndSuppliers = useSelector((state: any) =>
-    props.stock
-      ? state.stockManagement.suppliers
-      : state.stockManagement.buyers
+    props.stock ? state.stockManagement.suppliers : state.stockManagement.buyers
   );
 
   const selectedVendorId = useSelector(
     (state: any) => state.stockManagement.selectedVendorId
   );
-
 
   const [goldTypes, setGoldTypes] = useState([
     "Yellow Gold",
@@ -77,7 +77,6 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
     "Green Gold",
   ]);
   const [formOfGold, setFormOfGold] = useState(["Bar", "Coin", "Jewellery"]); // State for form of gold
-  
 
   const [diamondTypes, setDiamondTypes] = useState([
     "Round",
@@ -89,18 +88,17 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
     "Radiant",
   ]);
 
+  const [diamondClarity, setDiamondClarity] = useState([
+    "IF",
+    "VVS1",
+    "VVS2",
+    "VS1",
+    "VS2",
+    "SI1",
+    "SI2",
+  ]);
 
-    const [diamondClarity, setDiamondClarity] = useState([
-      "IF",
-      "VVS1",
-      "VVS2",
-      "VS1",
-      "VS2",
-      "SI1",
-      "SI2",
-    ]);
-
-     const [diamondColorGrade, setDiamondColorGrade] = useState([
+  const [diamondColorGrade, setDiamondColorGrade] = useState([
     "D",
     "E",
     "F",
@@ -110,22 +108,19 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
     "J",
   ]);
 
-   const [diamondCutGrade, setDiamondCutGrade] = useState([
-     "Excellent",
-     "Very Good",
-     "Good",
-     "Fair",
-     "Poor",
-   ]);
-
-
+  const [diamondCutGrade, setDiamondCutGrade] = useState([
+    "Excellent",
+    "Very Good",
+    "Good",
+    "Fair",
+    "Poor",
+  ]);
 
   const [silverTypes, setSilverTypes] = useState([
     "Sterling",
     "Argentium",
     "Coin Silver",
   ]);
-
 
   const [silverClarity, setSilverClarity] = useState([
     "IF",
@@ -137,49 +132,41 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
     "SI2",
   ]);
 
-
   const [purities, setPurities] = useState(["24K", "22K", "18K", "14K", "10K"]);
 
-
-  const addGoldType = (newType : string) => {
+  const addGoldType = (newType: string) => {
     setGoldTypes((prev) => [...prev, newType]);
   };
 
-   const addFormOfGold = (newType: string) => {
-     setFormOfGold((prev) => [...prev, newType]); // Function to add new form of gold
-   };
-
+  const addFormOfGold = (newType: string) => {
+    setFormOfGold((prev) => [...prev, newType]); // Function to add new form of gold
+  };
 
   const addDiamondType = (newType: string) => {
     setDiamondTypes((prev) => [...prev, newType]);
   };
 
+  const addDiamondClarity = (newClarity: string) => {
+    setDiamondClarity((prev) => [...prev, newClarity]);
+  };
 
-   const addDiamondClarity = (newClarity: string) => {
-     setDiamondClarity((prev) => [...prev, newClarity]);
-   };
+  const addDiamondColorGrade = (newColorGrade: string) => {
+    setDiamondColorGrade((prev) => [...prev, newColorGrade]);
+  };
 
-   const addDiamondColorGrade = (newColorGrade: string) => {
-     setDiamondColorGrade((prev) => [...prev, newColorGrade]);
-   };
+  const addDiamondCutGrade = (newCutGrade: string) => {
+    setDiamondCutGrade((prev) => [...prev, newCutGrade]);
+  };
 
-
-   const addDiamondCutGrade = (newCutGrade: string) => {
-     setDiamondCutGrade((prev) => [...prev, newCutGrade]);
-   };
-
-
-   const addSilverClarity = (newClarity: string) => {
-     setSilverClarity((prev) => [...prev, newClarity]);
-   };
-
+  const addSilverClarity = (newClarity: string) => {
+    setSilverClarity((prev) => [...prev, newClarity]);
+  };
 
   const addSilverType = (newType: string) => {
     setSilverTypes((prev) => [...prev, newType]);
   };
 
-
-   const [goldFormTypes, setGoldFormTypes] = useState([""]);
+  const [goldFormTypes, setGoldFormTypes] = useState([""]);
   const addGoldForm = (newType: string) => {
     setGoldFormTypes((prev) => [...prev, newType]);
   };
@@ -189,35 +176,26 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
     setDiamondFormTypes((prev) => [...prev, newType]);
   };
 
-   const [silverFormTypes, setSilverFormTypes] = useState([""]);
+  const [silverFormTypes, setSilverFormTypes] = useState([""]);
   const addSilverForm = (newType: string) => {
     setSilverFormTypes((prev) => [...prev, newType]);
   };
-
 
   const addPurity = (newPurity: string) => {
     setPurities((prev) => [...prev, newPurity]);
   };
 
+  const addCutGrade = (newPurity: string) => {
+    setPurities((prev) => [...prev, newPurity]);
+  };
 
-   const addCutGrade = (newPurity: string) => {
-     setPurities((prev) => [...prev, newPurity]);
-   };
+  const addClarity = (newPurity: string) => {
+    setPurities((prev) => [...prev, newPurity]);
+  };
 
-
-     const addClarity = (newPurity: string) => {
-     setPurities((prev) => [...prev, newPurity]);
-   };
-
-
-   const addColorGrade = (newPurity: string) => {
-     setPurities((prev) => [...prev, newPurity]);
-   };
-
-   
-
-
-
+  const addColorGrade = (newPurity: string) => {
+    setPurities((prev) => [...prev, newPurity]);
+  };
 
   interface CustomErrorMessageProps {
     name: string;
@@ -249,8 +227,8 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
     try {
       // payload including vendorId (captured from dropdown)
       const payload: CreateStockInwardPayload = {
-      ...values,
-      vendor : selectedVendorId,
+        ...values,
+        vendor: selectedVendorId,
       };
 
       // create or edit based on whether it's an edit mode or not
@@ -265,13 +243,14 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
           variant: "success",
         });
       } else {
-        await dispatch(createInward(payload)).unwrap();
+        // await dispatch(createInward({ createInwardPayload: payload })).unwrap();
+        await dispatch(createInward()).unwrap();
         enqueueSnackbar("Inward stock added successfully!", {
           variant: "success",
         });
         if (props.onInwardCreated) props.onInwardCreated();
       }
-      props.onClose(); 
+      props.onClose();
     } catch (error) {
       console.error("Error submitting stock entry:", error);
       enqueueSnackbar("Failed to submit stock entry. Please try again.", {
@@ -297,7 +276,7 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
             Enter details of new stock
           </Typography>
         </Box>
-        
+
         <IconButton onClick={props.onClose} className="p-0">
           <CloseOutlinedIcon />
         </IconButton>
@@ -1148,6 +1127,5 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
     </Dialog>
   );
 };
-
 
 export default AddStockEntryDialog;

@@ -18,6 +18,12 @@ import DateAttendanceSheet from "./DateAttendanceSheet";
 import AttendanceTable from "./AttendanceTable";
 import DeleteDialog from "./DeleteDialog";
 import EditDetailsDialog from "./EditDetailsDialog";
+import DiamodStock from "./DiamodStock";
+import GoldStock from "./GoldStock";
+import SilverStock from "./SilverStock";
+import EllipsesSvg from "./EllipsesSvg";
+import UpdatePriceDialog from "./UpdatePriceDialog";
+import PrimaryTableExample2 from "./PrimaryTableExample";
 
 export {
     Header,
@@ -40,4 +46,10 @@ export {
     AllPermissionTable,
     AddUserDialog,
     EditDetailsDialog,
+    DiamodStock,
+    GoldStock,
+    SilverStock,
+    EllipsesSvg,
+    UpdatePriceDialog,
+    PrimaryTableExample2
 } 
