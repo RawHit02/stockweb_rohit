@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -72,7 +72,7 @@ const StockManagementOutward = ({
     (state) => state.stockManagement.outwards
   );
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const params: GetAllOutwardsRequest = {
         page: page + 1,
@@ -84,11 +84,11 @@ const StockManagementOutward = ({
     } catch (error) {
       console.error("Error fetching outwards:", error);
     }
-  };
+  }, [dispatch, page, rowsPerPage, order, orderBy]);
 
   useEffect(() => {
     fetchData();
-  }, [page, rowsPerPage, order, orderBy]);
+  }, [fetchData]);
 
   const handleClickMenu = (
     event: React.MouseEvent<HTMLElement>,

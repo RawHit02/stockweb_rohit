@@ -15,6 +15,17 @@ export interface VendorManagementSellerModel {
   updatedDate: string; 
 }
 
+
+export interface SellerDetailsModel {
+  id: string;
+  name: string;
+  email: string;
+  contactNumber: string;
+  whatsappNumber: string;
+  address: string;
+}
+
+
 // Initial state model for Seller-related Redux state
 export interface InitialSellersModelState {
   getAllSellers: VendorManagementSellerModel[];
@@ -27,17 +38,15 @@ export interface InitialSellersModelState {
 
 }
 
-// Request parameters for fetching all sellers (pagination, sorting, etc.)
 export interface GetAllSellersRequest extends ApiParamModel {
-  userId?: string; // Optional userId for filtering sellers
+  userId?: string; 
 }
 
-// Payload for creating a new seller
 export interface CreateSellersPayload {
-  vendorType: string; // Should always be "seller"
-  name: string; // Seller's name
-  contactNumber: string; // Seller's contact number
-  whatsappNumber: string; // Seller's WhatsApp number
-  email: string; // Seller's email
-  address: string; // Seller's address
+  vendorType: string; 
+  name: string; 
+  contactNumber: string; 
+  whatsappNumber: string; 
+  email: string; 
+  address: string; 
 }

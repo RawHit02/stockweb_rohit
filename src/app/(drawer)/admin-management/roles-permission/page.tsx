@@ -5,6 +5,7 @@ import { Box, Typography, Button } from "@mui/material";
 import { PrimaryTableExample } from "@/app/components";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import { useRouter } from "next/navigation";
+import AttendanceTableRecords from "@/app/components/AttendanceTableRecords";
 
 const RolesPermission = () => {
   const router = useRouter()
@@ -35,7 +36,7 @@ const RolesPermission = () => {
         </Box>
       </Box>
       <Box className="mt-4">
-        <PrimaryTableExample />
+        <AttendanceTableRecords onEditRecord={() => {}} />
       </Box>
     </Box>
   );

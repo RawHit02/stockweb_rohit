@@ -13,8 +13,6 @@ import {
 } from "@/models/req-model/EmployeeManagementEmployeeModel"; // Adjust the import path as necessary
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-
-
 // Create Employee
 export const createEmployee = createAsyncThunk<
   { data: EmployeeManagementEmployeeModel; message: string },
@@ -72,7 +70,9 @@ export const getAllEmployeesAction = createAsyncThunk<
       console.error("Error occurred:", error);
       const status = error.response?.status || 500;
       CustomToast.ErrorToast(
-        error?.response?.data?.message || error?.message || "Failed to fetch Employees"
+        error?.response?.data?.message ||
+          error?.message ||
+          "Failed to fetch Employees"
       );
       return rejectWithValue({
         message: "Failed to fetch employees",
@@ -108,7 +108,6 @@ export const editEmployeeAction = createAsyncThunk<
   }
 );
 
-
 // Delete Employee
 export const deleteEmployeeAction = createAsyncThunk<
   { message: string },
@@ -118,7 +117,9 @@ export const deleteEmployeeAction = createAsyncThunk<
   "employeeManagement/deleteEmployee",
   async (EmployeeId, { rejectWithValue }) => {
     try {
-      const response = await apiClient._delete(`${DELETE_EMPLOYEE}/${EmployeeId}`);
+      const response = await apiClient._delete(
+        `${DELETE_EMPLOYEE}/${EmployeeId}`
+      );
       return { message: "Employee deleted successfully" };
     } catch (error: any) {
       console.error(

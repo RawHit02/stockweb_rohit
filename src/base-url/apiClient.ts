@@ -33,9 +33,7 @@ const getIvAndToken = async (token: string) => {
 
 const getToken = async () => {
   const { getItem } = localSessionStorage();
-  // const jwt = await getIvAndToken(
-  //   getItem(StorageConstants.USER_ACCESS_TOKEN, "session")
-  // );
+
   const currentUser = getItem(StorageConstants.CURRENT_USER_OBJECT, "session");
   let jwt = "";
 
@@ -45,7 +43,6 @@ const getToken = async () => {
     jwt = (JSON.parse(currentUser) as SignInModel)?.token?.token || "";
   }
   return jwt;
-  // return getItem(StorageConstants.USER_ACCESS_TOKEN, "session");
 };
 
 const getConfig = (jwt: string, options?: AxiosRequestConfig<unknown>) => {
@@ -56,7 +53,6 @@ const getConfig = (jwt: string, options?: AxiosRequestConfig<unknown>) => {
     ...(options || {}),
     headers: {
       "content-type": "application/json",
-      // Authorization: jwt ? `Bearer ${jwt}` : "",
       "Access-Control-Allow-Credentials": "true",
       "Access-Control-Allow-Origin": "*",
       ...headers,

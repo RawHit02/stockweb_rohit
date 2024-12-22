@@ -35,16 +35,19 @@ import { AttendanceRecordPayload } from "@/models/req-model/AttendanceModel";
 
 const ITEM_HEIGHT = 48;
 
-const calculateTodaysHours = (firstIn: string, lastOut: string): string => {
-  if (!firstIn || !lastOut) return "N/A";
-  const inTime = moment(firstIn);
-  const outTime = moment(lastOut);
-  if (!inTime.isValid() || !outTime.isValid()) return "N/A";
-  const duration = outTime.diff(inTime, "minute");
-  const hours = Math.floor(duration / 60);
-  const minutes = duration % 60;
-  return `${hours}h ${minutes}m`;
-};
+// explicitely calculating the Todays Hours
+// const calculateTodaysHours = (firstIn: string, lastOut: string): string => {
+//   if (!firstIn || !lastOut) return "N/A";
+//   const inTime = moment(firstIn);
+//   const outTime = moment(lastOut);
+//   if (!inTime.isValid() || !outTime.isValid()) return "N/A";
+//   const duration = outTime.diff(inTime, "minute");
+//   const hours = Math.floor(duration / 60);
+//   const minutes = duration % 60;
+//   return `${hours}h ${minutes}m`;
+// };
+
+ 
 
 interface Data {
   id: string;
@@ -53,7 +56,7 @@ interface Data {
   lastOut: string;
   todaysHours: string;
   status: "Present" | "Absent";
-  employeeShift: string; // Updated for consistent naming
+  shift: "Day" | "Night"; // Unified naming for consistency
 }
 
 const headCells = [
@@ -62,7 +65,7 @@ const headCells = [
   { id: "lastOut", label: "Last Out" },
   { id: "todaysHours", label: "Today's Hours" },
   { id: "status", label: "Status" },
-  { id: "employeeShift", label: "Shift" }, // Updated label for consistency
+  { id: "shift", label: "Shift" },
 ];
 
 const AttendanceTableRecords = ({
@@ -88,6 +91,9 @@ const AttendanceTableRecords = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null);
   const [openDelete, setOpenDelete] = useState(false);
+
+
+ 
 
   const open = Boolean(anchorEl);
 
@@ -119,16 +125,37 @@ const AttendanceTableRecords = ({
   };
 
   const handleEditClick = (record: AttendanceRecordPayload) => {
-    const employeeName = mapEmployeeIdToName(record.employee, employees);
-    onEditRecord({ ...record, employeeName });
+      console.log("Record being passed to AddAttendanceDialog:", record);
+
+
+    onEditRecord({
+      ...record,
+      employeeName: record.employeeName || "",
+      shift : record.shift || "",
+    });
+    // Check if employee is an object (EmployeeModel) or string (employee ID)
+    const employeeName =
+      record.employeeName ||
+      (typeof record.employee === "object" && record.employee.name) || // Extract employee name if it's an object
+      "Unknown";
+
+    const shift = record.shift || "N/A"; // Fallback to "N/A" if shift is missing
+
+    console.log("Preparing initial values for edit dialog:", {
+      ...record,
+      employeeName,
+      shift,
+    });
+
+    
     handleCloseMenu();
   };
+
 
   const handleDelete = async () => {
     if (selectedRecordId) {
       try {
         await dispatch(deleteAttendanceRecord(selectedRecordId)).unwrap();
-        // Refresh the attendance records after successful deletion
         dispatch(fetchAttendanceRecords({ page: page + 1, take: rowsPerPage }));
       } catch (error) {
         console.error("Failed to delete attendance record:", error);
@@ -194,10 +221,22 @@ const AttendanceTableRecords = ({
 
             <TableBody>
               {records.map((record, index) => {
-                const employeeName = mapEmployeeIdToName(
-                  record.employee,
-                  employees
-                );
+                const employeeName =
+                  record.employeeName ||
+                  employees.find((emp) => emp.id === record.employee)?.name ||
+                  "Unknown";
+                const shift = record.shift || "N/A";
+
+                // Convert today's hours to "Xh Ym" format
+                const todaysHours = (() => {
+                  if (!record.todaysHour) return "N/A";
+                  const hours = Math.floor(parseFloat(record.todaysHour)); // Convert string to number
+                  const minutes = Math.round(
+                    (parseFloat(record.todaysHour) - hours) * 60
+                  ); // Convert string to number
+                  return `${hours}h ${minutes}m`;
+                })();
+
 
                 return (
                   <TableRow hover tabIndex={-1} key={record.id || index}>
@@ -212,7 +251,7 @@ const AttendanceTableRecords = ({
                         </Box>
                         <Box>
                           <Typography className="text-sm">
-                            {employeeName || "Unknown"}
+                            {record.employeeName}
                           </Typography>
                         </Box>
                       </Box>
@@ -223,11 +262,9 @@ const AttendanceTableRecords = ({
                     <TableCell>
                       {moment(record.lastOut).format("DD MMM YYYY, h:mm A")}
                     </TableCell>
-                    <TableCell>
-                      {calculateTodaysHours(record.firstIn, record.lastOut)}
-                    </TableCell>
+                    <TableCell>{todaysHours}</TableCell>
                     <TableCell>{record.status}</TableCell>
-                    <TableCell>{record.employeeShift}</TableCell>
+                    <TableCell>{record.shift}</TableCell>
                     <TableCell>
                       <IconButton
                         aria-label="more"
@@ -276,8 +313,8 @@ const AttendanceTableRecords = ({
           handleCloseDeleteDialog={() => setOpenDelete(false)}
           openDelete={openDelete}
           handleDeleteAction={handleDelete}
-          dialogueTitle="Delete Record"
-          dialogueDescription="Are you sure you want to delete this record?"
+          dialogueTitle="Delete Attendance"
+          dialogueDescription="Are you sure you want to delete this Employee  Attendance?"
         />
       )}
     </Box>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Box, Typography, Button } from "@mui/material";
 import AddAttendanceDialog from "@/app/components/AddAttendanceDialog";
 import AttendanceTableRecords from "@/app/components/AttendanceTableRecords";
@@ -32,31 +32,39 @@ const TodaysAttendance = () => {
   } | null>(null);
 
   // Fetch attendance data
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       await dispatch(fetchAttendanceStats());
-      await dispatch(fetchAttendanceRecords({
-        page: 1, take: 10,
-      }));
+      await dispatch(
+        fetchAttendanceRecords({
+          page: 1,
+          take: 10,
+        })
+      );
       await dispatch(fetchEmployeesAction({ page: 1, take: 50 }));
     } catch (error) {
       console.error("Error fetching attendance data:", error);
     }
-  };
+  },[dispatch]);
 
   useEffect(() => {
     fetchData();
-  }, [dispatch]);
+  }, [fetchData]);
 
   // Handle editing a record
   const handleEditRecord = (record: AttendanceRecordPayload) => {
+    const employeeId =
+      typeof record.employee === "string"
+        ? record.employee // If it's already a string, use it directly
+        : record.employee?.id || ""; // If it's an object, extract the ID
+
     setEditRecord({
       id: record.id || "",
-      employeeId: record.employee, // Map employee ID correctly
+      employeeId, // Correctly assign the employee ID
       inTime: record.firstIn ? moment(record.firstIn) : null, // Convert firstIn to Moment
       outTime: record.lastOut ? moment(record.lastOut) : null, // Convert lastOut to Moment
       status: record.status,
-      shift: record.employeeShift || "",
+      shift: record.shift,
     });
     setIsEditDialogOpen(true);
   };
@@ -126,7 +134,18 @@ const TodaysAttendance = () => {
       <AddAttendanceDialog
         open={isEditDialogOpen} // Dialog visibility control
         onClose={handleCloseDialog} // Close dialog handler
-        initialValues={editRecord || undefined} // Pass the record to edit
+        initialValues={
+          editRecord || {
+            id: "",
+            employeeId: "",
+            inTime: moment(),
+            outTime: moment(),
+            status: "",
+            shift: "",
+            todaysHour: "0.00",
+          }
+        } // Provide default initial values for Add Attendance
+        // initialValues={editRecord || undefined} // Pass the record to edit
         isEditMode={Boolean(editRecord?.id)} // Indicate whether it's edit mode
         onRecordUpdated={refreshAttendance} // Refresh data after submission
       />

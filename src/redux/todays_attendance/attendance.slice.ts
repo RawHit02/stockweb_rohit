@@ -4,7 +4,8 @@ import {
   fetchAttendanceRecords,
   addAttendanceRecord,
   updateAttendanceRecord,
-} from "./attendance.actions"; // Import attendance actions
+  fetchEmployeeNames,
+} from "./attendance.actions";
 import {
   AttendanceState,
   AttendanceRecordPayload,
@@ -13,7 +14,7 @@ import { fetchEmployeesAction } from "../employee_management/employee_management
 
 // Initial state for attendance
 const initialState: AttendanceState = {
-  stats: { present: 0, absent: 0 },
+  stats: { present: 72, absent: 60 },
   records: [],
   itemCount: 0,
   loadingStats: false,
@@ -56,10 +57,12 @@ const attendanceSlice = createSlice({
       state.records = action.payload.data.map((record) => ({
         ...record,
         employeeName: record.employeeName || "Unknown",
-        employeeShift: record.employeeShift || "Day", // Ensure `employeeShift` is used consistently
+        shift : record.shift || "",
+        todaysHours : record.todaysHour || "N/A",
       }));
       state.itemCount = action.payload.itemCount;
     });
+
     builder.addCase(fetchAttendanceRecords.rejected, (state, action) => {
       state.loadingRecords = false;
       state.error = action.payload?.message || "Error fetching records";
@@ -70,7 +73,6 @@ const attendanceSlice = createSlice({
       state.error = null;
     });
     builder.addCase(addAttendanceRecord.fulfilled, (state, action) => {
-      // Add the newly created record to the records array
       const newRecord = action.payload;
       state.records = [
         {
@@ -79,13 +81,14 @@ const attendanceSlice = createSlice({
             newRecord.employeeName ||
             state.getAllEmployees.find((emp) => emp.id === newRecord.employee)
               ?.name ||
-            "Unknown", // Add employee name
-          employeeShift: newRecord.employeeShift || "Day", // Ensure `employeeShift` consistency
+            "Unknown",
+         
         },
         ...state.records,
       ];
-      state.itemCount += 1; // Increment the total count of records
+      state.itemCount += 1; // Increment record count
     });
+
     builder.addCase(addAttendanceRecord.rejected, (state, action) => {
       state.error = action.payload?.message || "Error adding record";
     });
@@ -98,14 +101,11 @@ const attendanceSlice = createSlice({
           ? {
               ...record,
               ...updatedRecord,
-              employeeName: updatedRecord.employeeName, // Update employee name
-              employeeShift: updatedRecord.employeeShift || "", // Ensure `employeeShift` is updated
             }
           : record
       );
     });
-
-    // Fetch Employees Action
+    // Fetch Employees
     builder.addCase(fetchEmployeesAction.pending, (state) => {
       state.loadingRecords = true;
     });

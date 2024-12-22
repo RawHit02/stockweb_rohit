@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState, Suspense } from "react";
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
@@ -10,7 +10,10 @@ import { styled } from '@mui/material/styles';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { SecondaryTable } from '@/app/components';
+import { useSearchParams } from 'next/navigation';
+import { GET_ALL_BUYERS_NEW } from '@/base-url/apiRoutes';
+import { BuyerDetailsModel } from '@/models/req-model/VendorManagementBuyerModel';
+import TransactionTable from "@/app/components/TransactionTable";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -99,9 +102,58 @@ function a11yProps(index: number) {
   };
 }
 
+// atob - decode 
+// btoa - encode 
+
 const BuyerDetails = () => {
-  const [value, setValue] = useState(1);
+
+   const searchParams = useSearchParams();
+   const encodeId = searchParams.get("id");
+   const buyerId = encodeId ? atob(encodeId) : null;
+
+  const [value, setValue] = useState(0); // used for shifting from user profile to Transaction 
   const [age, setAge] = useState('');
+
+   const [buyerDetails, setBuyerDetails] = useState<BuyerDetailsModel | null>(
+     null
+   );
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+       useEffect(() => {
+         const fetchBuyerDetails = async () => {
+           if (!buyerId) return;
+
+           try {
+             const response = await fetch(GET_ALL_BUYERS_NEW);
+             const result = await response.json();
+
+             if (result?.statusCode === 200) {
+               const buyer = result.data.find(
+                 (item: any) => item.id === buyerId
+               );
+               if (buyer) {
+                 setBuyerDetails(buyer);
+               } else {
+                 setError("Buyer not found.");
+               }
+             } else {
+               setError("Failed to fetch buyer details.");
+             }
+           } catch (err) {
+             console.error("Error fetching buyer details:", err);
+             setError("Error fetching buyer details.");
+           } finally {
+             setLoading(false);
+           }
+         };
+
+         fetchBuyerDetails();
+       }, [buyerId]);
+
+        if (loading) return <Typography>Loading...</Typography>;
+        if (error) return <Typography>{error}</Typography>;
+
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -136,6 +188,7 @@ const BuyerDetails = () => {
             />
           </Tabs>
           <Divider className="border-2 border-primaryExtraLight" />
+
           <TabPanel value={value} index={0}>
             <Typography className="text-2xl font-bold mt-5">User Profile</Typography>
             <Box className="border border-primary100 rounded-lg p-6 mt-4">
@@ -146,12 +199,12 @@ const BuyerDetails = () => {
                   </Box>
                   <Box>
                     <Typography className="text-primary text-2xl font-bold leading-6">
-                      Flores Juanita (Buyer)
+                      {buyerDetails?.name} (Buyer)
                     </Typography>
                     <Box className="flex items-center gap-2 mt-3">
                       <EmailIcon className="text-primary200 text-xl" />
                       <Typography className="text-sm text-primary">
-                        ayesghaoparween@gmail.com
+                      {buyerDetails?.email}
                       </Typography>
                     </Box>
                   </Box>
@@ -182,7 +235,7 @@ const BuyerDetails = () => {
                 <Box className="flex items-center justify-between">
                   <Box className="flex items-center gap-2">
                     <LocalPhoneIcon className="text-gray100" />
-                    <Typography className="text-primary text-sm">Phone Number</Typography>
+                    <Typography className="text-primary text-sm">{buyerDetails?.contactNumber}</Typography>
                   </Box>
                   <Box className="flex items-center gap-2">
                     <Typography className="text-purple100 text-sm">+91 9045896 325</Typography>
@@ -192,7 +245,7 @@ const BuyerDetails = () => {
                 <Box className="flex items-center justify-between">
                   <Box className="flex items-center gap-2">
                     <Image src={WhatsappIcon} alt="whatsapp" />
-                    <Typography className="text-primary text-sm">WhatsApp Number</Typography>
+                    <Typography className="text-primary text-sm"> {buyerDetails?.whatsappNumber}</Typography>
                   </Box>
                   <Box className="flex items-center gap-2">
                     <Typography className="text-purple100 text-sm">+91 9045896 325</Typography>
@@ -202,7 +255,7 @@ const BuyerDetails = () => {
                 <Box className="flex items-center justify-between">
                   <Box className="flex items-center gap-2">
                     <Image src={AddressIcon} alt="address" />
-                    <Typography className="text-primary text-sm">Address</Typography>
+                    <Typography className="text-primary text-sm">{buyerDetails?.address}</Typography>
                   </Box>
                   <Typography className="text-purple100 text-sm">
                     2337 Kildeer Drive, Kentucky, Canada
@@ -324,7 +377,7 @@ const BuyerDetails = () => {
                 <Button className='min-w-[121px] h-[42px]' variant='contained' size='large' color='primary' startIcon={<SearchIcon />}>Search</Button>
               </Box>
               <Box className="mt-4">
-                <SecondaryTable data={[]} />
+                <TransactionTable />
               </Box>
             </Box>
           </TabPanel>
@@ -334,4 +387,13 @@ const BuyerDetails = () => {
   );
 };
 
-export default BuyerDetails;
+
+
+const WrappedBuyersDetails = () => (
+  <Suspense fallback={<Typography>Loading Buyers Details...</Typography>}>
+    <BuyerDetails />
+  </Suspense>
+);
+
+export default WrappedBuyersDetails;
+

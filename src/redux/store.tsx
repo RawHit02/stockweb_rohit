@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useSelector } from "react-redux";
+import transactionsReducer from "./transaction_details/transaction_table.slice";
 
 import buyerReducer from "./slices/buyerSlice"; // Buyer slice
 import authReducer from "./slices/authSlice"; // Authentication slice
@@ -19,6 +20,7 @@ export const store = configureStore({
     stockManagement: stockManagementReducer, // Updated to 'stockManagement'
     EmployeeManagementReducer, // Add employee management reducer
     attendance: attendanceReducer, // Attendance reducer
+    transactions: transactionsReducer,
   },
   devTools: true, // Enable Redux DevTools in development
 });

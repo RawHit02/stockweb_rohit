@@ -3,19 +3,24 @@ import React, { useState, useEffect } from "react";
 import { Box, Typography, Button } from "@mui/material";
 import AddNewBuyerDialog from "@/app/components/AddNewBuyerDialog";
 import VendorManagementBuyers from "@/app/components/VendorManagementBuyers";
-import { AppDispatch } from "@/redux/store";
-import { useDispatch } from "react-redux";
-import { getAllBuyersAction } from "@/redux/vendor_management/vendor_management.actions";
+import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
+import { useRouter } from "next/navigation";
 import { BuyerFormValues } from "@/app/components/AddNewBuyerDialog";
 import { VendorManagementBuyerModel } from "@/models/req-model/VendorManagementBuyerModel";
-import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
+import {
+  getAllBuyersAction,
+  getAllBuyersNewAction,
+} from "@/redux/vendor_management/vendor_management.actions";
+import { AppDispatch } from "@/redux/store";
+import { useDispatch } from "react-redux";
 
 const Buyers = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [editedBuyer, setEditedBuyer] = useState<BuyerFormValues | null>(null); // Store buyer data for edit
-  const [isAddBuyerDialogOpen, setIsAddBuyerDialogOpen] = useState(false); // Control dialog visibility
+  const router = useRouter();
+  const [buyers, setBuyers] = useState<VendorManagementBuyerModel[]>([]); // Buyers state
+  const [isAddBuyerDialogOpen, setIsAddBuyerDialogOpen] = useState(false);
+  const [editedBuyer, setEditedBuyer] = useState<BuyerFormValues | null>(null);
 
-  // Fetch buyers data from backend
   const fetchData = async () => {
     const params = {
       page: 1,
@@ -31,17 +36,36 @@ const Buyers = () => {
       console.error("Error fetching buyers:", error);
     }
   };
+  
+  // useEffect(() => {
+  //   fetchBuyers();
+  // }, []);
 
-  // Refresh buyer data after Add/Edit/Delete
+  // Fetch all buyers from API
+  const fetchBuyers = async () => {
+    try {
+      const data = await getAllBuyersNewAction();
+      setBuyers(data);
+    } catch (error) {
+      console.error("Failed to fetch buyers:", error);
+    }
+  };
+
   const refreshBuyers = async () => {
     await fetchData();
+  };
+
+  // Handle Buyer Click , Navigate to details page
+  const handleBuyerClick = (buyerId: string) => {
+    const url = `/vender-management/buyers/buyer-details?id=${buyerId}`;
+    console.log("Navigating to:", url);
+    router.push(url);
   };
 
   const normalizeNumberForEdit = (number: string) => {
     return number.startsWith("+91") ? number.slice(3) : number;
   };
 
-  // Handle edit button click
   const handleEditBuyer = (buyer: VendorManagementBuyerModel) => {
     setEditedBuyer({
       id: buyer.id,
@@ -50,32 +74,21 @@ const Buyers = () => {
       whatsappNumber: normalizeNumberForEdit(buyer.whatsappNumber),
       email: buyer.email,
       address: buyer.address,
-      profileImage: null, // Handle profile image as needed
+      profileImage: null,
     });
     setIsAddBuyerDialogOpen(true);
   };
 
-  // Handle add button click
-  const handleAddBuyer = () => {
-    setEditedBuyer(null); // Reset edited buyer
-    setIsAddBuyerDialogOpen(true); // Open dialog for adding buyer
-  };
-
-  // Close dialog handler
+  // Handle Dialog Close
   const handleCloseDialog = () => {
-    setIsAddBuyerDialogOpen(false); // Close dialog
-    setEditedBuyer(null); // Reset edited buyer data
+    setIsAddBuyerDialogOpen(false);
+    setEditedBuyer(null);
   };
-
-  // Fetch buyers on component load
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
 
   return (
     <Box className="bg-white border border-[#E8EBED] rounded-xl p-6 h-[calc(100vh-116px)] overflow-auto">
       {/* Header */}
-      <Box className="w-full flex items-center justify-between">
+      <Box className="w-full flex items-center justify-between mb-4">
         <Typography className="text-2xl font-bold">
           Vendor Management / Buyers
         </Typography>
@@ -83,24 +96,29 @@ const Buyers = () => {
           variant="contained"
           className="bg-primary500 rounded-lg h-10 text-base"
           startIcon={<AddCircleOutlineOutlinedIcon />}
-          onClick={handleAddBuyer}
+          onClick={() => setIsAddBuyerDialogOpen(true)}
         >
           ADD BUYER
         </Button>
       </Box>
 
-      {/* Buyer List */}
+      {/* Buyers List */}
       <Box className="mt-4">
-        <VendorManagementBuyers onEditBuyer={handleEditBuyer} />
+        <VendorManagementBuyers
+          buyers={buyers}
+          onBuyerClick={handleBuyerClick}
+          onEditBuyer={handleEditBuyer}
+        />
       </Box>
 
       {/* Add/Edit Dialog */}
       <AddNewBuyerDialog
-        onBuyerCreated={refreshBuyers} // Refresh buyers after dialog submission
-        initialValues={editedBuyer || undefined} // Prefill data for edit
-        isEditMode={Boolean(editedBuyer?.id)} // Indicate edit mode
-        open={isAddBuyerDialogOpen} // Dialog visibility control
-        onClose={handleCloseDialog} // Close dialog handler
+        //  onBuyerCreated={handleBuyerCreated}
+        onBuyerCreated={refreshBuyers}
+        initialValues={editedBuyer || undefined}
+        isEditMode={Boolean(editedBuyer?.id)}
+        open={isAddBuyerDialogOpen}
+        onClose={() => setIsAddBuyerDialogOpen(false)}
       />
     </Box>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -14,7 +14,6 @@ import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
-//import { visuallyHidden } from "@mui/utils";
 import {
   DeleteRed,
   DummyProfile,
@@ -31,31 +30,33 @@ import {
 } from "@/redux/vendor_management/vendor_management.actions";
 import { VendorManagementSellerModel } from "@/models/req-model/VendorManagementSellerModel";
 import DeleteDialog from "./DeleteDialog";
+import { useRouter } from "next/navigation";
+
+interface VendorManagementSellersProps {
+  sellers: VendorManagementSellerModel[]; 
+  onSellerClick: (sellerId: string) => void; // Handle row click
+  onEditSeller: (row: VendorManagementSellerModel) => void; // Edit seller handler
+}
 
 const ITEM_HEIGHT = 48;
 
 const headCells = [
   { id: "name", label: "Name/Email", numeric: false },
-  //{ id: "email", label: "Email", numeric: false },
   { id: "contact", label: "Contact Number", numeric: false },
   { id: "whatsapp", label: "WhatsApp Number", numeric: false },
   { id: "address", label: "Address", numeric: false },
 ];
 
-interface VendorManagementSellersProps {
-  onEditSeller: (seller: VendorManagementSellerModel) => void;
-}
-
-const VendorManagementSeller = ({
+const VendorManagementSellers : React.FC<VendorManagementSellersProps> = ({
   onEditSeller,
-}: {
-  onEditSeller: (row: VendorManagementSellerModel) => void;
+  onSellerClick,
+  sellers,
 }) => {
+   const router = useRouter();
   const [order, setOrder] = useState<"asc" | "desc">("asc");
   const [orderBy, setOrderBy] = useState<string>("name");
   const [page, setPage] = useState(0);
   const [openDelete, setOpenDelete] = useState(false);
-
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -64,8 +65,7 @@ const VendorManagementSeller = ({
   const { getAllSellers, itemCount } = useAppSelector(
     (state) => state.VendorManagementReducer.sellers
   );
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const params: GetAllSellersRequest = {
         page: page + 1,
@@ -77,31 +77,33 @@ const VendorManagementSeller = ({
     } catch (error) {
       console.error("Error fetching Sellers:", error);
     }
-  };
+  }, [dispatch, page, rowsPerPage, order, orderBy]);
 
   useEffect(() => {
     fetchData();
-  }, [page, rowsPerPage, order, orderBy]);
+  }, [fetchData]);
+
+  const handleRowClick = (sellerId: string) => {
+    const encodeId = btoa(sellerId);
+    router.push(`/vender-management/sellers/sellers-details?id=${encodeId}`);
+  };
 
   const handleClickMenu = (
     event: React.MouseEvent<HTMLElement>,
     SellerId: string
   ) => {
     setAnchorEl(event.currentTarget);
-    setSelectedSellerId(SellerId); // Set the Seller ID for menu actions
+    setSelectedSellerId(SellerId); 
   };
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
-    setSelectedSellerId(null); // Clear selected Seller
+    setSelectedSellerId(null); 
   };
 
   const handleEditClick = (row: VendorManagementSellerModel) => {
     onEditSeller(row);
     handleCloseMenu();
-    // setIsEditing(row.id); // Enable edit mode for the specific row
-    //setEditedRow({...row }); // Copy current row data for editing
-    //handleCloseMenu();
   };
 
    const handleDeleteSeller = async () => {
@@ -179,6 +181,7 @@ const VendorManagementSeller = ({
                 <TableRow
                   key={row.id || `${index}`}
                   className="hover:cursor-pointer"
+                  onClick={() => handleRowClick(row.id)} // Row click impl..
                 >
                   <TableCell>
                     <Box className="flex items-center gap-2">
@@ -206,9 +209,12 @@ const VendorManagementSeller = ({
                   <TableCell>{row.address}</TableCell>
                   <TableCell>
                     <IconButton
-                      onClick={(event) => handleClickMenu(event, row.id)}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleClickMenu(event, row.id);
+                      }}
                       aria-label="more"
-                    >
+                      >
                       <MoreVertIcon />
                     </IconButton>
                     <Menu
@@ -216,11 +222,19 @@ const VendorManagementSeller = ({
                       open={open && selectedSellerId === row.id}
                       onClose={handleCloseMenu}
                     >
-                      <MenuItem onClick={() => handleEditClick(row)}>
+                      <MenuItem onClick={(event) => {
+                        event.stopPropagation();
+                        handleEditClick(row);
+                      }}
+                      >
                         <EditOutlinedIcon />
                         Edit
                       </MenuItem>
-                      <MenuItem onClick={() => setOpenDelete(true)}>
+                      <MenuItem onClick={(event) =>{
+                         event.stopPropagation();
+                         setOpenDelete(true);
+                        }}
+                        >
                         <Image src={DeleteRed} alt="Delete" />
                         Delete
                       </MenuItem>
@@ -254,4 +268,4 @@ const VendorManagementSeller = ({
   );
 };
 
-export default VendorManagementSeller;
+export default VendorManagementSellers;

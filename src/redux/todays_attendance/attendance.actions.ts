@@ -8,12 +8,12 @@ import {
   DELETE_ATTENDANCE_RECORD,
   GET_ALL_EMPLOYEES_ATTENDANCE,
 } from "@/base-url/apiRoutes";
-
 import {
   AttendanceStats,
   AttendanceRecordPayload,
 } from "@/models/req-model/AttendanceModel";
 import { EmployeeManagementEmployeeModel } from "@/models/req-model/EmployeeManagementEmployeeModel";
+import { RootState } from "@/redux/store";
 
 // Mock Data (for testing purposes)
 const mockAttendanceStats: AttendanceStats = {
@@ -29,11 +29,34 @@ export const fetchAttendanceStats = createAsyncThunk<
 >("attendance/fetchStats", async (_, { rejectWithValue }) => {
   try {
     const response = await apiClient.get(GET_ATTENDANCE_STATS);
-    return response.data.data || mockAttendanceStats; // Mock data if no real API
+    return response.data.data || mockAttendanceStats;
   } catch (error: any) {
     return rejectWithValue({
       message:
         error.response?.data?.message || "Failed to fetch attendance stats",
+    });
+  }
+});
+
+// Fetch Employee Names (with Caching)
+export const fetchEmployeeNames = createAsyncThunk<
+  EmployeeManagementEmployeeModel[],
+  void,
+  { rejectValue: { message: string }; state: RootState }
+>("attendance/fetchEmployeeNames", async (_, { rejectWithValue, getState }) => {
+  try {
+    const existingEmployees = getState().attendance.getAllEmployees;
+    if (existingEmployees.length > 0) {
+      return existingEmployees; // Return cached employees
+    }
+    const response = await apiClient.get(GET_ALL_EMPLOYEES_ATTENDANCE, {
+      params: { page: 1, take: 100 },
+    });
+    return response.data?.data?.data || [];
+  } catch (error: any) {
+    return rejectWithValue({
+      message:
+        error.response?.data?.message || "Failed to fetch employee names",
     });
   }
 });
@@ -45,19 +68,17 @@ export const fetchAttendanceRecords = createAsyncThunk<
   { rejectValue: { message: string } }
 >("attendance/fetchRecords", async ({ page, take }, { rejectWithValue }) => {
   try {
-    const options = { params: { page, take } };
-    const response = await apiClient.get(GET_ATTENDANCE_RECORDS, options);
+    const response = await apiClient.get(GET_ATTENDANCE_RECORDS, {
+      params: { page, take },
+    });
+
+    const enrichedData = response.data.data.data.map((record: any) => ({
+      ...record,
+      employeeName: record.employee?.name || "Unknown", // Map employee.name directly
+    }));
 
     return {
-      data: response.data.data.data.map((item: any) => ({
-        id: item.id,
-        employee: item.employee,
-        employeeName: item.employeeName || "", // Add employee name here
-        firstIn: item.firstIn,
-        lastOut: item.lastOut,
-        status: item.status,
-        employeeShift: item.shift, // Ensure employeeShift is mapped
-      })),
+      data: enrichedData,
       itemCount: response.data.data.meta.itemCount,
     };
   } catch (error: any) {
@@ -75,10 +96,9 @@ export const addAttendanceRecord = createAsyncThunk<
   { rejectValue: { message: string } }
 >("attendance/addRecord", async (attendanceData, { rejectWithValue }) => {
   try {
-    const response = await apiClient.post(
-      ADD_ATTENDANCE_RECORD,
-      attendanceData
-    );
+    const response = await apiClient.post(ADD_ATTENDANCE_RECORD, {
+      ...attendanceData,
+    });
     return response.data?.data || attendanceData;
   } catch (error: any) {
     return rejectWithValue({
@@ -88,7 +108,7 @@ export const addAttendanceRecord = createAsyncThunk<
   }
 });
 
-// Update Attendance Record
+// update attendance record
 export const updateAttendanceRecord = createAsyncThunk<
   AttendanceRecordPayload,
   { attendanceId: string; updatePayload: AttendanceRecordPayload },
@@ -99,7 +119,9 @@ export const updateAttendanceRecord = createAsyncThunk<
     try {
       const response = await apiClient.patch(
         `${UPDATE_ATTENDANCE_RECORD}/${attendanceId}`,
-        updatePayload
+        {
+          ...updatePayload,
+        }
       );
       return response.data?.data || updatePayload;
     } catch (error: any) {
@@ -124,25 +146,6 @@ export const deleteAttendanceRecord = createAsyncThunk<
     return rejectWithValue({
       message:
         error.response?.data?.message || "Failed to delete attendance record",
-    });
-  }
-});
-
-// Fetch Employee Names
-export const fetchEmployeeNames = createAsyncThunk<
-  EmployeeManagementEmployeeModel[],
-  void,
-  { rejectValue: { message: string } }
->("attendance/fetchEmployeeNames", async (_, { rejectWithValue }) => {
-  try {
-    const response = await apiClient.get(GET_ALL_EMPLOYEES_ATTENDANCE, {
-      params: { page: 1, take: 100 },
-    });
-    return response.data?.data?.data || [];
-  } catch (error: any) {
-    return rejectWithValue({
-      message:
-        error.response?.data?.message || "Failed to fetch employee names",
     });
   }
 });

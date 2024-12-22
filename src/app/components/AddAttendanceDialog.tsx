@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import moment, { Moment } from "moment";
 import {
   Box,
@@ -14,17 +14,10 @@ import {
   FormControl,
   Select,
   MenuItem,
+  TextField,
+  SelectChangeEvent,
 } from "@mui/material";
-import {
-  AddCircleOutlineOutlinedIcon,
-  CheckCircleIcon,
-  CloseOutlinedIcon,
-  KeyboardArrowDownIcon,
-} from "../assets";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-// import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-// import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import { CloseOutlinedIcon } from "../assets";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -42,11 +35,12 @@ interface AddAttendanceDialogProps {
   initialValues?: {
     id: string;
     employeeId: string;
-    employeeName?: string; 
+    employeeName?: string;
     inTime: Moment | null;
     outTime: Moment | null;
     status: string;
     shift: string;
+    todaysHour?: string;
   };
   isEditMode: boolean;
   onRecordUpdated: () => Promise<void>;
@@ -64,7 +58,7 @@ const AddAttendanceDialog: React.FC<AddAttendanceDialogProps> = ({
     (state: RootState) => state.attendance.getAllEmployees
   );
 
-  const [loadingEmployees, setLoadingEmployees] = React.useState(false);
+  const [loadingEmployees, setLoadingEmployees] = useState(false);
 
   useEffect(() => {
     if (employees.length === 0) {
@@ -82,27 +76,38 @@ const AddAttendanceDialog: React.FC<AddAttendanceDialogProps> = ({
 
   const formik = useFormik({
     initialValues: {
-      employeeId: initialValues?.employeeId || "",
+      employeeId:
+        typeof initialValues?.employeeId === "object" &&
+        initialValues?.employeeId !== null
+          ? (initialValues.employeeId as { id: string }).id
+          : (initialValues?.employeeId as string) || "",
       employeeName:
-      initialValues?.employeeName ||
-        employees.find((emp) => emp.id === initialValues?.employeeId)?.name ||
-        "",
+        typeof initialValues?.employeeId === "object" &&
+        initialValues?.employeeId !== null
+          ? (initialValues.employeeId as { name: string }).name
+          : initialValues?.employeeName || "",
       inTime: initialValues?.inTime || moment(),
       outTime: initialValues?.outTime || moment(),
       status: initialValues?.status || "",
       shift: initialValues?.shift || "",
+      todaysHour: initialValues?.todaysHour || "0.00",
     },
+
     validationSchema: AttendanceSchema,
     enableReinitialize: !!initialValues,
+
     onSubmit: async (values) => {
+      console.log("Form submitted with values:", values);
+
       try {
-        // const employee = employees.find((emp) => emp.id === values.employeeId);
         const payload = {
           employee: values.employeeId,
+          employeeName: values.employeeName || "",
           firstIn: values.inTime ? values.inTime.toISOString() : "",
           lastOut: values.outTime ? values.outTime.toISOString() : "",
           status: values.status as "Present" | "Absent",
-          employeeShift: values.shift,
+          shift: values.shift as "Day" | "Night",
+          todaysHour: values.todaysHour || "0.00",
         };
 
         if (isEditMode && initialValues?.id) {
@@ -124,6 +129,50 @@ const AddAttendanceDialog: React.FC<AddAttendanceDialogProps> = ({
       }
     },
   });
+
+  const { setValues } = formik; // Move this after the `formik` declaration
+
+  useEffect(() => {
+    if (open && isEditMode && initialValues) {
+      const { employeeId, shift, inTime, outTime, status, todaysHour } =
+        initialValues;
+      console.log("Initial Values in useEffect:", initialValues); // Add this
+
+      const employeeIdValue =
+        typeof employeeId === "object" && employeeId !== null
+          ? (employeeId as { id: string; name: string }).id
+          : (employeeId as string) || "";
+
+      const employeeName =
+        typeof employeeId === "object" && employeeId !== null
+          ? (employeeId as { id: string; name: string }).name
+          : "";
+
+      setValues({
+        employeeId: employeeIdValue,
+        employeeName: employeeName,
+        inTime: inTime || moment(),
+        outTime: outTime || moment(),
+        status: status || "",
+        shift: shift || "",
+        todaysHour: todaysHour || "0.00",
+      });
+    }
+  }, [open, isEditMode, initialValues, setValues]);
+
+     
+
+      // console.log("Initial Values in useEffect:", initialValues);
+      // console.log("Shift Value in useEffect:", shift); // Debug the shift value
+
+     
+ 
+      
+  const handleEmployeeChange = (e: SelectChangeEvent<string>) => {
+    const selectedEmployee = employees.find((emp) => emp.id === e.target.value);
+    formik.setFieldValue("employeeId", e.target.value);
+    formik.setFieldValue("employeeName", selectedEmployee?.name || "");
+  };
 
   return (
     <Dialog
@@ -151,36 +200,23 @@ const AddAttendanceDialog: React.FC<AddAttendanceDialogProps> = ({
         </DialogTitle>
         <DialogContent className="px-9">
           <Box sx={{ width: "100%" }} className="flex flex-col gap-[12px]">
-            {/* Name Field */}
+            {/* Employee Field */}
             <Box className="flex flex-col">
-              <Typography className="text-sm text-primary">Name</Typography>
+              <Typography className="text-sm text-primary">Employee</Typography>
               <FormControl fullWidth className="mt-2">
                 <Select
-                  size="medium"
                   name="employeeId"
-                  value={formik.values.employeeId}
-                  onChange={formik.handleChange}
+                  value={formik.values.employeeId || ""}
+                  onChange={handleEmployeeChange}
                   displayEmpty
                   error={
-                    !!formik.errors.employeeId && formik.touched.employeeId
+                    formik.touched.employeeId &&
+                    Boolean(formik.errors.employeeId)
                   }
-                  IconComponent={() => (
-                    <KeyboardArrowDownIcon className="text-baseBlack text-[20px] mr-3" />
-                  )}
                 >
-                  {loadingEmployees ? (
-                    <MenuItem disabled value="">
-                      Loading employees...
-                    </MenuItem>
-                  ) : employees.length === 0 ? (
-                    <MenuItem disabled value="">
-                      No employees found
-                    </MenuItem>
-                  ) : (
-                    <MenuItem disabled value="">
-                      Select
-                    </MenuItem>
-                  )}
+                  <MenuItem disabled value="">
+                    Select Employee
+                  </MenuItem>
                   {employees.map(
                     (employee: EmployeeManagementEmployeeModel) => (
                       <MenuItem key={employee.id} value={employee.id}>
@@ -189,61 +225,59 @@ const AddAttendanceDialog: React.FC<AddAttendanceDialogProps> = ({
                     )
                   )}
                 </Select>
+                {formik.touched.employeeId && formik.errors.employeeId && (
+                  <Typography className="text-red-600 text-xs mt-1">
+                    {formik.errors.employeeId}
+                  </Typography>
+                )}
               </FormControl>
             </Box>
 
-            {/* Time Pickers */}
+            {/* In Time */}
             <Box className="flex flex-col">
-              <Typography className="text-sm text-primary">In time</Typography>
-              <Box className="mt-2">
-                <input
-                  type="datetime-local"
-                  value={formik.values.inTime?.format("YYYY-MM-DDTHH:mm") || ""}
-                  onChange={(e) =>
-                    formik.setFieldValue(
-                      "inTime",
-                      e.target.value ? moment(e.target.value) : moment() // Default to current date and time
-                    )
-                  }
-                  placeholder="Select In Time"
-                  className="w-full p-2 border border-gray-300 rounded text-sm text-primary"
-                />
-              </Box>
-            </Box>
-            <Box className="flex flex-col">
-              <Typography className="text-sm text-primary">Out time</Typography>
-              <Box className="mt-2">
-                <input
-                  type="datetime-local"
-                  value={
-                    formik.values.outTime?.format("YYYY-MM-DDTHH:mm") || ""
-                  }
-                  onChange={(e) =>
-                    formik.setFieldValue(
-                      "outTime",
-                      e.target.value ? moment(e.target.value) : moment()
-                    )
-                  }
-                  placeholder="Select Out Time"
-                  className="w-full p-2 border border-gray-300 rounded text-sm text-primary"
-                />
-              </Box>
+              <Typography className="text-sm text-primary">In Time</Typography>
+              <TextField
+                type="datetime-local"
+                value={formik.values.inTime?.format("YYYY-MM-DDTHH:mm") || ""}
+                onChange={(e) =>
+                  formik.setFieldValue("inTime", moment(e.target.value))
+                }
+                error={formik.touched.inTime && Boolean(formik.errors.inTime)}
+                helperText={
+                  formik.touched.inTime && formik.errors.inTime
+                    ? String(formik.errors.inTime)
+                    : ""
+                }
+              />
             </Box>
 
-            {/* Status Dropdown */}
+            {/* Out Time */}
+            <Box className="flex flex-col">
+              <Typography className="text-sm text-primary">Out Time</Typography>
+              <TextField
+                type="datetime-local"
+                value={formik.values.outTime?.format("YYYY-MM-DDTHH:mm") || ""}
+                onChange={(e) =>
+                  formik.setFieldValue("outTime", moment(e.target.value))
+                }
+                error={formik.touched.outTime && Boolean(formik.errors.outTime)}
+                helperText={
+                  formik.touched.outTime && formik.errors.outTime
+                    ? String(formik.errors.outTime)
+                    : ""
+                }
+              />
+            </Box>
+
+            {/* Status */}
             <Box className="flex flex-col">
               <Typography className="text-sm text-primary">Status</Typography>
               <FormControl fullWidth className="mt-2">
                 <Select
-                  size="medium"
                   name="status"
                   value={formik.values.status}
                   onChange={formik.handleChange}
-                  displayEmpty
-                  error={!!formik.errors.status && formik.touched.status}
-                  IconComponent={() => (
-                    <KeyboardArrowDownIcon className="text-baseBlack text-[20px] mr-3" />
-                  )}
+                  error={formik.touched.status && Boolean(formik.errors.status)}
                 >
                   <MenuItem disabled value="">
                     Select
@@ -251,42 +285,41 @@ const AddAttendanceDialog: React.FC<AddAttendanceDialogProps> = ({
                   <MenuItem value="Present">Present</MenuItem>
                   <MenuItem value="Absent">Absent</MenuItem>
                 </Select>
+                {formik.touched.status && formik.errors.status && (
+                  <Typography className="text-red-600 text-xs mt-1">
+                    {formik.errors.status}
+                  </Typography>
+                )}
               </FormControl>
             </Box>
 
-            {/* Shift Dropdown */}
+            {/* Shift */}
             <Box className="flex flex-col">
               <Typography className="text-sm text-primary">Shift</Typography>
               <FormControl fullWidth className="mt-2">
                 <Select
-                  size="medium"
                   name="shift"
                   value={formik.values.shift}
                   onChange={formik.handleChange}
-                  displayEmpty
-                  error={!!formik.errors.shift && formik.touched.shift}
-                  IconComponent={() => (
-                    <KeyboardArrowDownIcon className="text-baseBlack text-[20px] mr-3" />
-                  )}
+                  error={formik.touched.shift && Boolean(formik.errors.shift)}
                 >
                   <MenuItem disabled value="">
                     Select
                   </MenuItem>
-                  <MenuItem value="Morning">Morning</MenuItem>
                   <MenuItem value="Day">Day</MenuItem>
                   <MenuItem value="Night">Night</MenuItem>
                 </Select>
+                {formik.touched.shift && formik.errors.shift && (
+                  <Typography className="text-red-600 text-xs mt-1">
+                    {formik.errors.shift}
+                  </Typography>
+                )}
               </FormControl>
             </Box>
           </Box>
         </DialogContent>
         <DialogActions className="mb-[36px] px-9">
-          <Button
-            variant="outlined"
-            size="large"
-            startIcon={<CloseOutlinedIcon />}
-            onClick={onClose}
-          >
+          <Button variant="outlined" size="large" onClick={onClose}>
             Cancel
           </Button>
           <Button
@@ -294,7 +327,6 @@ const AddAttendanceDialog: React.FC<AddAttendanceDialogProps> = ({
             variant="contained"
             color="primary"
             size="large"
-            startIcon={<CheckCircleIcon className="!text-[20px]" />}
           >
             Save
           </Button>

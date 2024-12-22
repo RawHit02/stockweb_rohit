@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -15,6 +15,8 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 import { visuallyHidden } from "@mui/utils";
+import { useRouter } from "next/navigation"; // For navigation
+
 import {
   DeleteRed,
   DummyProfile,
@@ -32,21 +34,30 @@ import {
 import { VendorManagementBuyerModel } from "@/models/req-model/VendorManagementBuyerModel";
 import DeleteDialog from "./DeleteDialog";
 
+
+interface VendorManagementBuyersProps {
+  buyers: VendorManagementBuyerModel[]; 
+  onBuyerClick: (buyerId: string) => void; // Handle row click
+  onEditBuyer: (row: VendorManagementBuyerModel) => void; // Edit buyer handler
+}
+
+
+
 const ITEM_HEIGHT = 48;
 
 const headCells = [
   { id: "name", label: "Name/Email", numeric: false },
-  //{ id: "email", label: "Email", numeric: false }, 
   { id: "contact", label: "Contact Number", numeric: false },
   { id: "whatsapp", label: "WhatsApp Number", numeric: false },
   { id: "address", label: "Address", numeric: false },
 ];
 
-const VendorManagementBuyers = ({
+const VendorManagementBuyers: React.FC<VendorManagementBuyersProps> = ({
+  buyers,
+  onBuyerClick,
   onEditBuyer,
-}: {
-  onEditBuyer: (row: VendorManagementBuyerModel) => void;
 }) => {
+  const router = useRouter(); 
   const [order, setOrder] = useState<"asc" | "desc">("asc");
   const [orderBy, setOrderBy] = useState<string>("name");
   const [page, setPage] = useState(0);
@@ -55,12 +66,13 @@ const VendorManagementBuyers = ({
   const [openDelete, setOpenDelete] = useState(false);
   const open = Boolean(anchorEl);
   const [selectedBuyerId, setSelectedBuyerId] = useState<string | null>(null); // Buyer ID for the menu actions
+
   const dispatch = useDispatch<AppDispatch>();
   const { getAllBuyers, itemCount } = useAppSelector(
     (state) => state.VendorManagementReducer.buyers
   );
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const params: GetAllBuyersRequest = {
         page: page + 1,
@@ -72,11 +84,17 @@ const VendorManagementBuyers = ({
     } catch (error) {
       console.error("Error fetching buyers:", error);
     }
-  };
+  }, [dispatch, page, rowsPerPage, order, orderBy]);
 
   useEffect(() => {
     fetchData();
-  }, [page, rowsPerPage, order, orderBy]);
+  }, [fetchData]);
+
+  const handleRowClick = (buyerId: string) => {
+    const encodeId = btoa(buyerId);
+    router.push(`/vender-management/buyers/buyer-details?id=${encodeId}`);
+  };
+
 
   const handleClickMenu = (
     event: React.MouseEvent<HTMLElement>,
@@ -88,15 +106,12 @@ const VendorManagementBuyers = ({
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
-    setSelectedBuyerId(null); // Clear selected buyer
+    setSelectedBuyerId(null); 
   };
 
   const handleEditClick = (row: VendorManagementBuyerModel) => {
     onEditBuyer(row);
     handleCloseMenu();
-    // setIsEditing(row.id); // Enable edit mode for the specific row
-    //setEditedRow({...row }); // Copy current row data for editing
-    //handleCloseMenu();
   };
 
   const handleDeleteBuyer = async () => {
@@ -137,8 +152,7 @@ const VendorManagementBuyers = ({
 
   const handleCloseDeleteDialog = () => {
     setOpenDelete(false);
-  }
-
+  };
 
   return (
     <Box className="w-full primary-table">
@@ -171,56 +185,75 @@ const VendorManagementBuyers = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {getAllBuyers.map((row: VendorManagementBuyerModel, index: number) => (
-              <TableRow key={row.id || `${index}`} className="hover:cursor-pointer">
-                <TableCell>
-                  <Box className="flex items-center gap-2">
-                    <Box className="w-8 h-8 rounded-full overflow-hidden bg-gray-200">
-                      <Image
-                        src={row.profileImage || DummyProfile}
-                        alt={row.name || "Profile"}
-                        width={32}
-                        height={32}
-                        className="object-cover w-full h-full"
-                      />
+            {getAllBuyers.map(
+              (row: VendorManagementBuyerModel, index: number) => (
+                <TableRow
+                  key={row.id || `row-${index}`}
+                  className="hover:cursor-pointer"
+                  onClick={() => handleRowClick(row.id)} // Row click impl..
+                >
+                  <TableCell>
+                    <Box className="flex items-center gap-2">
+                      <Box className="w-8 h-8 rounded-full overflow-hidden bg-gray-200">
+                        <Image
+                          src={row.profileImage || DummyProfile}
+                          alt={row.name || "Profile"}
+                          width={32}
+                          height={32}
+                          className="object-cover w-full h-full"
+                        />
+                      </Box>
+                      <Box>
+                        <Typography className="font-semibold text-sm">
+                          {row.name}
+                        </Typography>
+                        <Typography className="text-xs text-gray-500">
+                          {row.email}
+                        </Typography>
+                      </Box>
                     </Box>
-                    <Box>
-                      <Typography className="font-semibold text-sm">
-                        {row.name}
-                      </Typography>
-                      <Typography className="text-xs text-gray-500">
-                        {row.email}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </TableCell>
-                <TableCell>{row.contactNumber}</TableCell>
-                <TableCell>{row.whatsappNumber}</TableCell>
-                <TableCell>{row.address}</TableCell>
-                <TableCell>
-                  <IconButton
-                    onClick={(event) => handleClickMenu(event, row.id)}
-                    aria-label="more"
-                  >
-                    <MoreVertIcon />
-                  </IconButton>
-                  <Menu
-                    anchorEl={anchorEl}
-                    open={open && selectedBuyerId === row.id}
-                    onClose={handleCloseMenu}
-                  >
-                    <MenuItem onClick={() => handleEditClick(row)}>
-                      <EditOutlinedIcon />
-                      Edit
-                    </MenuItem>
-                    <MenuItem onClick={() => setOpenDelete(true)}>
-                      <Image src={DeleteRed} alt="Delete" />
-                      Delete
-                    </MenuItem>
-                  </Menu>
-                </TableCell>
-              </TableRow>
-            ))}
+                  </TableCell>
+                  <TableCell>{row.contactNumber}</TableCell>
+                  <TableCell>{row.whatsappNumber}</TableCell>
+                  <TableCell>{row.address}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleClickMenu(event, row.id);
+                      }}
+                      aria-label="more"
+                    >
+                      <MoreVertIcon />
+                    </IconButton>
+                    <Menu
+                      anchorEl={anchorEl}
+                      open={open && selectedBuyerId === row.id}
+                      onClose={handleCloseMenu}
+                    >
+                      <MenuItem
+                        onClick={(event) => {
+                          event.stopPropagation(); // Prevent row click
+                          handleEditClick(row);
+                        }}
+                      >
+                        <EditOutlinedIcon />
+                        Edit
+                      </MenuItem>
+                      <MenuItem
+                        onClick={(event) => {
+                          event.stopPropagation(); // Prevent row click
+                          setOpenDelete(true);
+                        }}
+                      >
+                        <Image src={DeleteRed} alt="Delete" />
+                        Delete
+                      </MenuItem>
+                    </Menu>
+                  </TableCell>
+                </TableRow>
+              )
+            )}
           </TableBody>
         </Table>
       </TableContainer>
@@ -233,15 +266,15 @@ const VendorManagementBuyers = ({
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      {
-        openDelete &&
+      {openDelete && (
         <DeleteDialog
           handleCloseDeleteDialog={handleCloseDeleteDialog}
           openDelete={openDelete}
           handleDeleteAction={handleDeleteBuyer}
           dialogueTitle="Delete Buyer"
-          dialogueDescription="Are you sure you want to delete this buyer?" />
-      }
+          dialogueDescription="Are you sure you want to delete this buyer?"
+        />
+      )}
     </Box>
   );
 };

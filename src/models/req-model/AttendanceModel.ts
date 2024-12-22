@@ -1,27 +1,45 @@
 import { EmployeeManagementEmployeeModel } from "./EmployeeManagementEmployeeModel";
 
+
+export interface EmployeeModel {
+  id: string;
+  name: string;
+  email: string;
+  phoneNumber: string;
+  address: string;
+  createdBy: string;
+  createdDate: string;
+  updatedBy: string | null;
+  updatedDate: string;
+  isDeleted: boolean;
+  employeeShift: "Day" | "Night";
+}
+
+
 export interface AttendanceStats {
-  present: number; // Number or percentage of present employees
-  absent: number; // Number or percentage of absent employees
+  present: number; // Number of employees present
+  absent: number; // Number of employees absent
 }
 
 export interface AttendanceRecordPayload {
   id?: string;
-  employee: string; // Unique identifier for the employee
+  employee: string | EmployeeModel ;
+  employeeId? : string;
   employeeName?: string;
-  firstIn: string; // Employee's name
-  lastOut: string; // Total working hours for the day
-  status: "Present" | "Absent"; // Attendance status
-  employeeShift: string; // Shift information (e.g., "Day", "Night")
+  firstIn: string;
+  lastOut: string;
+  todaysHour : string;
+  status: "Present" | "Absent";
+  shift: "Day" | "Night";
 }
 
 export interface AttendanceState {
-  stats: AttendanceStats; // Statistics for present/absent employees
-  records: AttendanceRecordPayload[]; // Array of attendance records
-  itemCount: number; // Total number of records (for pagination)
-  loadingStats: boolean; // Loading state for attendance stats
-  loadingRecords: boolean; // Loading state for attendance records
-  error: string | null; // Error message (if any)
+  stats: AttendanceStats;
+  records: AttendanceRecordPayload[];
+  itemCount: number;
+  loadingStats: boolean;
+  loadingRecords: boolean;
+  error: string | null;
   getAllEmployees: EmployeeManagementEmployeeModel[];
-  employeeNames: {[Key : string]: string}; 
+  employeeNames: { [key: string]: string };
 }

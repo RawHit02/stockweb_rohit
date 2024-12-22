@@ -6,6 +6,8 @@ import {
   GET_ALL_SELLERS,
   DELETE_VENDOR,
   EDIT_VENDOR,
+  GET_ALL_BUYERS_NEW,
+  GET_ALL_SELLERS_NEW,
 } from "@/base-url/apiRoutes";
 import {
   CreateBuyerPayload,
@@ -342,3 +344,38 @@ export const fetchSellersAction = createAsyncThunk<
     }
   }
 );
+
+
+// new All buyers for Buyer details 
+export const getAllBuyersNewAction = async () => {
+  try {
+    const response = await fetch(GET_ALL_BUYERS_NEW);
+    const result = await response.json();
+    if (result?.statusCode === 200) {
+      return result.data; 
+    } else {
+      throw new Error("Failed to fetch buyers.");
+    }
+  } catch (error) {
+    console.error("Error fetching buyers:", error);
+    throw error;
+  }
+};
+
+// new All Sellers for the Sellers details 
+export const getAllSellersNewAction = async () => {
+  try {
+    const response = await fetch(GET_ALL_SELLERS_NEW);
+    const result = await response.json();
+    if (result?.statusCode === 200) {
+      return result.data;
+    } else {
+      throw new Error("Failed to fetch suppliers.");
+    }
+  } catch (error) {
+    console.error("Error fetching suppliers:", error);
+    throw error;
+  }
+};
+
+

@@ -20,5 +20,5 @@ export const AttendanceSchema = Yup.object().shape({
     .oneOf(["Present", "Absent"], "Invalid status selected"),
   shift: Yup.string()
     .required("Please select the shift") // Shift validation
-    .oneOf(["Morning", "Day", "Night"], "Invalid shift selected"),
+    .oneOf([ "Day", "Night"], "Invalid shift selected"),
 });
