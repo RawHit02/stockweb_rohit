@@ -23,6 +23,8 @@ import {
   EmployeeIconActive,
   Hamburger,
   Logo1,
+  LogoutOutlinedIcon,
+  SettingsOutlinedIcon,
   ShortLogo,
   StockIcon,
   StockIconActive,
@@ -46,20 +48,16 @@ const SideNav: React.FC<SideNavProps> = ({ onPress, navOpen }) => {
   // save Nav drawer info in Session Storage
   const { setItem } = localSessionStorage();
 
-  const [anchorElVendor, setAnchorElVendor] =
-    React.useState<null | HTMLElement>(null);
-  const [anchorElEmployee, setAnchorElEmployee] =
-    React.useState<null | HTMLElement>(null);
-  const [anchorElStock, setAnchorElStock] = React.useState<null | HTMLElement>(
-    null
-  );
-  const [anchorElAdmin, setAnchorElAdmin] = React.useState<null | HTMLElement>(
-    null
-  );
+  const [anchorElVendor, setAnchorElVendor] = React.useState<null | HTMLElement>(null);
+  const [anchorElEmployee, setAnchorElEmployee] = React.useState<null | HTMLElement>(null);
+  const [anchorElStock, setAnchorElStock] = React.useState<null | HTMLElement>(null);
+  const [anchorElAdmin, setAnchorElAdmin] = React.useState<null | HTMLElement>(null);
+  const [anchorElProfile, setAnchorElProfile] = React.useState<null | HTMLElement>(null);
   const openVendor = Boolean(anchorElVendor);
   const openEmployee = Boolean(anchorElEmployee);
   const openStock = Boolean(anchorElStock);
   const openAdmin = Boolean(anchorElAdmin);
+  const openProfile = Boolean(anchorElProfile);
 
   // Adding Router
   const router = useRouter();
@@ -99,14 +97,20 @@ const SideNav: React.FC<SideNavProps> = ({ onPress, navOpen }) => {
     setAnchorElAdmin(null);
   };
 
+  const handleClickProfile = (event: React.MouseEvent<HTMLDivElement>) => {
+    setAnchorElProfile(event.currentTarget);
+  };
+  const handleCloseProfile = () => {
+    setAnchorElProfile(null);
+  };
+
   return (
     <>
       <Box className="w-full bg-primary h-[calc(100vh-32px)] rounded-xl px-4 pt-9 pb-4 flex flex-col justify-between overflow-auto">
         <Box>
           <Box
-            className={`flex items-center ${
-              navOpen ? "justify-between" : "justify-center gap-2"
-            }`}
+            className={`flex items-center ${navOpen ? "justify-between" : "justify-center gap-2"
+              }`}
           >
             <Box>
               <Image src={navOpen ? Logo1 : ShortLogo} alt="logo" />
@@ -117,9 +121,8 @@ const SideNav: React.FC<SideNavProps> = ({ onPress, navOpen }) => {
           </Box>
           <Box className="mt-9 flex flex-col gap-2">
             <Box
-              className={`flex items-center gap-[6px] p-3 rounded-lg cursor-pointer bg-primary300 nav-item active ${
-                !navOpen && "justify-center"
-              }`}
+              className={`flex items-center gap-[6px] p-3 rounded-lg cursor-pointer bg-primary300 nav-item active ${!navOpen && "justify-center"
+                }`}
             >
               <Image
                 src={DashboardIcon}
@@ -143,7 +146,7 @@ const SideNav: React.FC<SideNavProps> = ({ onPress, navOpen }) => {
                   expandIcon={<ArrowDropDownIcon className="arrow-down-icon" />}
                   aria-controls="panel1-content"
                   id="panel1-header"
-                  // className='active'
+                // className='active'
                 >
                   <Box className="flex items-center gap-[6px]">
                     <Image
@@ -231,7 +234,7 @@ const SideNav: React.FC<SideNavProps> = ({ onPress, navOpen }) => {
                   expandIcon={<ArrowDropDownIcon className="arrow-down-icon" />}
                   aria-controls="panel1-content"
                   id="panel1-header"
-                  // className='active'
+                // className='active'
                 >
                   <Box className="flex items-center gap-[6px]">
                     <Image
@@ -340,7 +343,7 @@ const SideNav: React.FC<SideNavProps> = ({ onPress, navOpen }) => {
                   expandIcon={<ArrowDropDownIcon className="arrow-down-icon" />}
                   aria-controls="panel1-content"
                   id="panel1-header"
-                  // className='active'
+                // className='active'
                 >
                   <Box className="flex items-center gap-[6px]">
                     <Image
@@ -428,7 +431,7 @@ const SideNav: React.FC<SideNavProps> = ({ onPress, navOpen }) => {
                   expandIcon={<ArrowDropDownIcon className="arrow-down-icon" />}
                   aria-controls="panel1-content"
                   id="panel1-header"
-                  // className='active'
+                // className='active'
                 >
                   <Box className="flex items-center gap-[6px]">
                     <Image
@@ -513,13 +516,12 @@ const SideNav: React.FC<SideNavProps> = ({ onPress, navOpen }) => {
             </Box>
           </Box>
         </Box>
-        <Box className="flex flex-col items-center cursor-pointer">
+        <Button component="div" className="flex flex-col items-center cursor-pointer" onClick={(e: any) => handleClickProfile(e)}>
           {navOpen ? <Image src={CoinsImg} alt="coins" /> : ""}
           <Divider className="border-primary200 w-[95%] mb-4" />
           <Box
-            className={`flex items-center gap-[10px] w-full ${
-              navOpen ? "" : "justify-center"
-            }`}
+            className={`flex items-center gap-[10px] w-full ${navOpen ? "" : "justify-center"
+              }`}
           >
             <Box className="w-[50px] h-[50px] rounded-full overflow-hidden">
               <Image src={DummyProfile} alt="prifile image" />
@@ -536,7 +538,37 @@ const SideNav: React.FC<SideNavProps> = ({ onPress, navOpen }) => {
               className={`text-white text-sm ${navOpen ? "" : "hidden"}`}
             />
           </Box>
-        </Box>
+        </Button>
+        <Menu
+          id="basic-menu"
+          anchorEl={anchorElProfile}
+          open={openProfile}
+          onClose={handleCloseProfile}
+          MenuListProps={{
+            'aria-labelledby': 'basic-button',
+          }}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right', // Anchor point on the button
+          }}
+          transformOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right', // Transformation origin on the menu
+          }}
+        >
+          <MenuItem onClick={() => {router.push('/user-profile'); handleCloseProfile(); }}>
+            <Box className="text-baseBlack text-[14px] flex items-center gap-[6px]">
+              <SettingsOutlinedIcon className="text-[20px]" />
+              <Typography>Settings</Typography>
+            </Box>
+          </MenuItem>
+          <MenuItem onClick={handleCloseProfile}>
+            <Box className="text-baseBlack text-[14px] flex items-center gap-[6px]">
+              <LogoutOutlinedIcon className="text-[20px]" />
+              <Typography>logout</Typography>
+            </Box>
+          </MenuItem>
+        </Menu>
       </Box>
     </>
   );

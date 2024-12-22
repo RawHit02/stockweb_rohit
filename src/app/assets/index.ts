@@ -62,6 +62,8 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 
 
 export {
@@ -128,5 +130,7 @@ export {
     CheckCircleOutlineIcon,
     CancelOutlinedIcon,
     ContactsOutlinedIcon,
-    ManageAccountsOutlinedIcon
+    ManageAccountsOutlinedIcon,
+    SettingsOutlinedIcon,
+    LogoutOutlinedIcon
 }
