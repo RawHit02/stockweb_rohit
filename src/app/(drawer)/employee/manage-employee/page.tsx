@@ -12,32 +12,16 @@ import AddNewEmployeeDialog, {
 import { EmployeeManagementEmployeeModel } from "@/models/req-model/EmployeeManagementEmployeeModel";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 
-
-
 const Employees = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [editedEmployee, setEditedEmployee] =
-    useState<EmployeeFormValues | null>(null); 
+    useState<EmployeeFormValues | null>(null);
   const [isAddEmployeeDialogOpen, setIsAddEmployeeDialogOpen] = useState(false);
 
-  const fetchData = useCallback(async () => {
-    const params = {
-      page: 1,
-      take: 10,
-      order: "asc",
-      orderBy: "name",
-    };
-    try {
-      await dispatch(
-        getAllEmployeesAction({ commonApiParamModel: params })
-      ).unwrap();
-    } catch (error) {
-      console.error("Error fetching employees:", error);
-    }
-  },[dispatch ]);
+  const [isEmployeeCreated, setIsEmployeeCreated] = useState<boolean>(false);
 
   const refreshEmployees = async () => {
-    await fetchData();
+    setIsEmployeeCreated(true);
   };
 
   const normalizeNumberForEdit = (number: string) => {
@@ -52,7 +36,7 @@ const Employees = () => {
       email: employee.email,
       address: employee.address,
       employeeShift: employee.employeeShift,
-      profileImage: null, 
+      profileImage: null,
     });
     setIsAddEmployeeDialogOpen(true);
   };
@@ -60,17 +44,16 @@ const Employees = () => {
   const handleAddEmployee = () => {
     setEditedEmployee(null); // Reset edited
     setIsAddEmployeeDialogOpen(true); // Open dialog for adding
+    setIsEmployeeCreated(false);
   };
 
   // Close dialog handler
   const handleCloseDialog = () => {
     setIsAddEmployeeDialogOpen(false); // Close dialog
     setEditedEmployee(null); // Reset edited data
-  };
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    setIsEmployeeCreated(false);
+  };
 
   return (
     <Box className="bg-white border border-[#E8EBED] rounded-xl p-6 h-[calc(100vh-116px)] overflow-auto">
@@ -91,7 +74,10 @@ const Employees = () => {
 
       {/* Employee List */}
       <Box className="mt-4">
-        <EmployeeManagementEmployee onEditEmployee={handleEditEmployee} />
+        <EmployeeManagementEmployee
+          onEditEmployee={handleEditEmployee}
+          isEmployeeCreated={isEmployeeCreated}
+        />
       </Box>
 
       {/* Add/Edit Dialog */}

@@ -7,7 +7,10 @@ import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOu
 import { useRouter } from "next/navigation";
 import { BuyerFormValues } from "@/app/components/AddNewBuyerDialog";
 import { VendorManagementBuyerModel } from "@/models/req-model/VendorManagementBuyerModel";
-import { getAllBuyersAction, getAllBuyersNewAction } from "@/redux/vendor_management/vendor_management.actions";
+import {
+  getAllBuyersAction,
+  getAllBuyersNewAction,
+} from "@/redux/vendor_management/vendor_management.actions";
 import { AppDispatch } from "@/redux/store";
 import { useDispatch } from "react-redux";
 
@@ -18,26 +21,25 @@ const Buyers = () => {
   const [isAddBuyerDialogOpen, setIsAddBuyerDialogOpen] = useState(false);
   const [editedBuyer, setEditedBuyer] = useState<BuyerFormValues | null>(null);
 
-
-const fetchData = async () => {
-  const params = {
-    page: 1,
-    take: 10,
-    order: "asc",
-    orderBy: "name",
+  const fetchData = async () => {
+    const params = {
+      page: 1,
+      take: 10,
+      order: "asc",
+      orderBy: "name",
+    };
+    try {
+      await dispatch(
+        getAllBuyersAction({ commonApiParamModel: params })
+      ).unwrap();
+    } catch (error) {
+      console.error("Error fetching buyers:", error);
+    }
   };
-  try {
-    await dispatch(
-      getAllBuyersAction({ commonApiParamModel: params })
-    ).unwrap();
-  } catch (error) {
-    console.error("Error fetching buyers:", error);
-  }
-};
- useEffect(() => {
-   fetchBuyers();
- }, []);
-
+  
+  // useEffect(() => {
+  //   fetchBuyers();
+  // }, []);
 
   // Fetch all buyers from API
   const fetchBuyers = async () => {
@@ -48,7 +50,6 @@ const fetchData = async () => {
       console.error("Failed to fetch buyers:", error);
     }
   };
-
 
   const refreshBuyers = async () => {
     await fetchData();

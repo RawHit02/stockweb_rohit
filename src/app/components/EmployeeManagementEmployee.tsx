@@ -53,8 +53,10 @@ const headCells = [
 
 const EmployeeManagementEmployees = ({
   onEditEmployee,
+  isEmployeeCreated,
 }: {
   onEditEmployee: (row: EmployeeManagementEmployeeModel) => void;
+  isEmployeeCreated: boolean;
 }) => {
   const [order, setOrder] = useState<"asc" | "desc">("asc");
   const [orderBy, setOrderBy] = useState<string>("name");
@@ -79,7 +81,7 @@ const EmployeeManagementEmployees = ({
         page: page + 1,
         take: rowsPerPage,
         order: "asc",
-        orderBy : "name",
+        orderBy: "name",
       };
       await dispatch(getAllEmployeesAction({ commonApiParamModel: params }));
     } catch (error) {
@@ -89,7 +91,14 @@ const EmployeeManagementEmployees = ({
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, [dispatch, page, rowsPerPage, order, orderBy]);
+
+  // Referesh the page
+  useEffect(() => {
+    if (!!isEmployeeCreated) {
+      fetchData();
+    }
+  }, [isEmployeeCreated]);
 
   const handleClickMenu = (
     event: React.MouseEvent<HTMLElement>,

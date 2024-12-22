@@ -19,14 +19,13 @@ import {
   StockManagementOutwardModel,
 } from "@/models/req-model/StockManagementOutwardModel";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { RootState, AppDispatch } from "@/redux/store"; 
+import { RootState, AppDispatch } from "@/redux/store";
 import {
   GET_ORNAMENT_TYPES,
   GET_ORNAMENT_FORMS,
   GET_ORNAMENT_PURITY,
   GET_ORNAMENT_COLORS,
 } from "@/base-url/apiRoutes";
-
 
 // Fetch Buyers and Suppliers
 export const fetchBuyersAndSuppliers = createAsyncThunk<
@@ -68,12 +67,10 @@ export const fetchBuyersAndSuppliers = createAsyncThunk<
   }
 );
 
-
 export const setSelectedVendorId = (vendor: string) => ({
   type: "stockManagement/setSelectedVendorId",
   payload: vendor,
 });
-
 
 // fetch all Ornaments:
 export const fetchOrnaments = createAsyncThunk<
@@ -91,8 +88,6 @@ export const fetchOrnaments = createAsyncThunk<
     });
   }
 });
-
-
 
 // Fetch Ornament Types
 export const fetchOrnamentTypes = createAsyncThunk<
@@ -112,8 +107,6 @@ export const fetchOrnamentTypes = createAsyncThunk<
   }
 });
 
-
-
 // Fetch Forms
 export const fetchForms = createAsyncThunk<
   { data: { id: string; ornamentForm: string }[] },
@@ -130,8 +123,6 @@ export const fetchForms = createAsyncThunk<
     });
   }
 });
-
-
 
 // Fetch Purities
 export const fetchPurities = createAsyncThunk<
@@ -167,7 +158,6 @@ export const fetchColors = createAsyncThunk<
   }
 });
 
-
 // Create Inward
 export const createInward = createAsyncThunk(
   "stockManagement/createInward",
@@ -176,7 +166,9 @@ export const createInward = createAsyncThunk(
       const res = await apiClient.post(CREATE_STOCK, payload);
       return res.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Failed to create inward");
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to create inward"
+      );
     }
   }
 );
@@ -189,7 +181,9 @@ export const createOutward = createAsyncThunk(
       const res = await apiClient.post(CREATE_STOCK, payload);
       return res.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Failed to create outward");
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to create outward"
+      );
     }
   }
 );
@@ -248,8 +242,7 @@ export const createOutward = createAsyncThunk(
 //     try {
 //       // Retrieve the selected vendor ID from the Redux state
 //       const selectedVendorId = (getState() as RootState).stockManagement.selectedVendorId;
-      
-    
+
 //       const body = {
 //         stockType: "outward",
 //         transId: createOutwardPayload.transId,
@@ -284,8 +277,6 @@ export const createOutward = createAsyncThunk(
 //     }
 //   }
 // );
-
-
 
 // Get All Inwards
 export const getAllInwardsAction = createAsyncThunk<
