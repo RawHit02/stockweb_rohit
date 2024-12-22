@@ -24,6 +24,7 @@ const config: Config = {
         gray400: "#1D1D1D",
         purple100: "#484C72",
         error200: "#C03744",
+        success200: "#15B097",
         red100: "#E4626F",
         baseBlack: "#090A0B",
       },
