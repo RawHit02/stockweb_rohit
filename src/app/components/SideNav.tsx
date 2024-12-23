@@ -23,12 +23,13 @@ import {
   EmployeeIconActive,
   Hamburger,
   Logo1,
+  LogoutOutlinedIcon,
+  SettingsOutlinedIcon,
   ShortLogo,
   StockIcon,
   StockIconActive,
   VendorManagementicon,
   VendorManagementiconActive,
-
 } from "../assets";
 import Image from "next/image";
 import localSessionStorage from "@/hooks/localSessionStorage";
@@ -57,10 +58,13 @@ const SideNav: React.FC<SideNavProps> = ({ onPress, navOpen }) => {
   const [anchorElAdmin, setAnchorElAdmin] = React.useState<null | HTMLElement>(
     null
   );
+  const [anchorElProfile, setAnchorElProfile] =
+    React.useState<null | HTMLElement>(null);
   const openVendor = Boolean(anchorElVendor);
   const openEmployee = Boolean(anchorElEmployee);
   const openStock = Boolean(anchorElStock);
   const openAdmin = Boolean(anchorElAdmin);
+  const openProfile = Boolean(anchorElProfile);
 
   // Adding Router
   const router = useRouter();
@@ -100,6 +104,14 @@ const SideNav: React.FC<SideNavProps> = ({ onPress, navOpen }) => {
     setAnchorElAdmin(null);
   };
 
+  const handleClickProfile = (event: React.MouseEvent<HTMLDivElement>) => {
+    setAnchorElProfile(event.currentTarget);
+  };
+  const handleCloseProfile = () => {
+    setAnchorElProfile(null);
+  };
+
+  
   const handleLogout = () => {
     // clear cookie
     document.cookie =
@@ -107,13 +119,6 @@ const SideNav: React.FC<SideNavProps> = ({ onPress, navOpen }) => {
     router.push("/");
   };
 
-const [anchorElProfile, setAnchorElProfile] =
-  React.useState<null | HTMLElement>(null);
-const openProfile = Boolean(anchorElProfile);
-
-const handleProfileClick = (event: React.MouseEvent<HTMLParagraphElement>) =>
-  setAnchorElProfile(event.currentTarget);
-const handleProfileClose = () => setAnchorElProfile(null);
 
 
   return (
@@ -530,7 +535,11 @@ const handleProfileClose = () => setAnchorElProfile(null);
             </Box>
           </Box>
         </Box>
-        <Box className="flex flex-col items-center cursor-pointer">
+        <Button
+          component="div"
+          className="flex flex-col items-center cursor-pointer"
+          onClick={(e: any) => handleClickProfile(e)}
+        >
           {navOpen ? <Image src={CoinsImg} alt="coins" /> : ""}
           <Divider className="border-primary200 w-[95%] mb-4" />
           <Box
@@ -539,35 +548,56 @@ const handleProfileClose = () => setAnchorElProfile(null);
             }`}
           >
             <Box className="w-[50px] h-[50px] rounded-full overflow-hidden">
-              <Image src={DummyProfile} alt="profile image" />
+              <Image src={DummyProfile} alt="prifile image" />
             </Box>
             <Box className={`${navOpen ? "" : "hidden"}`}>
-              <Typography
-                className="text-white font-medium cursor-pointer"
-                onClick={handleProfileClick}
-              >
+              <Typography className="text-white font-medium">
                 JOHN CARTER
               </Typography>
               <Typography className="text-sm text-primary200 font-medium">
                 john@gmail.com
               </Typography>
-              <Menu
-                id="profile-menu"
-                anchorEl={anchorElAdmin}
-                open={openProfile}
-                onClose={handleProfileClose}
-                MenuListProps={{
-                  "aria-labelledby": "profile-menu-button",
-                }}
-              >
-                <MenuItem onClick={handleLogout}>Logout</MenuItem>
-              </Menu>
             </Box>
             <ArrowForwardIosIcon
               className={`text-white text-sm ${navOpen ? "" : "hidden"}`}
             />
           </Box>
-        </Box>
+        </Button>
+        <Menu
+          id="basic-menu"
+          anchorEl={anchorElProfile}
+          open={openProfile}
+          onClose={handleCloseProfile}
+          MenuListProps={{
+            "aria-labelledby": "basic-button",
+          }}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "right", // Anchor point on the button
+          }}
+          transformOrigin={{
+            vertical: "bottom",
+            horizontal: "right", // Transformation origin on the menu
+          }}
+        >
+          <MenuItem
+            onClick={() => {
+              router.push("/user-profile");
+              handleCloseProfile();
+            }}
+          >
+            <Box className="text-baseBlack text-[14px] flex items-center gap-[6px]">
+              <SettingsOutlinedIcon className="text-[20px]" />
+              <Typography>Settings</Typography>
+            </Box>
+          </MenuItem>
+          <MenuItem onClick={handleLogout}>
+            <Box className="text-baseBlack text-[14px] flex items-center gap-[6px]">
+              <LogoutOutlinedIcon className="text-[20px]" />
+              <Typography>Logout</Typography>
+            </Box>
+          </MenuItem>
+        </Menu>
       </Box>
     </>
   );
