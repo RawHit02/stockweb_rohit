@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState, useEffect } from "react";
 import {
@@ -291,7 +290,6 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
           });
         }
       }
-
       console.log("API call successful. Closing the dialog...");
       props.onClose(); // Close the dialog on success
     } catch (error) {
@@ -301,7 +299,6 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
       });
     }
   };
-
 
   return (
     <Dialog
@@ -720,7 +717,7 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                         </>
                       )}
 
-                      <Grid item xs={props.stock ? 12 : 6}>
+                      <Grid item xs={6}>
                         <Box>
                           <Typography className="text-sm text-primary mb-1">
                             {props.stock ? "Supplier Name" : "Buyer Name"}
@@ -758,23 +755,21 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                         </Box>
                       </Grid>
 
-                      {!props.stock && (
-                        <Grid item xs={6}>
-                          <Box>
-                            <Typography className="text-sm text-primary mb-1">
-                              Commission
-                            </Typography>
-                            <Field
-                              name="commission"
-                              as={OutlinedInput}
-                              fullWidth
-                              placeholder="Enter commission"
-                              value={values.commission || ""} // Fallback to empty string
-                            />
-                            <CustomErrorMessage name="commission" />
-                          </Box>
-                        </Grid>
-                      )}
+                      <Grid item xs={6}>
+                        <Box>
+                          <Typography className="text-sm text-primary mb-1">
+                            Commission
+                          </Typography>
+                          <Field
+                            name="commission"
+                            as={OutlinedInput}
+                            fullWidth
+                            placeholder="Enter commission"
+                            value={values.commission || ""} // Fallback to empty string
+                          />
+                          <CustomErrorMessage name="commission" />
+                        </Box>
+                      </Grid>
 
                       {!props.stock && (
                         <Grid item xs={6}>
@@ -1189,7 +1184,7 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                         </>
                       )}
 
-                      <Grid item xs={props.stock ? 12 : 6}>
+                      <Grid item xs={6}>
                         <Box>
                           <Typography className="text-sm text-primary mb-1">
                             {props.stock ? "Supplier Name" : "Buyer Name"}
@@ -1227,23 +1222,21 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                         </Box>
                       </Grid>
 
-                      {!props.stock && (
-                        <Grid item xs={6}>
-                          <Box>
-                            <Typography className="text-sm text-primary mb-1">
-                              Commission
-                            </Typography>
-                            <Field
-                              name="commission"
-                              as={OutlinedInput}
-                              fullWidth
-                              placeholder="Enter commission"
-                              value={values.commission || ""} // Fallback to empty string
-                            />
-                            <CustomErrorMessage name="commission" />
-                          </Box>
-                        </Grid>
-                      )}
+                      <Grid item xs={6}>
+                        <Box>
+                          <Typography className="text-sm text-primary mb-1">
+                            Commission
+                          </Typography>
+                          <Field
+                            name="commission"
+                            as={OutlinedInput}
+                            fullWidth
+                            placeholder="Enter commission"
+                            value={values.commission || ""} // Fallback to empty string
+                          />
+                          <CustomErrorMessage name="commission" />
+                        </Box>
+                      </Grid>
 
                       {!props.stock && (
                         <Grid item xs={6}>
@@ -1554,7 +1547,8 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                           </Grid>
                         </>
                       )}
-                      <Grid item xs={props.stock ? 12 : 6}>
+
+                      <Grid item xs={6}>
                         <Box>
                           <Typography className="text-sm text-primary mb-1">
                             {props.stock ? "Supplier Name" : "Buyer Name"}
@@ -1591,23 +1585,22 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                         </Box>
                       </Grid>
 
-                      {!props.stock && (
-                        <Grid item xs={6}>
-                          <Box>
-                            <Typography className="text-sm text-primary mb-1">
-                              Commission
-                            </Typography>
-                            <Field
-                              name="commission"
-                              as={OutlinedInput}
-                              fullWidth
-                              placeholder="Enter commission"
-                              value={values.commission || ""} // Fallback to empty string
-                            />
-                            <CustomErrorMessage name="commission" />
-                          </Box>
-                        </Grid>
-                      )}
+                      <Grid item xs={6}>
+                        <Box>
+                          <Typography className="text-sm text-primary mb-1">
+                            Commission
+                          </Typography>
+                          <Field
+                            name="commission"
+                            as={OutlinedInput}
+                            fullWidth
+                            placeholder="Enter commission"
+                            value={values.commission || ""} // Fallback to empty string
+                          />
+                          <CustomErrorMessage name="commission" />
+                        </Box>
+                      </Grid>
+
                       {!props.stock && (
                         <Grid item xs={6}>
                           <Box>
