@@ -123,7 +123,7 @@ export const deleteEmployeeAction = createAsyncThunk<
   "employeeManagement/deleteEmployee",
   async (EmployeeId, { rejectWithValue }) => {
     try {
-      const response = await apiClient._delete(
+      const response = await apiClient.delete(
         `${DELETE_EMPLOYEE}/${EmployeeId}`
       );
       return { message: "Employee deleted successfully" };
