@@ -172,7 +172,6 @@ const AddAttendanceDialog: React.FC<AddAttendanceDialogProps> = ({
     formik.setFieldValue("employeeId", e.target.value);
     formik.setFieldValue("employeeName", selectedEmployee?.name || "");
   };
-
   return (
     <Dialog
       fullWidth

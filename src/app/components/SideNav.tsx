@@ -111,14 +111,14 @@ const SideNav: React.FC<SideNavProps> = ({ onPress, navOpen }) => {
     setAnchorElProfile(null);
   };
 
-  
   const handleLogout = () => {
     // clear cookie
     document.cookie =
       "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
     router.push("/");
   };
-
+ 
+ 
 
 
   return (
@@ -591,6 +591,7 @@ const SideNav: React.FC<SideNavProps> = ({ onPress, navOpen }) => {
               <Typography>Settings</Typography>
             </Box>
           </MenuItem>
+          {/* <MenuItem onClick={handleLogout}> */}
           <MenuItem onClick={handleLogout}>
             <Box className="text-baseBlack text-[14px] flex items-center gap-[6px]">
               <LogoutOutlinedIcon className="text-[20px]" />

@@ -15,7 +15,11 @@ import { useDispatch } from "react-redux";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
-import { RemoveRedEyeOutlinedIcon, VisibilityOffOutlinedIcon, ArrowForwardIosOutlinedIcon } from "../assets"; 
+import {
+  RemoveRedEyeOutlinedIcon,
+  VisibilityOffOutlinedIcon,
+  ArrowForwardIosOutlinedIcon,
+} from "../assets";
 import Image from "next/image";
 import { Logo2, LoginBackground } from "../assets";
 import { login } from "@/redux/slices/authSlice";
@@ -32,44 +36,58 @@ const SignIn = () => {
     password: Yup.string().required("Please enter your password"),
   });
 
+  const handleLogin = async (values: {
+    username: string;
+    password: string;
+  }) => {
+    const { username, password } = values;
 
-  //  const handleLogin = () => {
-  //    // Dispatch login action
-  //    dispatch(login());
-  //    // Navigate to the dashboard
-  //    router.push("/dashboard");
-  //  };
+    // Commented out middleware-related code
+    
+    try {
+      // Mock login logic
+      if (username === "admin" && password === "password") {
+        const mockData = { token: "mockedAuthToken" };
 
+        // Set authToken in cookies
+        document.cookie = `authToken=${
+          mockData.token
+        }; path=/; secure; expires=${new Date(
+          Date.now() + 60 * 60 * 1000 // 1-hour 
+        ).toUTCString()};`;
 
-const handleLogin = async (values: { username: string; password: string }) => {
-  const { username, password } = values;
+        // Dispatch action for login
+        dispatch(login());
 
-  try {
-    // Mock login logic
-    if (username === "admin" && password === "password") {
-      const mockData = { token: "mockedAuthToken" };
-
-      // Set athToken in cookies
-      document.cookie = `authToken=${
-        mockData.token
-      }; path=/; secure; expires=${new Date(
-        Date.now() + 60 * 60 * 1000 // 1-hour 
-      ).toUTCString()};`;
-
-      // Dispatch action for login
-      dispatch(login());
-
-      router.push("/dashboard");
-    } else {
-      alert("Invalid username or password");
+        router.push("/dashboard");
+      } else {
+        alert("Invalid username or password");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Login failed. Please try again.");
     }
-  } catch (error) {
-    console.error("Login error:", error);
-    alert("Login failed. Please try again.");
-  }
-};
+    
+   }; 
 
+  //   if (username === "admin" && password === "password") {
+  //     // Mock token
+  //     const mockData = { token: "mockedAuthToken" };
 
+  //     // Set authToken in cookies
+  //     document.cookie = `authToken=${mockData.token}; path=/; secure; expires=${new Date(
+  //       Date.now() + 60 * 60 * 1000 // 1-hour
+  //     ).toUTCString()};`;
+
+  //     // Dispatch action for login
+  //     dispatch(login());
+
+  //     // Navigate to dashboard
+  //     router.push("/dashboard");
+  //   } else {
+  //     alert("Invalid username or password");
+  //   }
+  // };
 
   return (
     <Box className="relative h-screen w-full">

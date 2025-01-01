@@ -184,12 +184,22 @@ export const put = async (
   return await axios.put(`${URL}`, payload, config);
 };
 
-const apiClient = {
-  post,
-  get,
-  patch,
-  put,
-  _delete,
-};
+export const apiClient = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_BACKEND_API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
-export { apiClient };
+apiClient.interceptors.response.use(
+  response => response,
+  error => {
+    const errorDetails = {
+      status: error?.response?.status,
+      data: error?.response?.data,
+      headers: error?.response?.headers,
+    };
+    console.error('API error details:', errorDetails);
+    return Promise.reject(error);
+  }
+);

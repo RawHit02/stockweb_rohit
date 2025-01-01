@@ -23,7 +23,7 @@ export interface AttendanceStats {
 
 export interface AttendanceRecordPayload {
   id?: string;
-  employee: string | EmployeeModel ;
+  employee: string | EmployeeModel;
   employeeId? : string;
   employeeName?: string;
   firstIn: string;

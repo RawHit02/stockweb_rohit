@@ -158,7 +158,7 @@ const Dashboard = () => {
           </Grid>
         </Grid>
         <Box className="border border-primary100 rounded-lg p-4 mt-4">
-          <Typography>Today's Due</Typography>
+          <Typography>Today&apos;s Due</Typography>
           <Box className="mt-6">
             <PrimaryTableExample2 />
           </Box>

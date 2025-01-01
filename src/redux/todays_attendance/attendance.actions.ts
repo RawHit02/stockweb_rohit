@@ -140,7 +140,7 @@ export const deleteAttendanceRecord = createAsyncThunk<
   { rejectValue: { message: string } }
 >("attendance/deleteRecord", async (attendanceId, { rejectWithValue }) => {
   try {
-    await apiClient._delete(`${DELETE_ATTENDANCE_RECORD}/${attendanceId}`);
+    await apiClient.delete(`${DELETE_ATTENDANCE_RECORD}/${attendanceId}`);
     return { message: "Attendance record deleted successfully" };
   } catch (error: any) {
     return rejectWithValue({

@@ -57,3 +57,11 @@ export function middleware(req: NextRequest) {
 export const config = {
   matcher: ["/:path*"], // Matches all routes
 };
+
+
+
+
+// Export an empty middleware function to satisfy Next.js requirements
+// export function middleware(req: any) {
+//   return NextResponse.next();
+// }

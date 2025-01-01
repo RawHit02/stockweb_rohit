@@ -234,7 +234,7 @@ export const deleteBuyerAction = createAsyncThunk<
   "vendorManagement/deleteBuyer",
   async (buyerId, { rejectWithValue }) => {
     try {
-      const response = await apiClient._delete(`${DELETE_VENDOR}/${buyerId}`);
+      const response = await apiClient.delete(`${DELETE_VENDOR}/${buyerId}`);
       return { message: "Buyer deleted successfully" };
     } catch (error: any) {
       console.error(
@@ -259,7 +259,7 @@ export const deleteSellerAction = createAsyncThunk<
   "vendorManagement/deleteSeller",
   async (sellerId, { rejectWithValue }) => {
     try {
-      const response = await apiClient._delete(`${DELETE_VENDOR}/${sellerId}`);
+      const response = await apiClient.delete(`${DELETE_VENDOR}/${sellerId}`);
       return { message: "Seller deleted successfully" };
     } catch (error: any) {
       console.error(

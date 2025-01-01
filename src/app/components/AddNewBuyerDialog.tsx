@@ -404,7 +404,7 @@ const AddNewBuyerDialog: React.FC<AddNewBuyerDialogProps> = ({
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
-        onClose={handleSnackbarClose}
+        onClose={handleSnackbarClose} 
         message={snackbarMessage}
       />
     </>

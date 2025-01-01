@@ -34,19 +34,33 @@ export const GET_ALL_BUYERS_NEW = `${BASE_URL}/vendorManagement/getAllVendor/buy
 export const GET_ALL_SELLERS_NEW = `${BASE_URL}/vendorManagement/getAllVendor/supplier`; // Fetch Seller Details
 
 // Ornament Management
+export const POST_ALL_ORNAMENTS = `${BASE_URL}/ornamentManagement`; // Create Ornament
 export const GET_ALL_ORNAMENTS = `${BASE_URL}/ornamentManagement/getAllOrnament`; // Fetch Ornaments
+export const DELETE_ALL_ORNAMENTS = `${BASE_URL}/ornamentManagement/deleteOrnament`; // Delete Ornament
+
 
 // Ornament Colors
+export const POST_ORNAMENT_COLORS = `${BASE_URL}/ornamentColorManagement`; // Create Ornament Color
 export const GET_ORNAMENT_COLORS = `${BASE_URL}/ornamentColorManagement/getOrnamentColor`; // Fetch Ornament Colors
+export const DELETE_ORNAMENT_COLORS = `${BASE_URL}/ornamentColorManagement/deleteOrnamentColor`; // Delete Ornament Color
+
 
 // Ornament Forms
+export const POST_ORNAMENT_FORMS = `${BASE_URL}/ornamentFormManagement`;
 export const GET_ORNAMENT_FORMS = `${BASE_URL}/ornamentFormManagement/getOrnamentForm`; // Fetch Ornament Forms
+export const DELETE_ORNAMENT_FORMS = `${BASE_URL}/ornamentFormManagement/deleteOrnamentForm`; // Delete Ornament Form
+
 
 // Ornament Purity
+export const POST_ORNAMENT_PURITY = `${BASE_URL}/ornamentPurityManagement`; // Create Ornament Purity
 export const GET_ORNAMENT_PURITY = `${BASE_URL}/ornamentPurityManagement/getOrnamentPurity`; // Fetch Ornament Purity
+export const DELETE_ORNAMENT_PURITY = `${BASE_URL}/ornamentPurityManagement/deleteOrnamentPurity`; // Delete Ornament Purity
+
 
 // Ornament Types
+export const POST_ORNAMENT_TYPES = `${BASE_URL}/ornamentTypeManagement`; // Create Ornament Type
 export const GET_ORNAMENT_TYPES = `${BASE_URL}/ornamentTypeManagement/getOrnamentType`; // Fetch Ornament Types
+export const DELETE_ORNAMENT_TYPES = `${BASE_URL}/ornamentTypeManagement/deleteOrnamentType`; // Delete Ornament Type
 
 
 // Employee Management
@@ -64,3 +78,11 @@ export const ADD_ATTENDANCE_RECORD = `${BASE_URL}/attendanceManagement/createAtt
 export const GET_ATTENDANCE_RECORDS = `${BASE_URL}/attendanceManagement/getAttendance`;
 export const UPDATE_ATTENDANCE_RECORD = `${BASE_URL}/attendanceManagement/updateAttendance`;
 export const DELETE_ATTENDANCE_RECORD = `${BASE_URL}/attendanceManagement/deleteAttendance`;
+
+// Sass Loader Configuration
+export const sassLoaderOptions = {
+  implementation: require('sass'),
+  sassOptions: {
+    fiber: false,
+  },
+};

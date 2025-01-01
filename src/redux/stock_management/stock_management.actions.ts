@@ -2,11 +2,21 @@ import CustomToast from "@/app/components/CustomToast";
 import { apiClient } from "@/base-url/apiClient";
 import {
   CREATE_STOCK,
+  DELETE_ALL_ORNAMENTS,
+  DELETE_ORNAMENT_COLORS,
+  DELETE_ORNAMENT_FORMS,
+  DELETE_ORNAMENT_PURITY,
+  DELETE_ORNAMENT_TYPES,
   DELETE_STOCK,
   FETCH_INWARD_STOCK,
   FETCH_OUTWARD_STOCK,
   GET_ALL_BUYERS_AND_SUPPLIERS,
-  GET_ALL_ORNAMENTS, // Updated API route for fetching buyers and suppliers
+  GET_ALL_ORNAMENTS,
+  POST_ALL_ORNAMENTS,
+  POST_ORNAMENT_COLORS,
+  POST_ORNAMENT_FORMS,
+  POST_ORNAMENT_PURITY,
+  POST_ORNAMENT_TYPES,
 } from "@/base-url/apiRoutes";
 import {
   CreateStockInwardPayload,
@@ -28,15 +38,14 @@ import {
 } from "@/base-url/apiRoutes";
 
 // Fetch Buyers and Suppliers
-export const fetchBuyersAndSuppliers = createAsyncThunk<
-  {
-    data: {
-      buyers: { id: string; name: string }[];
-      suppliers: { id: string; name: string }[];
-    };
-  },
-  "buyer" | "supplier",
-  { state: RootState; dispatch: AppDispatch }
+export const fetchBuyersAndSuppliers = createAsyncThunk<{
+  data: {
+    buyers: { id: string; name: string }[];
+    suppliers: { id: string; name: string }[];
+  };
+},
+"buyer" | "supplier",
+{ state: RootState; dispatch: AppDispatch }
 >(
   "stockManagement/fetchBuyersAndSuppliers",
   async (type, { rejectWithValue }) => {
@@ -72,11 +81,34 @@ export const setSelectedVendorId = (vendor: string) => ({
   payload: vendor,
 });
 
-// fetch all Ornaments:
-export const fetchOrnaments = createAsyncThunk<
-  { data: { id: string; ornament: string }[] },
-  void,
-  { rejectValue: { message: string } }
+
+// Ornament: Create
+export const addOrnament = createAsyncThunk<
+  any,
+  { ornament: string },
+  { rejectValue: string }
+>(
+  "stockManagement/addOrnament",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.post(POST_ALL_ORNAMENTS, payload);
+      return response.data;
+    } catch (error: any) {
+      console.error("Error creating ornament:", error);
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to create ornament"
+      );
+    }
+  }
+);
+
+
+// fetch/ GET all Ornaments:
+export const fetchOrnaments = createAsyncThunk<{
+  data: { id: string; ornament: string }[];
+},
+void,
+{ rejectValue: { message: string } }
 >("stockManagement/fetchOrnaments", async (_, { rejectWithValue }) => {
   try {
     const res = await apiClient.get(GET_ALL_ORNAMENTS);
@@ -89,11 +121,52 @@ export const fetchOrnaments = createAsyncThunk<
   }
 });
 
-// Fetch Ornament Types
-export const fetchOrnamentTypes = createAsyncThunk<
-  { data: { id: string; ornamentType: string }[] },
-  void,
-  { rejectValue: { message: string } }
+// Ornament: Delete
+export const deleteOrnament = createAsyncThunk<
+  any,
+  string,
+  { rejectValue: string }
+>(
+  "stockManagement/deleteOrnament",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.delete(`${DELETE_ALL_ORNAMENTS}/${id}`);
+      return response.data;
+    } catch (error: any) {
+      console.error("Error deleting ornament:", error);
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to delete ornament"
+      );
+    }
+  }
+);
+
+// Ornament Type: Create
+export const addType = createAsyncThunk<
+  any,
+  { ornamentType: string; ornament: string },
+  { rejectValue: string }
+>(
+  "stockManagement/addType",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.post(POST_ORNAMENT_TYPES, payload);
+      return response.data;
+    } catch (error: any) {
+      console.error("Error creating type:", error);
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to create type"
+      );
+    }
+  }
+);
+
+// Fetch/GET Ornament Types
+export const fetchOrnamentTypes = createAsyncThunk<{
+  data: { id: string; ornamentType: string }[];
+},
+void,
+{ rejectValue: { message: string } }
 >("stockManagement/fetchOrnamentTypes", async (_, { rejectWithValue }) => {
   try {
     const res = await apiClient.get(GET_ORNAMENT_TYPES);
@@ -107,11 +180,52 @@ export const fetchOrnamentTypes = createAsyncThunk<
   }
 });
 
+// Ornament Type: Delete
+export const deleteType = createAsyncThunk<
+  any,
+  string,
+  { rejectValue: string }
+>(
+  "stockManagement/deleteType",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.delete(`${DELETE_ORNAMENT_TYPES}/${id}`);
+      return response.data;
+    } catch (error: any) {
+      console.error("Error deleting type:", error);
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to delete type"
+      );
+    }
+  }
+);
+
+// Ornament Form: Create
+export const addForm = createAsyncThunk<
+  any,
+  { ornamentForm: string; ornament: string },
+  { rejectValue: string }
+>(
+  "stockManagement/addForm",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.post(POST_ORNAMENT_FORMS, payload);
+      return response.data;
+    } catch (error: any) {
+      console.error("Error creating form:", error);
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to create form"
+      );
+    }
+  }
+);
+
 // Fetch Forms
-export const fetchForms = createAsyncThunk<
-  { data: { id: string; ornamentForm: string }[] },
-  void,
-  { rejectValue: { message: string } }
+export const fetchForms = createAsyncThunk<{
+  data: { id: string; ornamentForm: string }[];
+},
+void,
+{ rejectValue: { message: string } }
 >("stockManagement/fetchForms", async (_, { rejectWithValue }) => {
   try {
     const res = await apiClient.get(GET_ORNAMENT_FORMS);
@@ -124,11 +238,52 @@ export const fetchForms = createAsyncThunk<
   }
 });
 
+// Ornament Form: Delete
+export const deleteForm = createAsyncThunk<
+  any,
+  string,
+  { rejectValue: string }
+>(
+  "stockManagement/deleteForm",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.delete(`${DELETE_ORNAMENT_FORMS}/${id}`);
+      return response.data;
+    } catch (error: any) {
+      console.error("Error deleting form:", error);
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to delete form"
+      );
+    }
+  }
+);
+
+// Add Ornament Purity
+export const addPurity = createAsyncThunk<
+  any, // Replace with the actual response type if known
+  { ornamentPurity: string; ornament: string }, // Payload type: purity name and ornament ID
+  { rejectValue: string }
+>(
+  "stockManagement/addPurity",
+  async (payload: { ornamentPurity: string; ornament: string }, { rejectWithValue }) => {
+    try {
+      const res = await apiClient.post(POST_ORNAMENT_PURITY, payload);
+      return res.data;
+    } catch (error: any) {
+      console.error("Error adding ornament purity:", error); // Log errors
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to add ornament purity"
+      );
+    }
+  }
+);
+
 // Fetch Purities
-export const fetchPurities = createAsyncThunk<
-  { data: { id: string; ornamentPurity: string }[] },
-  void,
-  { rejectValue: { message: string } }
+export const fetchPurities = createAsyncThunk<{
+  data: { id: string; ornamentPurity: string }[];
+},
+void,
+{ rejectValue: { message: string } }
 >("stockManagement/fetchPurities", async (_, { rejectWithValue }) => {
   try {
     const res = await apiClient.get(GET_ORNAMENT_PURITY);
@@ -141,11 +296,52 @@ export const fetchPurities = createAsyncThunk<
   }
 });
 
+// Ornament Purity: Delete
+export const deletePurity = createAsyncThunk<
+  any,
+  string, // ID of the ornament purity to delete
+  { rejectValue: string }
+>(
+  "stockManagement/deletePurity",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.delete(`${DELETE_ORNAMENT_PURITY}/${id}`);
+      return response.data;
+    } catch (error: any) {
+      console.error("Error deleting purity:", error);
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to delete purity"
+      );
+    }
+  }
+);
+
+// Ornament Color: Create
+export const addColor = createAsyncThunk<
+  any,
+  { ornamentColor: string; ornament: string },
+  { rejectValue: string }
+>(
+  "stockManagement/addColor",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.post(POST_ORNAMENT_COLORS, payload);
+      return response.data;
+    } catch (error: any) {
+      console.error("Error creating color:", error);
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to create color"
+      );
+    }
+  }
+);
+
 // Fetch Colors
-export const fetchColors = createAsyncThunk<
-  { data: { id: string; ornamentColor: string }[] },
-  void,
-  { rejectValue: { message: string } }
+export const fetchColors = createAsyncThunk<{
+  data: { id: string; ornamentColor: string }[];
+},
+void,
+{ rejectValue: { message: string } }
 >("stockManagement/fetchColors", async (_, { rejectWithValue }) => {
   try {
     const res = await apiClient.get(GET_ORNAMENT_COLORS);
@@ -158,134 +354,70 @@ export const fetchColors = createAsyncThunk<
   }
 });
 
-// Create Inward
-export const createInward = createAsyncThunk<
-  any, // Replace with the actual response type if known
-  CreateStockInwardPayload, // Replace with the actual payload type
+// Ornament Color: Delete
+export const deleteColor = createAsyncThunk<
+  any,
+  string,
   { rejectValue: string }
 >(
-  "stockManagement/createInward",
-  async (payload: CreateStockInwardPayload, { rejectWithValue }) => {
+  "stockManagement/deleteColor",
+  async (id, { rejectWithValue }) => {
     try {
-      const res = await apiClient.post(CREATE_STOCK, payload);
-      return res.data;
+      const response = await apiClient.delete(`${DELETE_ORNAMENT_COLORS}/${id}`);
+      return response.data;
     } catch (error: any) {
+      console.error("Error deleting color:", error);
       return rejectWithValue(
-        error.response?.data?.message || "Failed to create inward"
+        error.response?.data?.message || "Failed to delete color"
       );
     }
   }
 );
+
+// Create Inward
+export const createInward = createAsyncThunk<
+  any, // Replace `any` with the actual response type if known
+  CreateStockInwardPayload, // Ensure this matches the payload type for creating inward stock
+  { rejectValue: { message: string } }
+>("stockManagement/createInward", async (payload, { rejectWithValue }) => {
+  try {
+    const response = await apiClient.post(CREATE_STOCK, payload); // Replace `CREATE_STOCK` with the actual API endpoint for inward stock
+    return response.data?.data || payload; // Ensure to return the correct data or payload
+  } catch (error: any) {
+    console.error("Error creating inward stock:", error); // Log the error for debugging
+    return rejectWithValue({
+      message:
+        error.response?.data?.message || "Failed to create inward stock",
+    });
+  }
+});
+
 // Create Outward
-export const createOutward = createAsyncThunk(
-  "stockManagement/createOutward",
-  async (payload, { rejectWithValue }) => {
-    try {
-      const res = await apiClient.post(CREATE_STOCK, payload);
-      return res.data;
-    } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to create outward"
-      );
-    }
+export const createOutward = createAsyncThunk<
+  any, // Replace `any` with the actual response type if known
+  CreateStockOutwardPayload, // Ensure this matches the payload type for creating outward stock
+  { rejectValue: { message: string } }
+>("stockManagement/createOutward", async (payload, { rejectWithValue }) => {
+  try {
+    const response = await apiClient.post(CREATE_STOCK, payload); // Replace `CREATE_STOCK` with the actual API endpoint for outward stock
+    return response.data?.data || payload; // Ensure to return the correct data or payload
+  } catch (error: any) {
+    console.error("Error creating outward stock:", error); // Log the error for debugging
+    return rejectWithValue({
+      message:
+        error.response?.data?.message || "Failed to create outward stock",
+    });
   }
-);
+});
 
-// // Create Inward
-// export const createInward = createAsyncThunk<
-//   { data: StockManagementInwardModel; message: string },
-//   { createInwardPayload: CreateStockInwardPayload },
-//   { rejectValue: { message: string; status?: number } }
-// >(
-//   "stockManagement/createInward",
-//   async ({ createInwardPayload }, { rejectWithValue, getState }) => {
-//     try {
-//       // Retrieve the selected vendor ID from the Redux state
-//       const selectedVendorId = (getState() as RootState).stockManagement
-//         .selectedVendorId;
-
-//       const body = {
-//         stockType: "inward",
-//         transId: createInwardPayload.transId,
-//         description: createInwardPayload.description,
-//         itemType: createInwardPayload.itemType,
-//         quantity: createInwardPayload.quantity,
-//         unitPrice: createInwardPayload.unitPrice,
-//         commission: createInwardPayload.commission,
-//         totalValue: createInwardPayload.totalValue,
-//         batchNumber: createInwardPayload.batchNumber,
-//         receivedBy: createInwardPayload.receivedBy,
-//         location: createInwardPayload.location,
-//         notes: createInwardPayload.notes,
-//         vendor: selectedVendorId,
-//         //other fields
-//       };
-//       console.log("Payload for API Call:", body); // Log the payload
-//       const res = await apiClient.post(CREATE_STOCK, body);
-//       return { data: res.data.data, message: res.data.message };
-//     } catch (error: any) {
-//       console.error("Error occurred while creating inward entry:", error);
-//       const status = error.response?.status || 500;
-//       return rejectWithValue({
-//         message: error.response?.data?.message || "Failed to create inward",
-//         status,
-//       });
-//     }
-//   }
-// );
-
-// // Create Outward
-// export const createOutward = createAsyncThunk<
-//   { data: StockManagementOutwardModel; message: string },
-//   { createOutwardPayload: CreateStockOutwardPayload },
-//   { rejectValue: { message: string; status?: number } }
-// >(
-//   "stockManagement/createOutward",
-//   async ({ createOutwardPayload }, { rejectWithValue, getState }) => {
-//     try {
-//       // Retrieve the selected vendor ID from the Redux state
-//       const selectedVendorId = (getState() as RootState).stockManagement.selectedVendorId;
-
-//       const body = {
-//         stockType: "outward",
-//         transId: createOutwardPayload.transId,
-//         description: createOutwardPayload.description,
-//         itemType: createOutwardPayload.itemType,
-//         quantity: createOutwardPayload.quantity,
-//         unitPrice: createOutwardPayload.unitPrice,
-//         commission: createOutwardPayload.commission,
-//         totalValue: createOutwardPayload.totalValue,
-//         batchNumber: createOutwardPayload.batchNumber,
-//         receivedBy: createOutwardPayload.receivedBy,
-//         location: createOutwardPayload.location,
-//         notes: createOutwardPayload.notes,
-//         vendor: selectedVendorId, // Use the selected vendor ID
-//         goldType: createOutwardPayload.goldType,
-//         diamondType: createOutwardPayload.diamondType,
-//         clarity: createOutwardPayload.clarity,
-//         colorGrade: createOutwardPayload.colorGrade,
-//         issuedBy: createOutwardPayload.issuedBy,
-//         silverType: createOutwardPayload.silverType,
-//       };
-
-//       const res = await apiClient.post(CREATE_STOCK, body);
-//       console.log("Create Outward Response:", res); // Debug log
-//       return { data: res.data.data, message: res.data.message };
-//     } catch (error: any) {
-//       console.error("Error occurred while creating outward entry:", error);
-//       return rejectWithValue({
-//         message: error.response?.data?.message || "Failed to create outward",
-//         status: error.response?.status || 500,
-//       });
-//     }
-//   }
-// );
 
 // Get All Inwards
-export const getAllInwardsAction = createAsyncThunk<
-  { data: StockManagementInwardModel[]; itemCount: number },
-  { commonApiParamModel: GetAllInwardsRequest },
-  { rejectValue: { message: string; status?: number } }
+export const getAllInwardsAction = createAsyncThunk<{
+  data: StockManagementInwardModel[];
+  itemCount: number;
+},
+{ commonApiParamModel: GetAllInwardsRequest },
+{ rejectValue: { message: string; status?: number } }
 >(
   "stockManagement/getInwards",
   async ({ commonApiParamModel }, { rejectWithValue }) => {
@@ -320,10 +452,12 @@ export const getAllInwardsAction = createAsyncThunk<
 );
 
 // Get All Outwards
-export const getAllOutwardsAction = createAsyncThunk<
-  { data: StockManagementOutwardModel[]; itemCount: number },
-  { commonApiParamModel: GetAllOutwardsRequest },
-  { rejectValue: { message: string; status?: number } }
+export const getAllOutwardsAction = createAsyncThunk<{
+  data: StockManagementOutwardModel[];
+  itemCount: number;
+},
+{ commonApiParamModel: GetAllOutwardsRequest },
+{ rejectValue: { message: string; status?: number } }
 >(
   "stockManagement/getOutwards",
   async ({ commonApiParamModel }, { rejectWithValue }) => {
@@ -358,10 +492,12 @@ export const getAllOutwardsAction = createAsyncThunk<
 );
 
 // Edit Inward
-export const editInwardAction = createAsyncThunk<
-  { data: StockManagementInwardModel; message: string },
-  { editInwardPayload: CreateStockInwardPayload; inwardId: string },
-  { rejectValue: { message: string; status?: number } }
+export const editInwardAction = createAsyncThunk<{
+  data: StockManagementInwardModel;
+  message: string;
+},
+{ editInwardPayload: CreateStockInwardPayload; inwardId: string },
+{ rejectValue: { message: string; status?: number } }
 >(
   "stockManagement/editInward",
   async ({ editInwardPayload, inwardId }, { rejectWithValue }) => {
@@ -386,10 +522,12 @@ export const editInwardAction = createAsyncThunk<
 );
 
 // Edit Outward
-export const editOutwardAction = createAsyncThunk<
-  { data: StockManagementOutwardModel; message: string },
-  { editOutwardPayload: CreateStockOutwardPayload; outwardId: string },
-  { rejectValue: { message: string; status?: number } }
+export const editOutwardAction = createAsyncThunk<{
+  data: StockManagementOutwardModel;
+  message: string;
+},
+{ editOutwardPayload: CreateStockOutwardPayload; outwardId: string },
+{ rejectValue: { message: string; status?: number } }
 >(
   "stockManagement/editOutward",
   async ({ editOutwardPayload, outwardId }, { rejectWithValue }) => {
@@ -414,13 +552,14 @@ export const editOutwardAction = createAsyncThunk<
 );
 
 // Delete Inward
-export const deleteInwardAction = createAsyncThunk<
-  { message: string },
-  string, // inwardId
-  { rejectValue: { message: string; status?: number } }
+export const deleteInwardAction = createAsyncThunk<{
+  message: string;
+},
+string, // inwardId
+{ rejectValue: { message: string; status?: number } }
 >("stockManagement/deleteInward", async (inwardId, { rejectWithValue }) => {
   try {
-    await apiClient._delete(`${DELETE_STOCK}/${inwardId}`);
+    await apiClient.delete(`${DELETE_STOCK}/${inwardId}`);
     return { message: "Inward entry deleted successfully" };
   } catch (error: any) {
     console.error(
@@ -436,13 +575,14 @@ export const deleteInwardAction = createAsyncThunk<
 });
 
 // Delete Outward
-export const deleteOutwardAction = createAsyncThunk<
-  { message: string },
-  string, // outwardId
-  { rejectValue: { message: string; status?: number } }
+export const deleteOutwardAction = createAsyncThunk<{
+  message: string;
+},
+string, // outwardId
+{ rejectValue: { message: string; status?: number } }
 >("stockManagement/deleteOutward", async (outwardId, { rejectWithValue }) => {
   try {
-    await apiClient._delete(`${DELETE_STOCK}/${outwardId}`);
+    await apiClient.delete(`${DELETE_STOCK}/${outwardId}`);
     return { message: "Outward entry deleted successfully" };
   } catch (error: any) {
     console.error(

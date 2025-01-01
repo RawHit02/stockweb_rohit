@@ -13,30 +13,113 @@ import {
   IconButton,
 } from "@mui/material";
 import { CloseOutlinedIcon, CheckCircleIcon } from "../assets";
+import {
+  addPurity,
+  addForm,
+  addColor,
+  addType,
+  fetchPurities,
+  fetchForms,
+  fetchColors,
+  fetchOrnamentTypes,
+} from "@/redux/stock_management/stock_management.actions";
+import { useAppDispatch } from "@/redux/store";
 
 interface AddNewItemProps {
-  onAddItem: (newItem: string) => void; // Add the onAddItem callback function
+  stockTypeId: string;
+  category: "purity" | "form" | "color" | "type";
+  onAddItem: (newItem: { id: string; name: string }) => void;
 }
 
-const AddNewItem: React.FC<AddNewItemProps> = (props) => {
-  const [isAddItemDialogOpen, setIsAddItemDialogOpen] = useState(false);
+const AddNewItem: React.FC<AddNewItemProps> = ({
+  stockTypeId,
+  category,
+  onAddItem,
+}) => {
+  const dispatch = useAppDispatch();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newItemName, setNewItemName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleAddItem = () => {
-    setIsAddItemDialogOpen(true); // Open dialog for adding inward
+  const handleOpenDialog = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsDialogOpen(true);
   };
 
-  // Close dialog handler
-  const handleCloseAddNewDialog = () => {
-    setIsAddItemDialogOpen(false); // Close dialog
+  const handleCloseDialog = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setIsDialogOpen(false);
+    setNewItemName("");
   };
 
-  // Add new item handler
-  const handleAddNewItem = () => {
-    if (newItemName.trim() !== "") {
-      props.onAddItem(newItemName.trim()); // Call the onAddItem callback
-      setNewItemName(""); // Clear the input
-      handleCloseAddNewDialog(); // Close the dialog
+  const handleAddNewItem = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!newItemName.trim()) return;
+
+    setIsLoading(true);
+    try {
+      let response;
+
+      if (category === "purity") {
+        response = await dispatch(
+          addPurity({
+            ornament: stockTypeId,
+            ornamentPurity: newItemName.trim(),
+          })
+        ).unwrap();
+      } else if (category === "form") {
+        response = await dispatch(
+          addForm({
+            ornament: stockTypeId,
+            ornamentForm: newItemName.trim(),
+          })
+        ).unwrap();
+      } else if (category === "color") {
+        response = await dispatch(
+          addColor({
+            ornament: stockTypeId,
+            ornamentColor: newItemName.trim(),
+          })
+        ).unwrap();
+      } else if (category === "type") {
+        response = await dispatch(
+          addType({
+            ornament: stockTypeId,
+            ornamentType: newItemName.trim(),
+          })
+        ).unwrap();
+      } else {
+        throw new Error("Invalid category provided to AddNewItem.");
+      }
+
+      if (response?.data) {
+        onAddItem({
+          id: response.data,
+          name: newItemName.trim(),
+        });
+
+        // Fetch updated list of items for the category
+        switch (category) {
+          case "purity":
+            await dispatch(fetchPurities());
+            break;
+          case "form":
+            await dispatch(fetchForms());
+            break;
+          case "color":
+            await dispatch(fetchColors());
+            break;
+          case "type":
+            await dispatch(fetchOrnamentTypes());
+            break;
+        }
+      }
+
+      handleCloseDialog();
+    } catch (error) {
+      console.error(`Failed to add new ${category}:`, error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -45,61 +128,50 @@ const AddNewItem: React.FC<AddNewItemProps> = (props) => {
       <Button
         variant="text"
         className="text-primary500 text-sm font-normal"
-        onClick={(e: any) => {
-          e.preventDefault();
-          e.stopPropagation();
-          handleAddItem();
-        }}
+        onClick={handleOpenDialog}
       >
         +Add New
       </Button>
       <Dialog
         fullWidth
-        aria-labelledby="customized-dialog-title"
-        open={isAddItemDialogOpen}
+        open={isDialogOpen}
         maxWidth="sm"
-        PaperProps={{
-          onClick: (e: any) => {
-            e.stopPropagation();
-          },
-        }}
-        onClose={(e: any, reason) => {
-          e.preventDefault();
-          e.stopPropagation();
-          if (reason !== "backdropClick") {
-            handleCloseAddNewDialog();
+        onClose={(event, reason) => {
+          if (reason === "backdropClick" || reason === "escapeKeyDown") {
+            return;
           }
+          handleCloseDialog();
+        }}
+        PaperProps={{
+          onClick: (e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation(),
         }}
       >
-        <DialogTitle
-          component="div"
-          className="flex items-start justify-between px-9 pt-9 pb-4"
-        >
+        <DialogTitle className="flex items-start justify-between px-9 pt-9 pb-4">
           <Box>
             <Typography className="text-2xl font-bold">Add New Item</Typography>
           </Box>
           <IconButton
-            onClick={(e: any) => {
-              e.preventDefault();
+            onClick={(e) => {
               e.stopPropagation();
-              handleCloseAddNewDialog();
+              handleCloseDialog(e);
             }}
-            className="p-0 text-[#1C1B1F]"
           >
             <CloseOutlinedIcon />
           </IconButton>
         </DialogTitle>
         <DialogContentText component="div" className="px-9">
           <Box className="flex flex-col gap-2">
-            <Typography className=" text-primary text-sm font-normal mb-1">
-              Add New Item
+            <Typography className="text-primary text-sm font-normal mb-1">
+              Add New {category.charAt(0).toUpperCase() + category.slice(1)}
             </Typography>
             <TextField
               variant="outlined"
               fullWidth
-              placeholder="Enter Here"
-              value={newItemName}
+              placeholder={`Enter New ${category}`}
+              value={newItemName !== undefined ? newItemName : ""} // Avoid undefined
               onChange={(e) => setNewItemName(e.target.value)}
+              disabled={isLoading}
+              onClick={(e) => e.stopPropagation()}
             />
           </Box>
         </DialogContentText>
@@ -108,11 +180,11 @@ const AddNewItem: React.FC<AddNewItemProps> = (props) => {
             variant="outlined"
             size="large"
             startIcon={<CloseOutlinedIcon />}
-            onClick={(e: any) => {
-              e.preventDefault();
+            onClick={(e) => {
               e.stopPropagation();
-              handleCloseAddNewDialog();
+              handleCloseDialog(e);
             }}
+            disabled={isLoading}
           >
             Cancel
           </Button>
@@ -121,8 +193,9 @@ const AddNewItem: React.FC<AddNewItemProps> = (props) => {
             variant="contained"
             color="primary"
             size="large"
-            startIcon={<CheckCircleIcon className="!text-[20px]" />}
-            onClick={handleAddNewItem} // Call the add new item handler
+            startIcon={<CheckCircleIcon />}
+            onClick={handleAddNewItem}
+            disabled={isLoading}
           >
             Save
           </Button>

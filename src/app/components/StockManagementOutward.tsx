@@ -38,7 +38,6 @@ const headCellsOutward = [
   { field: "transId", headerName: "Trans ID", sortable: true }, // Transaction ID
   { field: "date", headerName: "Date", sortable: true }, // Date of the transaction
   { field: "buyerName", headerName: "Buyer", sortable: true }, // Buyer Name
-
   { field: "description", headerName: "Description", sortable: true }, // Description of the item
   { field: "itemType", headerName: "Item Type", sortable: true }, // Type of item (Gadget, Gold, etc.)
   { field: "quantity", headerName: "Qty.", sortable: true }, // Quantity of the item
@@ -46,9 +45,10 @@ const headCellsOutward = [
   { field: "unitPrice", headerName: "Unit Price", sortable: true }, // Unit price of the item
   { field: "totalValue", headerName: "Total Value", sortable: true }, // Total value calculated from quantity * unit price
   { field: "batchNumber", headerName: "Batch No.", sortable: true }, // Batch number
-  { field: "issuedBy", headerName: "Issued By", sortable: true }, // Person who received the item
   { field: "location", headerName: "Location", sortable: true }, // Location where the item is stored
   { field: "notes", headerName: "Notes", sortable: true }, // Any additional notes (Urgent, Special instructions, etc.)
+  { field: "paymentStatus", headerName: "Payment Status", sortable: true }, // Payment status of the transaction
+
   // { field: "vendor", headerName: "Vendor ID", sortable: true }, // Vendor ID (reference to the vendor table)
 ];
 
@@ -193,17 +193,28 @@ const StockManagementOutward = ({
                     </Typography>
                   </TableCell>
                   <TableCell>{row.createdDate}</TableCell>
-                  <TableCell>{row.buyerName || "N/A"}</TableCell>{" "}
+                  <TableCell>
+                    {typeof row.vendor === "object" &&
+                    (row.vendor as { name: string })?.name
+                      ? (row.vendor as { name: string }).name
+                      : "N/A"}
+                  </TableCell>
                   <TableCell>{row.description}</TableCell>
-                  <TableCell>{row.itemType}</TableCell>
+                  <TableCell>
+                    {typeof row.ornament === "object" &&
+                    (row.ornament as { ornamentName: string })?.ornamentName
+                      ? (row.ornament as { ornamentName: string }).ornamentName
+                      : "N/A"}
+                  </TableCell>
                   <TableCell>{row.quantity}</TableCell>
                   <TableCell>{row.commission}</TableCell>
                   <TableCell>{row.unitPrice}</TableCell>
                   <TableCell>{row.totalValue}</TableCell>
                   <TableCell>{row.batchNumber}</TableCell>
-                  <TableCell>{row.issuedBy}</TableCell>
                   <TableCell>{row.location}</TableCell>
                   <TableCell>{row.notes}</TableCell>
+                  <TableCell>{row.paymentStatus}</TableCell>
+
                   <TableCell>
                     <IconButton
                       onClick={(event) => handleClickMenu(event, row.id)}

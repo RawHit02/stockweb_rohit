@@ -2,34 +2,34 @@ import { ApiParamModel } from "../common/ApiParamModel";
 
 export interface StockManagementOutwardModel {
   id: string;
-  stockType: string;
-  transId: string;
-  itemType: string; // Links to ornament type
-  description: string;
-  quantity: string;
-  unitPrice: string;
-  totalValue: string;
-  batchNumber: string;
-  commission: string;
-  buyerName: string;
-  location: string;
-  notes: string;
-  createdBy: string;
-  receivedBy: string;
-  createdDate: string;
-  updatedDate: string;
-  goldType: string;
-  diamondType: string;
-  silverType: string;
-  colorGrade: string;
-  issuedBy: string;
-  clarity: string;
-  vendor?: string; // Links to buyer/supplier dropdown
-  ornament: string; // Required for ornament selection
-  color: string; // Required for color selection
-  purity: string; // Required for purity selection
-  form: string; // Required for form selection
-  type: string; // Required for ornament type selection
+  transId: string; // Transaction ID
+  stockType: string; // Specifies the type, always "outward"
+  description: string; // Description of the stock
+  quantity: string; // Quantity of stock
+  unitPrice: string; // Price per unit
+  totalValue: string; // Total value of the stock
+  commission: string; // Commission applicable
+  batchNumber: string; // Batch number
+  location: string; // Location of stock
+  notes: string; // Additional notes
+  vendor: string; // Buyer ID
+  ornament: string; // Ornament ID
+  type: string; // Ornament type ID
+  form: string; // Ornament form ID
+  purity: string; // Ornament purity ID
+  color: string; // Ornament color ID (optional for Gold/Silver)
+  formOfGold: string; // Specific to Gold
+  diamondType: string; // Specific to Diamond
+  silverType: string; // Specific to Silver
+  cutGrade: string; // Specific to Diamond
+  clarity: string; // Specific to Diamond
+  sclarity: string; // Specific to Silver clarity
+  colorGrade: string; // Specific to Diamond
+  paymentStatus: string; // Payment status (Pending/Completed/Partial)
+  createdBy: string; // Created by user
+  createdDate: string; // Creation date
+  updatedDate: string; // Last updated date
+  goldType : string;
 }
 
 export interface InitialOutwardsModelState {
@@ -47,22 +47,22 @@ export interface GetAllOutwardsRequest extends ApiParamModel {
 }
 
 export interface CreateStockOutwardPayload {
-  stockType: string; // Required
-  transId: string; // Required
-  description: string; // Required
-  itemType: string; // Required
-  quantity: string; // Required
-  unitPrice: string; // Required
-  commission: string; // Required
-  totalValue: string; // Required
-  batchNumber: string; // Required
-  receivedBy: string; // Required
-  location: string; // Required
-  notes: string; // Optional
-  vendor: string; // Required
-  ornament: string; // Required
-  color: string; // Required
-  purity: string; // Required
-  form: string; // Required
-  type: string; // Required
+  stockType: string; // Must be "outward"
+  transId: string; // Transaction ID
+  description: string; // Stock description
+  quantity: string; // Quantity of stock
+  unitPrice: string; // Price per unit
+  totalValue: string; // Total stock value
+  commission: string; // Commission amount
+  batchNumber: string; // Batch number
+  location: string; // Stock location
+  notes: string; // Optional notes
+  vendor: string; // Buyer ID
+  ornament: string; // Ornament ID
+  type: string; // Ornament type ID
+  form: string; // Ornament form ID
+  purity: string; // Ornament purity ID
+  color: string; // Optional for Gold/Silver
+  cutGrade: string; // Optional for Diamond
+  paymentStatus: string; // Payment status
 }
