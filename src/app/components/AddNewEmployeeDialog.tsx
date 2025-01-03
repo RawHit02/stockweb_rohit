@@ -217,6 +217,7 @@ const AddNewEmployeeDialog: React.FC<AddNewEmployeeDialogProps> = ({
                       type="file"
                       accept="image/*"
                       className="absolute opacity-0 w-full h-full"
+                      title="Upload profile image"
                       onChange={(event) =>
                         handleImageUpload(event, setFieldValue)
                       }
