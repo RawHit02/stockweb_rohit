@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
@@ -14,15 +15,9 @@ import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
-//import { visuallyHidden } from "@mui/utils";
-//import stockManagementReducer from "@/redux/stock_management/stock_management.slice";
+import DeleteDialog from "./DeleteDialog";
 
-import {
-  DeleteRed,
-  DummyProfile,
-  EditOutlinedIcon,
-  MoreVertIcon,
-} from "../assets";
+import { DeleteRed, EditOutlinedIcon, MoreVertIcon } from "../assets";
 import Image from "next/image";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "@/redux/store";
@@ -34,21 +29,20 @@ import {
 import { StockManagementOutwardModel } from "@/models/req-model/StockManagementOutwardModel";
 
 const ITEM_HEIGHT = 48;
-const headCellsOutward = [
-  { field: "transId", headerName: "Trans ID", sortable: true }, // Transaction ID
-  { field: "date", headerName: "Date", sortable: true }, // Date of the transaction
-  { field: "buyerName", headerName: "Buyer", sortable: true }, // Buyer Name
-  { field: "description", headerName: "Description", sortable: true }, // Description of the item
-  { field: "itemType", headerName: "Item Type", sortable: true }, // Type of item (Gadget, Gold, etc.)
-  { field: "quantity", headerName: "Qty.", sortable: true }, // Quantity of the item
-  { field: "commission", headerName: "Commission", sortable: true }, // Commission associated with the item
-  { field: "unitPrice", headerName: "Unit Price", sortable: true }, // Unit price of the item
-  { field: "totalValue", headerName: "Total Value", sortable: true }, // Total value calculated from quantity * unit price
-  { field: "batchNumber", headerName: "Batch No.", sortable: true }, // Batch number
-  { field: "location", headerName: "Location", sortable: true }, // Location where the item is stored
-  { field: "notes", headerName: "Notes", sortable: true }, // Any additional notes (Urgent, Special instructions, etc.)
 
-  // { field: "vendor", headerName: "Vendor ID", sortable: true }, // Vendor ID (reference to the vendor table)
+const headCellsOutward = [
+  { field: "transId", headerName: "Trans ID", sortable: true },
+  { field: "date", headerName: "Date", sortable: true },
+  { field: "buyerName", headerName: "Buyer", sortable: true },
+  { field: "description", headerName: "Description", sortable: true },
+  { field: "itemType", headerName: "Item Type", sortable: true },
+  { field: "quantity", headerName: "Qty.", sortable: true },
+  { field: "commission", headerName: "Commission", sortable: true },
+  { field: "unitPrice", headerName: "Unit Price", sortable: true },
+  { field: "totalValue", headerName: "Total Value", sortable: true },
+  { field: "batchNumber", headerName: "Batch No.", sortable: true },
+  { field: "location", headerName: "Location", sortable: true },
+  { field: "notes", headerName: "Notes", sortable: true },
 ];
 
 const StockManagementOutward = ({
@@ -65,6 +59,7 @@ const StockManagementOutward = ({
   const [selectedOutwardId, setSelectedOutwardId] = useState<string | null>(
     null
   );
+  const [openDelete, setOpenDelete] = useState(false); // Delete dialog state
   const dispatch = useDispatch<AppDispatch>();
 
   const { getAllOutwards, itemCount } = useAppSelector(
@@ -107,17 +102,20 @@ const StockManagementOutward = ({
     handleCloseMenu();
   };
 
+  const handleCloseDeleteDialog = () => {
+    setOpenDelete(false);
+  };
+
   const handleDeleteOutward = async () => {
     if (selectedOutwardId) {
-      if (window.confirm("Are you sure you want to delete this outward?")) {
-        try {
-          await dispatch(deleteOutwardAction(selectedOutwardId)).unwrap();
-          fetchData(); // Refresh data after deletion
-        } catch (error) {
-          console.error("Failed to delete outward:", error);
-        }
+      try {
+        await dispatch(deleteOutwardAction(selectedOutwardId)).unwrap();
+        fetchData(); // Refresh data after deletion
+      } catch (error) {
+        console.error("Failed to delete outward:", error);
       }
-      handleCloseMenu();
+      setSelectedOutwardId(null);
+      handleCloseDeleteDialog();
     }
   };
 
@@ -143,6 +141,7 @@ const StockManagementOutward = ({
     setPage(0);
     fetchData();
   };
+
   return (
     <Box className="w-full primary-table">
       <TableContainer>
@@ -151,18 +150,18 @@ const StockManagementOutward = ({
             <TableRow>
               {headCellsOutward.map((headCell) => (
                 <TableCell
-                  key={headCell.field} // Updated to use 'field' as the key
-                  sortDirection={orderBy === headCell.field ? order : false} // Updated to use 'field'
+                  key={headCell.field}
+                  sortDirection={orderBy === headCell.field ? order : false}
                 >
-                  {headCell.sortable ? ( // Only add sorting if the column is sortable
+                  {headCell.sortable ? (
                     <TableSortLabel
-                      active={orderBy === headCell.field} // Updated to use 'field'
-                      direction={orderBy === headCell.field ? order : "asc"} // Updated to use 'field'
+                      active={orderBy === headCell.field}
+                      direction={orderBy === headCell.field ? order : "asc"}
                       onClick={(event) =>
                         handleRequestSort(event, headCell.field)
-                      } // Updated to use 'field'
+                      }
                     >
-                      {headCell.headerName} {/* Updated to use 'headerName' */}
+                      {headCell.headerName}
                       {orderBy === headCell.field ? (
                         <Box component="span" className="sr-only">
                           {order === "desc"
@@ -172,7 +171,7 @@ const StockManagementOutward = ({
                       ) : null}
                     </TableSortLabel>
                   ) : (
-                    headCell.headerName // Display headerName without sorting
+                    headCell.headerName
                   )}
                 </TableCell>
               ))}
@@ -229,7 +228,7 @@ const StockManagementOutward = ({
                         <EditOutlinedIcon />
                         Edit
                       </MenuItem>
-                      <MenuItem onClick={handleDeleteOutward}>
+                      <MenuItem onClick={() => setOpenDelete(true)}>
                         <Image src={DeleteRed} alt="Delete" />
                         Delete
                       </MenuItem>
@@ -250,6 +249,15 @@ const StockManagementOutward = ({
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
+      {openDelete && (
+        <DeleteDialog
+          handleCloseDeleteDialog={handleCloseDeleteDialog}
+          openDelete={openDelete}
+          handleDeleteAction={handleDeleteOutward}
+          dialogueTitle="Delete Outward Record"
+          dialogueDescription="Are you sure you want to delete this outward record?"
+        />
+      )}
     </Box>
   );
 };

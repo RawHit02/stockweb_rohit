@@ -12,26 +12,27 @@ export interface StockManagementInwardModel {
   batchNumber: string; // Batch number
   location: string; // Location of stock
   notes: string; // Additional notes
-  vendor: string; // Supplier ID
+  vendor: any; // Supplier ID
   ornament: any; // Ornament ID
-  type: string; // Ornament type ID
-  form: string; // Ornament form ID
+  type: any; // Ornament type ID
+  form: any; // Ornament form ID
   // cut: string ;
-  purity: string; // Ornament purity ID
-  color: string; // Ornament color ID (optional for Gold/Silver)
-  formOfGold: string; // Specific to Gold
-  diamondType: string; // Specific to Diamond
-  silverType: string; // Specific to Silver
-  cutGrade: string; // Specific to Diamond
-  clarity: string; // Specific to Diamond
-  sclarity: string; // Specific to Silver clarity
-  colorGrade: string; // Specific to Diamond
-  paymentStatus: string; // For outward alignment if reused
+  purity: any; // Ornament purity ID
+  color: any; // Ornament color ID (optional for Gold/Silver)
+  formOfGold: any; // Specific to Gold
+  diamondType: any; // Specific to Diamond
+  silverType: any; // Specific to Silver
+  cutGrade: any; // Specific to Diamond
+  clarity: any; // Specific to Diamond
+  sclarity: any; // Specific to Silver clarity
+  colorGrade: any; // Specific to Diamond
+  // paymentStatus: string; // For outward alignment if reused
   createdBy: string; // Created by user
   createdDate: string; // Creation date
   updatedDate: string; // Last updated date
-  formOfSilver: string;
-  goldType: string;
+  formOfSilver: any;
+  goldType: any;
+  grade: any;
 }
 
 
@@ -60,12 +61,12 @@ export interface CreateStockInwardPayload {
   batchNumber: string; // Batch number
   location: string; // Stock location
   notes: string; // Optional notes
-  vendor: string; // Supplier ID
+  vendor: any; // Supplier ID
   ornament: any; // Ornament ID
   type: string; // Ornament type ID
   form: string; // Ornament form ID
   // cut : string;
   purity: string; // Ornament purity ID
   color: string; // Optional for Gold/Silver
-  // cutGrade: string; // Optional for Diamond
+  grade: string; // Optional for Diamond
 }

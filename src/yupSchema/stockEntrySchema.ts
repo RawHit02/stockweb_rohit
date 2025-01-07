@@ -256,10 +256,6 @@ export const outwardStockSchemaDiamond = Yup.object({
 });
 
 
-
-
-
-
 export const outwardStockSchemaGold = Yup.object({
 
   stockType: Yup.string()

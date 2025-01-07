@@ -13,7 +13,8 @@ import {
   MenuItem,
   Select,
   OutlinedInput,
-} from "@mui/material"; import Grid from "@mui/material/Grid";
+} from "@mui/material";
+import Grid from "@mui/material/Grid";
 import { CheckCircleIcon, CloseOutlinedIcon } from "../assets";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { useSnackbar } from "notistack";
@@ -28,18 +29,17 @@ import {
   setSelectedVendorId,
   fetchOrnamentTypes,
   fetchForms,
-  // fetchCut,
   fetchPurities,
   fetchColors,
   fetchOrnaments,
+  fetchGrades,
 } from "@/redux/stock_management/stock_management.actions";
 import {
   inwardStockSchemaGold,
   inwardStockSchemaSilver,
   inwardStockSchemaDiamond,
-
-outwardStockSchemaSilver,
-outwardStockSchemaDiamond,
+  outwardStockSchemaSilver,
+  outwardStockSchemaDiamond,
   outwardStockSchemaGold,
 } from "@/yupSchema/stockEntrySchema";
 import {
@@ -63,8 +63,6 @@ interface AddStockEntryDialogProps {
   onOutwardCreated?: () => Promise<void>;
 }
 
-
-
 interface Vendor {
   id: string;
   name: string;
@@ -78,8 +76,6 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
     (state: any) => state.stockManagement.ornamentDetails
   );
 
-
-
   // Fetch suppliers/buyers from Redux store
   const buyersAndSuppliers = useSelector((state: any) =>
     props.stock ? state.stockManagement.suppliers : state.stockManagement.buyers
@@ -87,7 +83,6 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
   const selectedVendorId = useSelector(
     (state: any) => state.stockManagement.selectedVendorId
   );
-
   const ornamentTypes = useSelector(
     (state: any) => state.stockManagement.ornamentTypes
   );
@@ -101,9 +96,9 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
     (state: any) => state.stockManagement.ornamentColors
   );
 
-  // const ornamentCuts = useSelector(
-  //   (state: any) => state.stockManagement.ornamentCuts
-  // )
+  const ornamentGrades = useSelector(
+    (state: any) => state.stockManagement.ornamentGrades
+  );
 
   // Local state for dynamic dropdown options
   const [stockType, setStockType] = useState<string>(
@@ -112,17 +107,19 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
   const [selectedOrnamentName, setSelectedOrnamentName] = useState("");
 
   // console.log("selected name ", selectedOrnamentName);
-    
+
   const validationSchema = props.stock
     ? (selectedOrnamentName === "Gold" && inwardStockSchemaGold) ||
-      (selectedOrnamentName === "Silver" && inwardStockSchemaSilver) || selectedOrnamentName === "Diamond" && outwardStockSchemaDiamond
+      (selectedOrnamentName === "Silver" && inwardStockSchemaSilver) ||
+      (selectedOrnamentName === "Diamond" && inwardStockSchemaDiamond)
     : (selectedOrnamentName === "Gold" && outwardStockSchemaGold) ||
-      (selectedOrnamentName === "Silver" && outwardStockSchemaSilver) || selectedOrnamentName === "Diamond" && outwardStockSchemaDiamond;
+      (selectedOrnamentName === "Silver" && outwardStockSchemaSilver) ||
+      (selectedOrnamentName === "Diamond" && outwardStockSchemaDiamond);
 
   const [purityOptions, setPurityOptions] = useState([...ornamentPurities]);
   const [typeOptions, setTypeOptions] = useState([...ornamentTypes]);
   const [formOptions, setFormOptions] = useState([...ornamentForms]);
-  // const [cutOptions, setCutOptions] = useState([...ornamentCuts]);
+  const [GradeOptions, setGradeOptions] = useState([...ornamentGrades]);
 
   const [colorOptions, setColorOptions] = useState([...ornamentColors]);
   const [diamondTypeOptions, setDiamondTypeOptions] = useState([
@@ -142,45 +139,47 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
     </ErrorMessage>
   );
 
-  useEffect(() => {
-    if (ornaments.length > 0) {
-        // console.log({ ornamet: props.initialValues?.ornament?.id})
-      if( props.initialValues?.ornament?.id){ 
-        setStockType(props.initialValues.ornament.id);
-        setSelectedOrnamentName(props.initialValues.ornament.ornamentName);
-      } else {
-      const goldOrnament: { id: string; ornamentName: string } | undefined =
-        ornaments.find(
-          (ornament: { id: string; ornamentName: string }) =>
-            ornament.ornamentName.toLowerCase() === "gold"
-        );
+useEffect(() => {
+  if (ornaments.length > 0) {
+    if (props.initialValues?.ornament?.id) {
+      setStockType(props.initialValues.ornament.id);
+      setSelectedOrnamentName(props.initialValues.ornament.ornamentName);
+    } else {
+      const goldOrnament = ornaments.find(
+        (ornament: { id: string; ornamentName: string }) =>
+          ornament.ornamentName.toLowerCase() === "gold"
+      );
+
       if (goldOrnament) {
-        // console.log("Gold Ornamen")
         setStockType(goldOrnament.id);
         setSelectedOrnamentName(goldOrnament.ornamentName);
       } else {
-        // console.log("O id");
         setStockType(ornaments[0].id);
         setSelectedOrnamentName(ornaments[0].ornamentName);
       }
-    } } else {
-      // console.log("Code coming here");
-      // Fallback when there are no ornaments
-      setStockType("default-stock-type");
-      setSelectedOrnamentName("Gold"); // Or set to your preferred default
     }
-  }, [ornaments]);
-
+  } else {
+    // Fallback when there are no ornaments
+    setStockType("default-stock-type");
+    setSelectedOrnamentName("Gold"); // Or set to your preferred default
+  }
+}, [
+  ornaments,
+  props.initialValues?.ornament?.id,
+  props.initialValues?.ornament?.ornamentName,
+]);
 
 
   useEffect(() => {
-    if(props.isEditMode && props.initialValues?.ornament?.id) {
-       setStockType(props.initialValues.ornament.id);
-      setSelectedOrnamentName(props.initialValues.ornament.ornamentName); 
+    // console.log("Edit Mode?", props.isEditMode);
+    // console.log("Outward?", !props.stock);
+    // console.log("initialValues for outward:", props.initialValues);
+    if (props.isEditMode && props.initialValues?.ornament?.id) {
+      // console.log("Setting outward stock type...", props.initialValues.ornament.id);
+      setStockType(props.initialValues.ornament.id);
+      setSelectedOrnamentName(props.initialValues.ornament.ornamentName);
     }
-  }, [props.isEditMode])
-
-
+  }, [props.isEditMode, props.stock, props.initialValues]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -191,7 +190,7 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
       }
       await dispatch(fetchOrnamentTypes());
       await dispatch(fetchForms());
-      // await dispatch(fetchCuts());
+      await dispatch(fetchGrades());
       await dispatch(fetchPurities());
       await dispatch(fetchColors());
       await dispatch(fetchOrnaments());
@@ -234,13 +233,13 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
       { id: newItem.id, ornamentForm: newItem.name },
     ]);
   };
-  
-  // const handleAddCut = (newItem: { id: string; name: string }) => {
-  //   setCutOptions((prev: { id: string; ornamentCut: string }[]) => [
-  //     ...prev,
-  //     { id: newItem.id, ornamentCut: newItem.name },
-  //   ]);
-  // };
+
+  const handleAddGrade = (newItem: { id: string; name: string }) => {
+    setGradeOptions((prev: { id: string; ornamentGrade: string }[]) => [
+      ...prev,
+      { id: newItem.id, ornamentGrade: newItem.name },
+    ]);
+  };
 
   const handleAddColor = (newItem: { id: string; name: string }) => {
     setColorOptions((prev: { id: string; ornamentColor: string }[]) => [
@@ -256,7 +255,7 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
     values: StockManagementInwardModel | StockManagementOutwardModel,
     { resetForm }: { resetForm: () => void }
   ) => {
-    console.log("Form values before processing:", values);
+    // console.log("Form values before processing:", values);
     try {
       // Construct payload dynamically based on stock type
       const payload: CreateStockInwardPayload | CreateStockOutwardPayload = {
@@ -272,16 +271,11 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
         notes: values.notes?.toString() || "",
         vendor: selectedVendorId || values.vendor?.toString() || "", // Buyer for outward, supplier for inward
         ornament: stockType || values.ornament || "", // Stock type ID
-        type:
-          values.goldType ||
-          values.diamondType ||
-          values.silverType || "",
-          // values.type || "",
-        form: values.formOfGold || values.cutGrade || values.formOfSilver || "", // Form based on stock type
-        // cut : values.cutOfDiamond ,
+        type: values.goldType || values.diamondType || values.silverType || "",
+        form: values.formOfGold || values.formOfSilver || "", // Form based on stock type
         purity: values.purity || values.clarity || values.sclarity || "", // Purity based on stock type
-        // color: values.colorGrade || values.color || "", // Optional for diamond or silver
-        // cutGrade: values.cutGrade || "", // Optional for diamond
+        color: values.colorGrade || "", // Optional for diamond
+        grade: values.cutGrade?.toString() || "", // Optional for diamond
       };
 
       // console.log("Constructed payload before filtering:", payload);
@@ -295,7 +289,7 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
 
       // Dispatch the appropriate Redux action
       if (props.isEditMode && props.initialValues?.id) {
-        console.log("Edit mode detected. Sending update request...",values);
+        // console.log("Edit mode detected. Sending update request...", values);
         if (props.stock) {
           console.log("Updating inward stock...");
           await dispatch(
@@ -307,8 +301,11 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
           enqueueSnackbar("Inward stock updated successfully!", {
             variant: "success",
           });
+          if (props.onInwardCreated) {
+            await props.onInwardCreated(); // Refresh the table after update
+          }
         } else {
-          console.log("Updating outward stock...");
+          // console.log("Updating outward stock...");
           await dispatch(
             editOutwardAction({
               editOutwardPayload: filteredPayload as CreateStockOutwardPayload,
@@ -318,11 +315,15 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
           enqueueSnackbar("Outward stock updated successfully!", {
             variant: "success",
           });
+          if (props.onOutwardCreated) {
+            await props.onOutwardCreated(); // Refresh the table after update
+          }
         }
-      } else {
-        console.log("Create mode detected. Sending create request...");
+      }
+       else {
+        // console.log("Create mode detected. Sending create request...");
         if (props.stock) {
-          console.log("Creating inward stock...");
+          // console.log("Creating inward stock...");
           await dispatch(
             createInward(filteredPayload as CreateStockInwardPayload)
           ).unwrap();
@@ -334,23 +335,23 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
             await props.onInwardCreated();
           }
         } else {
-          console.log("Creating outward stock...");
+          // console.log("Creating outward stock...");
           await dispatch(
             createOutward(filteredPayload as CreateStockOutwardPayload)
           ).unwrap();
           enqueueSnackbar("Outward stock created successfully!", {
             variant: "success",
           });
-           // Trigger the refresh for outward stock
-        if (props.onOutwardCreated) {
-          await props.onOutwardCreated();
-        }
+          // Trigger the refresh for outward stock
+          if (props.onOutwardCreated) {
+            await props.onOutwardCreated();
+          }
         }
       }
-      console.log("API call successful. Closing the dialog...");
+      // console.log("API call successful. Closing the dialog...");
       props.onClose(); // Close the dialog on success
     } catch (error) {
-      console.error("Error during form submission:", error);
+      // console.error("Error during form submission:", error);
       enqueueSnackbar("Failed to submit stock entry. Please try again.", {
         variant: "error",
       });
@@ -386,7 +387,7 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
         initialValues={{
           id: props.initialValues?.id || "",
           stockType: props.stock ? "inward" : "outward",
-          transId: props.initialValues?.transId || "default-trans-id", 
+          transId: props.initialValues?.transId || "default-trans-id",
           description: props.initialValues?.description || "",
           quantity: props.initialValues?.quantity?.toString() || "", // Convert to string
           unitPrice: props.initialValues?.unitPrice?.toString() || "", // Convert to string
@@ -401,23 +402,23 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
           diamondType: props.initialValues?.type?.id || "",
           silverType: props.initialValues?.type?.id || "",
           formOfGold: props.initialValues?.form?.id || "",
-          cutGrade: props.initialValues?.form?.id || "",
-          formOfSilver : props.initialValues?.form?.id || "",
+          cutGrade: props.initialValues?.grade?.id || "",
+          grade: props.initialValues?.grade?.id || "",
+          formOfSilver: props.initialValues?.form?.id || "",
           purity: props.initialValues?.purity?.id || "",
           clarity: props.initialValues?.purity?.id || "",
           sclarity: props.initialValues?.purity?.id || "",
           colorGrade: props.initialValues?.color?.id || "",
-          // color: props.initialValues?.color?.id || "", 
-          form: props.initialValues?.form?.id || "", 
-          type: props.initialValues?.type?.id || "", 
+          color: props.initialValues?.color?.id || "",
+          form: props.initialValues?.form?.id || "",
+          type: props.initialValues?.type?.id || "",
           createdBy: props.initialValues?.createdBy || "default-user", // Provide default value
           createdDate:
             props.initialValues?.createdDate || new Date().toISOString(), // Default to current date
           updatedDate:
             props.initialValues?.updatedDate || new Date().toISOString(), // Default to current date
-         
         }}
-         validationSchema={validationSchema}
+        validationSchema={validationSchema}
         onSubmit={handleSubmit}
         enableReinitialize
       >
@@ -436,8 +437,15 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                         as={Select}
                         name="stockType"
                         error={touched.stockType && Boolean(errors.stockType)}
-                        value={ stockType ? stockType :  props.isEditMode ?  props.initialValues?.ornament?.id  &&  props.initialValues.ornament.id || "" : ""}
-                        
+                        value={
+                          stockType
+                            ? stockType
+                            : props.isEditMode
+                            ? (props.initialValues?.ornament?.id &&
+                                props.initialValues.ornament.id) ||
+                              ""
+                            : ""
+                        }
                         onChange={(
                           e: React.ChangeEvent<{ value: unknown }>
                         ) => {
@@ -447,7 +455,7 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                             (ornament: { id: string; ornamentName: string }) =>
                               ornament.id === selectedId
                           );
-                          console.log({ selectedOrnament });
+                          // console.log({ selectedOrnament });
                           setSelectedOrnamentName(
                             selectedOrnament?.ornamentName || ""
                           );
@@ -456,15 +464,15 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                         fullWidth
                       >
                         {ornaments.map(
-                          (type: { id: string; ornamentName: string }) => { 
-                        
-                            //  console.log("props initial values", props.initialValues);
+                          (type: { id: string; ornamentName: string }) => {
+                            // console.log("props initial values", props.initialValues);
 
-                            return(
-                            <MenuItem key={type.id} value={type.id}>
-                              {type.ornamentName}
-                            </MenuItem>
-                          )}
+                            return (
+                              <MenuItem key={type.id} value={type.id}>
+                                {type.ornamentName}
+                              </MenuItem>
+                            );
+                          }
                         )}
                       </Field>
                       <CustomErrorMessage name="stockType" />
@@ -483,12 +491,18 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                             as={Select}
                             name="goldType"
                             error={touched.goldType && Boolean(errors.goldType)}
-                          //  value={ props.isEditMode ?  props.initialValues?.type?.id  &&  props.initialValues.type.id || "" : stockType || ""} // Controlled value
+                            //  value={ props.isEditMode ?  props.initialValues?.type?.id  &&  props.initialValues.type.id || "" : stockType || ""} // Controlled value
                             // value={values?.type ? values?.type : props?.isEditMode ? props?.initialValues?.type?.id && props.initialValues?.type?.id || "" : ""}
-                            
-                            value={values?.goldType ? values?.goldType : props?.isEditMode ? props?.initialValues?.goldType?.id && props.initialValues?.goldType?.id || "" : ""}
 
-                            
+                            value={
+                              values?.goldType
+                                ? values?.goldType
+                                : props?.isEditMode
+                                ? (props?.initialValues?.goldType?.id &&
+                                    props.initialValues?.goldType?.id) ||
+                                  ""
+                                : ""
+                            }
                             // value={values.goldType || ""} // Ensure controlled value
                             onChange={handleChange}
                             displayEmpty
@@ -508,11 +522,9 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                                 )
                                 .map(
                                   (type: {
-                                    
                                     id: string;
                                     ornamentType: string;
                                   }) => (
-                                    
                                     <MenuItem key={type.id} value={type.id}>
                                       {type.ornamentType}
                                     </MenuItem>
@@ -558,8 +570,15 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                             as={Select}
                             name="formOfGold"
                             // value={values.formOfGold || ""} // Ensure controlled value
-                           value={values?.formOfGold ? values?.formOfGold : props?.isEditMode ? props?.initialValues?.formOfGold?.id && props.initialValues?.formOfGold?.id || "" : ""}
-
+                            value={
+                              values?.formOfGold
+                                ? values?.formOfGold
+                                : props?.isEditMode
+                                ? (props?.initialValues?.formOfGold?.id &&
+                                    props.initialValues?.formOfGold?.id) ||
+                                  ""
+                                : ""
+                            }
                             onChange={handleChange}
                             error={
                               touched.formOfGold && Boolean(errors.formOfGold)
@@ -615,7 +634,7 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                               />
                             </MenuItem>
                           </Field>
-                          <CustomErrorMessage name="form" />
+                          <CustomErrorMessage name="formOfGold" />
                         </Box>
                       </Grid>
 
@@ -646,8 +665,15 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                             error={touched.purity && Boolean(errors.purity)}
                             name="purity"
                             // value={values.purity || ""} // Ensure controlled value
-                            value={values?.purity ? values?.purity : props?.isEditMode ? props?.initialValues?.purity?.id && props.initialValues?.purity?.id || "" : ""}
-
+                            value={
+                              values?.purity
+                                ? values?.purity
+                                : props?.isEditMode
+                                ? (props?.initialValues?.purity?.id &&
+                                    props.initialValues?.purity?.id) ||
+                                  ""
+                                : ""
+                            }
                             onChange={handleChange}
                             displayEmpty
                             fullWidth
@@ -668,13 +694,17 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                                   (purity: {
                                     id: string;
                                     ornamentPurity: string;
-                                  }) => { 
+                                  }) => {
                                     // console.log("commission", values.commission);
-                                    return  (
-                                    <MenuItem key={purity.id} value={purity.id}>
-                                      {purity.ornamentPurity}
-                                    </MenuItem>
-                                  )}
+                                    return (
+                                      <MenuItem
+                                        key={purity.id}
+                                        value={purity.id}
+                                      >
+                                        {purity.ornamentPurity}
+                                      </MenuItem>
+                                    );
+                                  }
                                 )
                             ) : (
                               <MenuItem value="" disabled>
@@ -816,9 +846,15 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                             as={Select}
                             name="vendor"
                             error={touched.vendor && Boolean(errors.vendor)}
-
-                            value={values?.vendor ? values?.vendor : props?.isEditMode ? props?.initialValues?.vendor && props.initialValues?.vendor || "" : ""}
-
+                            value={
+                              values?.vendor
+                                ? values?.vendor
+                                : props?.isEditMode
+                                ? (props?.initialValues?.vendor &&
+                                    props.initialValues?.vendor) ||
+                                  ""
+                                : ""
+                            }
                             // value={values.vendor || ""}
                             onChange={(
                               e: React.ChangeEvent<{ value: unknown }>
@@ -831,12 +867,11 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                             fullWidth
                             className="mt-1"
                           >
-
-                             {/* Placeholder for default selection */}
+                            {/* Placeholder for default selection */}
                             <MenuItem value="" disabled>
-                            {props.stock ? "Supplier Name" : "Buyer Name"}
+                              {props.stock ? "Supplier Name" : "Buyer Name"}
                             </MenuItem>
-                            
+
                             {buyersAndSuppliers?.length > 0 ? (
                               buyersAndSuppliers.map((item: Vendor) => (
                                 <MenuItem key={item.id} value={item.id}>
@@ -907,8 +942,15 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                               touched.diamondType && Boolean(errors.diamondType)
                             }
                             // value={values.diamondType || ""} // Ensure controlled value
-                            value={values?.diamondType ? values?.diamondType : props?.isEditMode ? props?.initialValues?.diamondType?.id && props.initialValues?.diamondType?.id || "" : ""}
-
+                            value={
+                              values?.diamondType
+                                ? values?.diamondType
+                                : props?.isEditMode
+                                ? (props?.initialValues?.diamondType?.id &&
+                                    props.initialValues?.diamondType?.id) ||
+                                  ""
+                                : ""
+                            }
                             onChange={handleChange}
                             displayEmpty
                             fullWidth
@@ -995,8 +1037,15 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                             name="clarity"
                             error={touched.clarity && Boolean(errors.clarity)}
                             // value={values.clarity || ""}
-                              value={values?.clarity ? values?.clarity : props?.isEditMode ? props?.initialValues?.clarity?.id && props.initialValues?.clarity?.id || "" : ""}
-
+                            value={
+                              values?.clarity
+                                ? values?.clarity
+                                : props?.isEditMode
+                                ? (props?.initialValues?.clarity?.id &&
+                                    props.initialValues?.clarity?.id) ||
+                                  ""
+                                : ""
+                            }
                             onChange={handleChange}
                             displayEmpty
                             fullWidth
@@ -1069,8 +1118,15 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                               touched.colorGrade && Boolean(errors.colorGrade)
                             }
                             // value={values.colorGrade || ""} // Fallback to empty string
-                            value={values?.colorGrade ? values?.colorGrade : props?.isEditMode ? props?.initialValues?.colorGrade?.id && props.initialValues?.colorGrade?.id || "" : ""}
-
+                            value={
+                              values?.colorGrade
+                                ? values?.colorGrade
+                                : props?.isEditMode
+                                ? (props?.initialValues?.colorGrade?.id &&
+                                    props.initialValues?.colorGrade?.id) ||
+                                  ""
+                                : ""
+                            }
                             onChange={handleChange}
                             displayEmpty
                             fullWidth
@@ -1138,8 +1194,15 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                             name="cutGrade"
                             error={touched.cutGrade && Boolean(errors.cutGrade)}
                             // value={values.cutGrade || ""} // Fallback to empty string
-                             value={values?.cutGrade ? values?.cutGrade : props?.isEditMode ? props?.initialValues?.cutGrade?.id && props.initialValues?.cutGrade?.id || "" : ""}
-
+                            value={
+                              values?.cutGrade
+                                ? values?.cutGrade
+                                : props?.isEditMode
+                                ? (props?.initialValues?.cutGrade?.id &&
+                                    props.initialValues?.cutGrade?.id) ||
+                                  ""
+                                : ""
+                            }
                             onChange={handleChange}
                             displayEmpty
                             fullWidth
@@ -1150,19 +1213,19 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                             </MenuItem>
 
                             {/* Dynamically filter and display cut grades */}
-                            {ornamentForms.length > 0 ? (
-                              ornamentForms
+                            {ornamentGrades.length > 0 ? (
+                              ornamentGrades
                                 .filter(
-                                  (cut: { ornament?: { id: string } }) =>
-                                    cut.ornament?.id === stockType // Filter based on selected stockType
+                                  (grade: { ornament?: { id: string } }) =>
+                                    grade.ornament?.id === stockType // Filter based on selected stockType
                                 )
                                 .map(
-                                  (cut: {
+                                  (grade: {
                                     id: string;
-                                    ornamentForm: string;
+                                    ornamentGrade: string;
                                   }) => (
-                                    <MenuItem key={cut.id} value={cut.id}>
-                                      {cut.ornamentForm}
+                                    <MenuItem key={grade.id} value={grade.id}>
+                                      {grade.ornamentGrade}
                                     </MenuItem>
                                   )
                                 )
@@ -1176,16 +1239,16 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                             <MenuItem className="flex flex-row justify-center w-full">
                               <AddNewItem
                                 stockTypeId={stockType || "default-stock-type"} // Pass the selected stockType
-                                category="form" // Specify the category as "form"
+                                category="grade" // Specify the category as "grade"
                                 onAddItem={(newItem: {
                                   id: string;
                                   name: string;
                                 }) => {
-                                  setFormOptions((prev: any[]) => [
+                                  setGradeOptions((prev: any[]) => [
                                     ...prev,
                                     {
                                       id: newItem.id,
-                                      ornamentForm: newItem.name,
+                                      ornamentGrade: newItem.name,
                                       ornament: stockType, // Ensure it is linked to the current stockType
                                     },
                                   ]);
@@ -1213,6 +1276,23 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                             value={values.unitPrice || ""} // Fallback to empty string
                           />
                           <CustomErrorMessage name="unitPrice" />
+                        </Box>
+                      </Grid>
+
+                      <Grid item xs={6}>
+                        <Box>
+                          <Typography className="text-sm text-primary mb-1">
+                            Quantity
+                          </Typography>
+                          <Field
+                            name="quantity"
+                            as={OutlinedInput}
+                            error={touched.quantity && Boolean(errors.quantity)}
+                            fullWidth
+                            placeholder="Enter quantity"
+                            value={values.quantity || ""} // Fallback to empty string
+                          />
+                          <CustomErrorMessage name="quantity" />
                         </Box>
                       </Grid>
 
@@ -1280,8 +1360,15 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                             name="vendor"
                             error={touched.vendor && Boolean(errors.vendor)}
                             // value={values.vendor || ""}
-                               value={values?.vendor ? values?.vendor : props?.isEditMode ? props?.initialValues?.vendor?.id && props.initialValues?.vendor?.id || "" : ""}
-
+                            value={
+                              values?.vendor
+                                ? values?.vendor
+                                : props?.isEditMode
+                                ? (props?.initialValues?.vendor?.id &&
+                                    props.initialValues?.vendor?.id) ||
+                                  ""
+                                : ""
+                            }
                             onChange={(
                               e: React.ChangeEvent<{ value: unknown }>
                             ) => {
@@ -1293,15 +1380,10 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                             fullWidth
                             className="mt-1"
                           >
-
-                              {/* Placeholder for default selection */}
+                            {/* Placeholder for default selection */}
                             <MenuItem value="" disabled>
-                            {props.stock ? "Supplier Name" : "Buyer Name"}
+                              {props.stock ? "Supplier Name" : "Buyer Name"}
                             </MenuItem>
-
-
-
-                            
                             {buyersAndSuppliers?.length > 0 ? (
                               buyersAndSuppliers.map((item: Vendor) => (
                                 <MenuItem key={item.id} value={item.id}>
@@ -1339,7 +1421,7 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                         </Box>
                       </Grid>
 
-                      <Grid item xs={12}>
+                      <Grid item xs={6}>
                         <Box>
                           <Typography className="text-sm text-primary mb-1">
                             Notes (if any)
@@ -1373,8 +1455,15 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                               touched.silverType && Boolean(errors.silverType)
                             }
                             // value={values.silverType || ""}
-                            value={values?.silverType ? values?.silverType : props?.isEditMode ? props?.initialValues?.silverType?.id && props.initialValues?.silverType?.id || "" : ""}
-
+                            value={
+                              values?.silverType
+                                ? values?.silverType
+                                : props?.isEditMode
+                                ? (props?.initialValues?.silverType?.id &&
+                                    props.initialValues?.silverType?.id) ||
+                                  ""
+                                : ""
+                            }
                             onChange={handleChange}
                             displayEmpty
                             fullWidth
@@ -1461,8 +1550,15 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                             error={touched.sclarity && Boolean(errors.sclarity)}
                             name="sclarity"
                             // value={values.sclarity || ""} // Ensure controlled value
-                             value={values?.sclarity ? values?.sclarity : props?.isEditMode ? props?.initialValues?.sclarity?.id && props.initialValues?.sclarity?.id || "" : ""}
-
+                            value={
+                              values?.sclarity
+                                ? values?.sclarity
+                                : props?.isEditMode
+                                ? (props?.initialValues?.sclarity?.id &&
+                                    props.initialValues?.sclarity?.id) ||
+                                  ""
+                                : ""
+                            }
                             onChange={handleChange}
                             displayEmpty
                             fullWidth
@@ -1540,7 +1636,7 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                         </Box>
                       </Grid>
 
-                     <Grid item xs={6}>
+                      <Grid item xs={6}>
                         <Box>
                           <Typography className="text-sm text-primary mb-1">
                             Form of Silver
@@ -1549,11 +1645,19 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                             as={Select}
                             name="formOfSilver"
                             // value={values.formOfSilver || ""} // Ensure controlled value
-                             value={values?.formOfSilver ? values?.formOfSilver : props?.isEditMode ? props?.initialValues?.formOfSilver?.id && props.initialValues?.formOfSilver?.id || "" : ""}
-
+                            value={
+                              values?.formOfSilver
+                                ? values?.formOfSilver
+                                : props?.isEditMode
+                                ? (props?.initialValues?.formOfSilver?.id &&
+                                    props.initialValues?.formOfSilver?.id) ||
+                                  ""
+                                : ""
+                            }
                             onChange={handleChange}
                             error={
-                              touched.formOfSilver && Boolean(errors.formOfSilver)
+                              touched.formOfSilver &&
+                              Boolean(errors.formOfSilver)
                             }
                             displayEmpty
                             fullWidth
@@ -1606,10 +1710,9 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                               />
                             </MenuItem>
                           </Field>
-                          <CustomErrorMessage name="form" />
+                          <CustomErrorMessage name="formOfSilver" />
                         </Box>
                       </Grid>
-
 
                       <Grid item xs={6}>
                         <Box>
@@ -1694,8 +1797,15 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                             name="vendor"
                             // value={values.vendor || ""}
 
-                             value={values?.vendor ? values?.vendor : props?.isEditMode ? props?.initialValues?.vendor?.id && props.initialValues?.vendor?.id || "" : ""}
-
+                            value={
+                              values?.vendor
+                                ? values?.vendor
+                                : props?.isEditMode
+                                ? (props?.initialValues?.vendor?.id &&
+                                    props.initialValues?.vendor?.id) ||
+                                  ""
+                                : ""
+                            }
                             onChange={(
                               e: React.ChangeEvent<{ value: unknown }>
                             ) => {
@@ -1707,12 +1817,10 @@ const AddStockEntryDialog: React.FC<AddStockEntryDialogProps> = (props) => {
                             fullWidth
                             className="mt-1"
                           >
-
-                               {/* Placeholder for default selection */}
+                            {/* Placeholder for default selection */}
                             <MenuItem value="" disabled>
-                            {props.stock ? "Supplier Name" : "Buyer Name"}
+                              {props.stock ? "Supplier Name" : "Buyer Name"}
                             </MenuItem>
-
 
                             {buyersAndSuppliers?.length > 0 ? (
                               buyersAndSuppliers.map((item: Vendor) => (

@@ -45,10 +45,10 @@ export const GET_ORNAMENT_COLORS = `${BASE_URL}/ornamentColorManagement/getOrnam
 export const DELETE_ORNAMENT_COLORS = `${BASE_URL}/ornamentColorManagement/deleteOrnamentColor`; // Delete Ornament Color
 
 
-// // Ornament Cuts
-// export const POST_ORNAMENT_CUTS = `${BASE_URL}/ornamentCutManagement`;
-// export const GET_ORNAMENT_CUTS = `${BASE_URL}/ornamentCutManagement/getOrnamentCut`; // Fetch Ornament Forms
-// export const DELETE_ORNAMENT_CUTS = `${BASE_URL}/ornamentCutManagement/deleteOrnamentCut`; // Delete Ornament Form
+// Ornament Cut Grade
+export const POST_ORNAMENT_Grade = `${BASE_URL}/ornamentGradeManagement`;
+export const GET_ORNAMENT_Grade = `${BASE_URL}/ornamentGradeManagement/getOrnamentGrade`; // Fetch Ornament Forms
+export const DELETE_ORNAMENT_Grade = `${BASE_URL}/ornamentGradeManagement/deleteOrnamentGrade`; // Delete Ornament Form
 
 
 

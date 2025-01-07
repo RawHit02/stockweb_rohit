@@ -18,16 +18,18 @@ import {
   addForm,
   addColor,
   addType,
+  addGrades,
   fetchPurities,
   fetchForms,
   fetchColors,
+  fetchGrades,
   fetchOrnamentTypes,
 } from "@/redux/stock_management/stock_management.actions";
 import { useAppDispatch } from "@/redux/store";
 
 interface AddNewItemProps {
   stockTypeId: string;
-  category: "purity" | "form" | "color" | "type";
+  category: "purity" | "form" | "color" | "type" | "grade";
   onAddItem: (newItem: { id: string; name: string }) => void;
 }
 
@@ -81,6 +83,13 @@ const AddNewItem: React.FC<AddNewItemProps> = ({
             ornamentColor: newItemName.trim(),
           })
         ).unwrap();
+      } else if (category === "grade") {
+        response = await dispatch(
+          addGrades({
+            ornament: stockTypeId,
+            ornamentGrade: newItemName.trim(),
+          })
+        ).unwrap();
       } else if (category === "type") {
         response = await dispatch(
           addType({
@@ -111,6 +120,9 @@ const AddNewItem: React.FC<AddNewItemProps> = ({
             break;
           case "type":
             await dispatch(fetchOrnamentTypes());
+            break;
+          case "grade":
+            await dispatch(fetchGrades());
             break;
         }
       }

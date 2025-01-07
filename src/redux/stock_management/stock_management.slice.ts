@@ -24,6 +24,9 @@ import {
   deletePurity,
   addColor,
   deleteColor,
+  addGrades,
+  fetchGrades,
+  deleteGrades,
 } from "./stock_management.actions";
 import { InitialInwardsModelState } from "@/models/req-model/StockManagementInwardModel";
 import { InitialOutwardsModelState } from "@/models/req-model/StockManagementOutwardModel";
@@ -39,6 +42,8 @@ interface CombinedState {
   ornamentForms: { id: string; ornamentForm: string }[];
   ornamentPurities: { id: string; ornamentPurity: string }[];
   ornamentColors: { id: string; ornamentColor: string }[];
+    ornamentGrades: { id: string; ornamentGrade: string }[];
+
 }
 
 const initialState: CombinedState = {
@@ -66,6 +71,7 @@ const initialState: CombinedState = {
   ornamentDetails: [],
   ornamentTypes: [],
   ornamentForms: [],
+  ornamentGrades: [],
   ornamentPurities: [],
   ornamentColors: [],
 };
@@ -123,18 +129,18 @@ export const stockManagementSlice = createSlice({
     });
 
 
-  // // Fetch Cuts
-  //   builder.addCase(addCut.fulfilled, (state, action) => {
-  //     state.ornamentCuts.push(action.payload.data);
-  //   });
-  //   builder.addCase(fetchCuts.fulfilled, (state, action) => {
-  //     state.ornamentCuts = action.payload.data;
-  //   });
-  //   builder.addCase(deleteCut.fulfilled, (state, action) => {
-  //     state.ornamentCuts = state.ornamentCuts.filter(
-  //       (item) => item.id !== action.meta.arg
-  //     );
-  //   });
+  // Fetch Cuts Grade
+    builder.addCase(addGrades.fulfilled, (state, action) => {
+      state.ornamentGrades.push(action.payload.data);
+    });
+    builder.addCase(fetchGrades.fulfilled, (state, action) => {
+      state.ornamentGrades = action.payload.data;
+    });
+    builder.addCase(deleteGrades.fulfilled, (state, action) => {
+      state.ornamentGrades = state.ornamentGrades.filter(
+        (item) => item.id !== action.meta.arg
+      );
+    });
 
 
     

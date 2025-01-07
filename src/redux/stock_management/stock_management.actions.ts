@@ -5,6 +5,7 @@ import {
   DELETE_ALL_ORNAMENTS,
   DELETE_ORNAMENT_COLORS,
   DELETE_ORNAMENT_FORMS,
+  DELETE_ORNAMENT_Grade,
   DELETE_ORNAMENT_PURITY,
   DELETE_ORNAMENT_TYPES,
   DELETE_STOCK,
@@ -12,9 +13,11 @@ import {
   FETCH_OUTWARD_STOCK,
   GET_ALL_BUYERS_AND_SUPPLIERS,
   GET_ALL_ORNAMENTS,
+  GET_ORNAMENT_Grade,
   POST_ALL_ORNAMENTS,
   POST_ORNAMENT_COLORS,
   POST_ORNAMENT_FORMS,
+  POST_ORNAMENT_Grade,
   POST_ORNAMENT_PURITY,
   POST_ORNAMENT_TYPES,
   UPDATE_STOCK,
@@ -222,48 +225,6 @@ export const addForm = createAsyncThunk<
 );
 
 
-
-
-// // Fetch Cuts
-// export const fetchCuts = createAsyncThunk<{
-//   data: { id: string; ornamentCut: string }[];
-// },
-// void,
-// { rejectValue: { message: string } }
-// >("stockManagement/fetchCuts", async (_, { rejectWithValue }) => {
-//   try {
-//     const res = await apiClient.get(GET_ORNAMENT_CUTS);
-//     return { data: res.data.data };
-//   } catch (error: any) {
-//     console.error("Error fetching Cuts:", error);
-//     return rejectWithValue({
-//       message: error.response?.data?.message || "Failed to fetch Cuts",
-//     });
-//   }
-// });
-
-// // Ornament Cut: Delete
-// export const deleteCut = createAsyncThunk<
-//   any,
-//   string,
-//   { rejectValue: string }
-// >(
-//   "stockManagement/deleteCut",
-//   async (id, { rejectWithValue }) => {
-//     try {
-//       const response = await apiClient.delete(`${DELETE_ORNAMENT_CUTS}/${id}`);
-//       return response.data;
-//     } catch (error: any) {
-//       console.error("Error deleting cut:", error);
-//       return rejectWithValue(
-//         error.response?.data?.message || "Failed to delete cut"
-//       );
-//     }
-//   }
-// );
-
-
-
 // Fetch Forms
 export const fetchForms = createAsyncThunk<{
   data: { id: string; ornamentForm: string }[];
@@ -301,6 +262,71 @@ export const deleteForm = createAsyncThunk<
     }
   }
 );
+
+
+
+// Ornament Form: Create
+export const addGrades = createAsyncThunk<
+  any,
+  { ornamentGrade: string; ornament: string },
+  { rejectValue: string }
+>(
+  "stockManagement/addGrades",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.post(POST_ORNAMENT_Grade, payload);
+      return response.data;
+    } catch (error: any) {
+      console.error("Error creating Cut Grade:", error);
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to create Grade"
+      );
+    }
+  }
+);
+
+
+// Fetch Cuts Grade
+export const fetchGrades = createAsyncThunk<{
+  data: { id: string; ornamentGrade: string }[];
+},
+void,
+{ rejectValue: { message: string } }
+>("stockManagement/fetchGrades", async (_, { rejectWithValue }) => {
+  try {
+    const res = await apiClient.get(GET_ORNAMENT_Grade);
+    return { data: res.data.data };
+  } catch (error: any) {
+    console.error("Error fetching Grades:", error);
+    return rejectWithValue({
+      message: error.response?.data?.message || "Failed to fetch Grades",
+    });
+  }
+});
+
+// Ornament CutGrade: Delete
+export const deleteGrades = createAsyncThunk<
+  any,
+  string,
+  { rejectValue: string }
+>(
+  "stockManagement/deleteGrade",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.delete(`${DELETE_ORNAMENT_Grade}/${id}`);
+      return response.data;
+    } catch (error: any) {
+      console.error("Error deleting Grade:", error);
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to delete Grade"
+      );
+    }
+  }
+);
+
+
+
+
 
 // Add Ornament Purity
 export const addPurity = createAsyncThunk<
