@@ -37,12 +37,14 @@ interface CombinedState {
   buyers: any[];
   suppliers: any[];
   selectedVendorId: string | null;
-  ornamentDetails: { id: string; ornament: string }[];
+  ornamentDetails: {
+     id: string; ornament: string;   ornamentName?: string; 
+}[];
   ornamentTypes: { id: string; ornamentType: string }[];
   ornamentForms: { id: string; ornamentForm: string }[];
   ornamentPurities: { id: string; ornamentPurity: string }[];
   ornamentColors: { id: string; ornamentColor: string }[];
-    ornamentGrades: { id: string; ornamentGrade: string }[];
+  ornamentGrades: { id: string; ornamentGrade: string }[];
 
 }
 

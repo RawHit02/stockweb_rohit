@@ -317,6 +317,8 @@ const BuyerDetails = () => {
               </Box>
             </Box>
           </TabPanel>
+
+          
           <TabPanel value={value} index={1}>
             <Box className="mt-5">
               <Box className="flex items-center gap-[10px]">

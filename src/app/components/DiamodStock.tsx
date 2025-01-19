@@ -1,92 +1,173 @@
-import { Box, Typography } from '@mui/material'
-import React from 'react'
+"use client"
+
+import { Box, Typography } from "@mui/material";
+import React, { useState } from "react";
 import { DefaultizedPieValueType } from "@mui/x-charts/models";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
-import EllipsesSvg from './EllipsesSvg';
-import Image from 'next/image';
-import { DiamondImg } from '../assets';
+import EllipsesSvg from "./EllipsesSvg";
+import Image from "next/image";
+import { DiamondImg } from "../assets";
 
-const data = [
-    { label: "Round", value: 120, color: "#0F4E36", quantity: "20CT" },
-    { label: "Princess", value: 100, color: "#1A8779", quantity: "20CT" },
-    { label: "Emerald", value: 100, color: "#20A493", quantity: "20CT" },
-    { label: "Cushion", value: 100, color: "#3FE0A3", quantity: "20CT" },
-    { label: "Asscher", value: 170, color: "#25C387", quantity: "20CT" },
-    { label: "Marquise", value: 170, color: "#50DDA8", quantity: "20CT" },
-    { label: "Oval", value: 170, color: "#6DE3B6", quantity: "20CT" },
-    { label: "Radiant", value: 120, color: "#8AE9C5", quantity: "20CT" },
-    { label: "Pear", value: 100, color: "#A8EED3", quantity: "20CT" },
-    { label: "Heart", value: 120, color: "#C5F4E2", quantity: "20CT" },
-];
+const colors = ["#0F4E36", "#1A8771", "#20A493", "#3FE0A3", "#25C387"];
 
-const sizing = {
+interface OrnamentItem {
+  id: string;
+  createdBy?: string;
+  createdDate?: string;
+  updatedDate?: string;
+  isDeleted?: boolean;
+  ornamentType?: string;
+  ornamentForm?: string;
+  ornamentPurity?: string;
+  ornamentColor?: string;
+  ornamentGrade?: string;
+}
+
+interface OrnamentDetails {
+  id: string;
+  ornamentName: string;
+  ornamentType?: OrnamentItem[];
+  ornamentForm?: OrnamentItem[];
+  ornamentPurity?: OrnamentItem[];
+  ornamentColor?: OrnamentItem[];
+  ornamentGrade?: OrnamentItem[];
+}
+
+interface DiamodStockProps {
+  diamondData: OrnamentDetails;
+}
+
+const DiamodStock: React.FC<DiamodStockProps> = ({ diamondData }) => {
+  const [tooltipContent, setTooltipContent] = useState<string | null>(null);
+  const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
+
+  const transformData = () => {
+    if (!diamondData) return [];
+
+    const categories = [
+      {
+        name: "Type",
+        items: diamondData.ornamentType || [],
+        itemNames: (diamondData.ornamentType || []).map((item) => item.ornamentType).join(", "),
+      },
+      {
+        name: "Purity",
+        items: diamondData.ornamentPurity || [],
+        itemNames: (diamondData.ornamentPurity || []).map((item) => item.ornamentPurity).join(", "),
+      },
+      {
+        name: "Color",
+        items: diamondData.ornamentColor || [],
+        itemNames: (diamondData.ornamentColor || []).map((item) => item.ornamentColor).join(", "),
+      },
+      {
+        name: "Grade",
+        items: diamondData.ornamentGrade || [],
+        itemNames: (diamondData.ornamentGrade || []).map((item) => item.ornamentGrade).join(", "),
+      },
+    ];
+
+    const totalItems = categories.reduce((sum, category) => sum + category.items.length, 0);
+
+    return categories.map((category, index) => ({
+      category: category.name,
+      value: category.items.length,
+      color: colors[index % colors.length],
+      percentage: ((category.items.length / totalItems) * 100).toFixed(1),
+      itemNames: category.itemNames, // Include the names of the items
+    }));
+  };
+
+  const data = transformData();
+  console.log(transformData());
+
+  const handleMouseOver = (
+    event: React.MouseEvent,
+    category: string,
+    itemNames: string
+  ) => {
+    setTooltipContent(`${category}: ${itemNames}`);
+    setTooltipPosition({ x: event.clientX, y: event.clientY });
+  };
+
+  const handleMouseOut = () => {
+    setTooltipContent(null);
+    setTooltipPosition(null);
+  };
+
+  const sizing = {
     margin: { right: 5 },
     width: 206,
     height: 206,
     legend: { hidden: true },
-};
-const TOTAL = data.map((item) => item.value).reduce((a, b) => a + b, 0);
+  };
 
-const getArcLabel = (params: DefaultizedPieValueType) => {
-    const percent = params.value / TOTAL;
-    return `${(percent * 100).toFixed(0)}%`;
-};
+  const getArcLabel = (params: DefaultizedPieValueType) => `${params.value}%`;
 
-const DiamodStock = () => {
-    return (
-        <>
-            <Box className="flex flex-col gap-6 border border-primary100 rounded-[8px] w-full h-full">
-                <Typography className="text-base font-normal px-6 pt-6">
-                    Diamond Stock
-                </Typography>
-                <Box className="pb-6 px-6 flex justify-between gap-[32px]">
-                    <Box className="w-full flex flex-col gap-2">
-                        {
-                            data.map((data, index) => {
-                                return (
-                                    <Box className="flex justify-between" key={index}>
-                                        <Box className="flex gap-1 items-center">
-                                            <Box>
-                                                <EllipsesSvg size={12} color={data.color} />
-                                            </Box>
-                                            <Box>
-                                                <Typography className="text-xs font-normal">
-                                                    {data.label}
-                                                </Typography>
-                                            </Box>
-                                        </Box>
-                                        <Box>
-                                            <Typography className="text-xs font-normal">{data.quantity}</Typography>
-                                        </Box>
-                                    </Box>
-                                )
-                            })
-                        }
-                    </Box>
-                    <Box className="relative">
-                        <PieChart
-                            series={[
-                                {
-                                    innerRadius: 60,
-                                    data,
-                                    arcLabel: getArcLabel,
-                                },
-                            ]}
-                            sx={{
-                                [`& .${pieArcLabelClasses.root}`]: {
-                                    fontSize: 12,
-                                },
-                            }}
-                            {...sizing}
-                        />
-                        <Box className="absolute top-[81px] left-[68px]">
-                            <Image src={DiamondImg} alt='diamond' />
-                        </Box>
-                    </Box>
-                </Box>
+  return (
+    <Box className="flex flex-col gap-6 border border-primary100 rounded-[8px] w-full h-full">
+      <Typography className="text-base font-normal px-6 pt-6">
+        Diamond Stock
+      </Typography>
+      <Box className="pb-6 px-6 flex justify-between gap-[32px]">
+        <Box className="w-full flex flex-col gap-2">
+          {data.map((item, index) => (
+            <Box className="flex items-center gap-2" key={index}>
+              <EllipsesSvg size={12} color={item.color} />
+              <Typography className="text-xs font-normal">
+                {item.category}
+              </Typography>
             </Box>
-        </>
-    )
-}
+          ))}
+        </Box>
 
-export default DiamodStock
+        <Box className="relative">
+          <PieChart
+            series={[
+              {
+                innerRadius: 60,
+                data: data.map((item) => ({
+                  ...item,
+                  onMouseOver: (event: any) =>
+                    handleMouseOver(event.nativeEvent, item.category, item.itemNames),
+                  onMouseOut: handleMouseOut,
+                })),
+                arcLabel: getArcLabel,
+              },
+            ]}
+            sx={{
+              [`& .${pieArcLabelClasses.root}`]: {
+                fontSize: 12,
+              },
+            }}
+            {...sizing}
+          />
+          <Box className="absolute top-[81px] left-[68px]">
+            <Image src={DiamondImg} alt="diamond" />
+          </Box>
+        </Box>
+
+        {/* Tooltip */}
+        {tooltipContent && tooltipPosition && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: tooltipPosition.y,
+              left: tooltipPosition.x,
+              background: "#fff",
+              border: "1px solid #ddd",
+              borderRadius: "4px",
+              padding: "8px",
+              pointerEvents: "none",
+              zIndex: 1000,
+            }}
+          >
+            <Typography className="text-xs">{tooltipContent}</Typography>
+          </Box>
+        )}
+      </Box>
+    </Box>
+  );
+};
+
+export default DiamodStock;

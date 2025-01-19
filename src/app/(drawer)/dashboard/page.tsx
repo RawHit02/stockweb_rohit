@@ -10,6 +10,8 @@ import {
   fetchDashboardData} from "@/redux/dashboard/dashboard_actions";
 import TodaysDue from "@/app/components/TodaysDue";
 
+import {fetchOrnaments } from "@/redux/stock_management/stock_management.actions"
+
 
 
 const Dashboard = () => {
@@ -27,23 +29,58 @@ const Dashboard = () => {
     totalSell,
   } = useAppSelector((state) => state.dashboard);
 
+  const { ornamentDetails } = useAppSelector((state) => state.stockManagement);
+
+
+    // Transform ornamentDetails to add ornamentName
+    const transformedOrnamentDetails = ornamentDetails.map((item) => ({
+    ...item,
+    ornamentName: item.ornament, // Add ornamentName for compatibility
+  }));
+
   // Fetch data when the dashboard is loaded
   useEffect(() => {
     dispatch(fetchDashboardData());
+    dispatch(fetchOrnaments());
   }, [dispatch]);
 
-  // console.log("Dashboard Data from Redux:", {
-  //   totalAmountDue,
-  //   totalSupplier,
-  //   totalBuyer,
-  //   totalEmployee,
-  //   totalUser,
-  //   totalRevenue,
-  //   totalPurchase,
-  //   totalSell,
-  // }); // Debug Redux state
-  
-  //  console.log("Component - Total Employee from Redux:", totalEmployee); // Log state from Redux
+
+  // console.log("Ornament Details from Redux:", ornamentDetails);
+
+
+  interface OrnamentItem {
+    id: string;
+    createdBy?: string;
+    createdDate?: string;
+    updatedDate?: string;
+    isDeleted?: boolean;
+    ornamentType?: string;
+    ornamentForm?: string;
+    ornamentPurity?: string;
+    ornamentColor?: string;
+    ornamentGrade?: string;
+  }
+  interface OrnamentDetails {
+  id: string;
+  ornamentName: string;
+  ornamentType?: OrnamentItem[];
+  ornamentForm?: OrnamentItem[];
+  ornamentPurity?: OrnamentItem[];
+  ornamentColor?: OrnamentItem[];
+  ornamentGrade?: OrnamentItem[];
+}
+
+
+  // Filter data for Diamond, Gold, and Silver
+  const diamondData = ornamentDetails.find(
+    (ornament) => ornament.ornament === "Diamond"
+  );  
+  const goldData = ornamentDetails.find(
+    (ornament) => ornament.ornament === "Gold"
+  );
+  const silverData = ornamentDetails.find(
+    (ornament) => ornament.ornament === "Silver"
+  );
 
   return (
     <>
@@ -168,14 +205,32 @@ const Dashboard = () => {
         </Grid>
         <Grid container spacing={2} className="mt-4">
           <Grid size={{ xs: 4, md: 4, lg: 4 }}>
-            <DiamodStock />
+            <DiamodStock
+              diamondData={
+                ornamentDetails.find(
+                  (item) => item.ornamentName === "Diamond"
+                ) as OrnamentDetails
+              }
+            />
           </Grid>
           <Grid size={{ xs: 4, md: 4, lg: 4 }}>
-            <GoldStock />
+            <GoldStock
+              goldData={
+                ornamentDetails.find(
+                  (item) => item.ornamentName === "Gold"
+                ) as OrnamentDetails
+              }
+            />
           </Grid>
           <Grid size={{ xs: 4, md: 4, lg: 4 }}>
-            <SilverStock />
-          </Grid>
+            <SilverStock
+              silverData={
+                ornamentDetails.find(
+                  (item) => item.ornamentName === "Silver"
+                ) as OrnamentDetails
+              }
+            />
+        </Grid>
         </Grid>
 
         <Grid container spacing={2} className="mt-4">
@@ -263,7 +318,7 @@ const Dashboard = () => {
         <Box className="border border-primary100 rounded-lg p-4 mt-4">
           <Typography>Today&apos;s Due</Typography>
           <Box className="mt-6">
-            <TodaysDue/>
+            <TodaysDue />
           </Box>
         </Box>
       </Box>
@@ -272,3 +327,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+ 
