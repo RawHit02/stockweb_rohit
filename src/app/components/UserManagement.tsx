@@ -17,113 +17,41 @@ import Typography from "@mui/material/Typography";
 import { visuallyHidden } from "@mui/utils";
 import { DummyProfile, MoreVertIcon } from "../assets";
 import Image from "next/image";
+import { apiClient } from "@/base-url/apiClient";
+import { GET_USERS } from "@/base-url/apiRoutes";
+import { useEffect, useCallback } from "react";
 
 const ITEM_HEIGHT = 48;
 
-interface Data {
-  id: number;
+interface User {
+  id: string;
   name: string;
-  contact: number;
-  whatsapp: number;
-  address: number;
-}
-
-function createData(
-  id: number,
-  name: string,
-  contact: number,
-  whatsapp: number,
-  address: number
-): Data {
-  return {
-    id,
-    name,
-    contact,
-    whatsapp,
-    address,
+  email: string;
+  phoneNumber: string;
+  address?: string;
+  role: {
+    name: string;
   };
-}
-
-const rows = [
-  createData(1, "Cupcake", 305, 3.7, 67),
-  createData(2, "Donut", 452, 25.0, 51),
-  createData(3, "Eclair", 262, 16.0, 24),
-  createData(4, "Frozen yoghurt", 159, 6.0, 24),
-  createData(5, "Gingerbread", 356, 16.0, 49),
-  createData(6, "Honeycomb", 408, 3.2, 87),
-  createData(7, "Ice cream sandwich", 237, 9.0, 37),
-  createData(8, "Jelly Bean", 375, 0.0, 94),
-  createData(9, "KitKat", 518, 26.0, 65),
-  createData(10, "Lollipop", 392, 0.2, 98),
-  createData(11, "Marshmallow", 318, 0, 81),
-  createData(12, "Nougat", 360, 19.0, 9),
-  createData(13, "Oreo", 437, 18.0, 63),
-];
-
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
 }
 
 type Order = "asc" | "desc";
 
-function getComparator<Key extends keyof any>(
-  order: Order,
-  orderBy: Key
-): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string }
-) => number {
-  return order === "desc"
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
 interface HeadCell {
-  disablePadding: boolean;
-  id: keyof Data;
+  id: string;
   label: string;
   numeric: boolean;
 }
 
 const headCells: readonly HeadCell[] = [
-  {
-    id: "name",
-    numeric: false,
-    disablePadding: false,
-    label: "Name/ Email",
-  },
-  {
-    id: "contact",
-    numeric: false,
-    disablePadding: false,
-    label: "Contact Number",
-  },
-  {
-    id: "whatsapp",
-    numeric: false,
-    disablePadding: false,
-    label: "WhatsApp Number",
-  },
-  {
-    id: "address",
-    numeric: false,
-    disablePadding: false,
-    label: "Address",
-  },
+  { id: "name", label: "Name/ Email", numeric: false },
+  { id: "phoneNumber", label: "Phone Number", numeric: false },
+  { id: "role", label: "Role", numeric: false },
+  { id: "address", label: "Address", numeric: false },
 ];
 
 interface EnhancedTableProps {
   numSelected: number;
-  onRequestSort: (
-    event: React.MouseEvent<unknown>,
-    property: keyof Data
-  ) => void;
+  onRequestSort: (event: React.MouseEvent<unknown>, property: string) => void;
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   order: Order;
   orderBy: string;
@@ -132,10 +60,9 @@ interface EnhancedTableProps {
 
 function EnhancedTableHead(props: EnhancedTableProps) {
   const { order, orderBy, onRequestSort } = props;
-  const createSortHandler =
-    (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
-      onRequestSort(event, property);
-    };
+  const createSortHandler = (property: string) => (event: React.MouseEvent<unknown>) => {
+    onRequestSort(event, property);
+  };
 
   return (
     <TableHead>
@@ -144,7 +71,6 @@ function EnhancedTableHead(props: EnhancedTableProps) {
           <TableCell
             key={headCell.id}
             align={headCell.numeric ? "right" : "left"}
-            padding={headCell.disablePadding ? "none" : "normal"}
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
@@ -161,22 +87,50 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             </TableSortLabel>
           </TableCell>
         ))}
-        <TableCell className="text-white" align="left">
-          Action
-        </TableCell>
+        <TableCell align="left">Action</TableCell>
       </TableRow>
     </TableHead>
   );
 }
 
+
 const UserManagement = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
   const [order, setOrder] = useState<Order>("asc");
-  const [orderBy, setOrderBy] = useState<keyof Data>("contact");
-  const [selected, setSelected] = useState<readonly number[]>([]);
+  const [orderBy, setOrderBy] = useState<string>("name");
+  const [selected, setSelected] = useState<readonly string[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+  const fetchUsers = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await apiClient.get(GET_USERS, {
+        params: {
+          page: page + 1,
+          take: rowsPerPage,
+          order: order.toUpperCase(),
+          orderBy: orderBy
+        }
+      });
+      if (response.data.statusCode === 200) {
+        setUsers(response.data.data.data);
+        setTotalCount(response.data.data.meta.itemCount);
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [page, rowsPerPage, order, orderBy]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
   const handleClickMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -184,7 +138,6 @@ const UserManagement = () => {
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
-  // const [value, setValue] = useState(0);
 
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
@@ -192,14 +145,13 @@ const UserManagement = () => {
     setIsOpen(true);
   };
 
-  // For Close Dialog
   const closeDialog = () => {
     setIsOpen(false);
   };
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
-    property: keyof Data
+    property: any
   ) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -208,16 +160,16 @@ const UserManagement = () => {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
+      const newSelected = users.map((n) => n.id);
       setSelected(newSelected);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
+  const handleClick = (event: React.MouseEvent<unknown>, id: string) => {
     const selectedIndex = selected.indexOf(id);
-    let newSelected: readonly number[] = [];
+    let newSelected: readonly string[] = [];
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
@@ -245,17 +197,6 @@ const UserManagement = () => {
     setPage(0);
   };
 
-  // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
-  const visibleRows = React.useMemo(
-    () =>
-      [...rows]
-        .sort(getComparator(order, orderBy))
-        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [order, orderBy, page, rowsPerPage]
-  );
   return (
     <>
       <Box sx={{ width: "100%" }} className="primary-table">
@@ -271,10 +212,14 @@ const UserManagement = () => {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={users.length}
             />
             <TableBody>
-              {visibleRows.map((row, index) => {
+              {loading ? (
+                <TableRow><TableCell colSpan={5} align="center">Loading...</TableCell></TableRow>
+              ) : users.length === 0 ? (
+                <TableRow><TableCell colSpan={5} align="center">No users found</TableCell></TableRow>
+              ) : users.map((row, index) => {
                 const isItemSelected = selected.includes(row.id);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -302,63 +247,37 @@ const UserManagement = () => {
                             {row.name}
                           </Typography>
                           <Typography className="text-xs text-gray200">
-                            test123@email.com
+                            {row.email}
                           </Typography>
                         </Box>
                       </Box>
                     </TableCell>
-                    <TableCell align="left">{row.contact}</TableCell>
-                    <TableCell align="left">{row.whatsapp}</TableCell>
-                    <TableCell align="left">{row.address}</TableCell>
+                    <TableCell align="left">{row.phoneNumber || "N/A"}</TableCell>
+                    <TableCell align="left">{row.role?.name || "N/A"}</TableCell>
+                    <TableCell align="left">{row.address || "N/A"}</TableCell>
                     <TableCell align="left">
                       <Box>
                         <IconButton
                           aria-label="more"
                           id="long-button"
-                          aria-controls={open ? "long-menu" : undefined}
-                          aria-expanded={open ? "true" : undefined}
-                          aria-haspopup="true"
                           onClick={handleClickMenu}
                         >
                           <MoreVertIcon />
                         </IconButton>
                         <Menu
                           id="long-menu"
-                          MenuListProps={{
-                            "aria-labelledby": "long-button",
-                          }}
                           anchorEl={anchorEl}
                           open={open}
                           onClose={handleCloseMenu}
-                          slotProps={{
-                            paper: {
-                              style: {
-                                maxHeight: ITEM_HEIGHT * 4.5,
-                                width: "160px",
-                                boxShadow: "#9f9e9e29 5px 5px 16px 0px",
-                                borderRadius: "8px",
-                              },
-                            },
-                          }}
                         >
                           <MenuItem onClick={handleCloseMenu}>
-                            <Box className="flex items-center gap-[6px] text-baseBlack">
-                              <Typography className="text-sm">Edit</Typography>
-                            </Box>
+                            <Typography className="text-sm">Edit</Typography>
                           </MenuItem>
                           <MenuItem onClick={handleCloseMenu}>
-                            <Box className="flex items-center gap-[6px]">
-                              <Typography className="text-sm">
-                                Deactivate
-                              </Typography>
-                            </Box>
+                            <Typography className="text-sm">Deactivate</Typography>
                           </MenuItem>
                           <MenuItem onClick={openDialog}>
-                            <Box className="flex items-center gap-[6px] text-baseBlack">
-                              <Typography className="text-sm">
-                                Change Password
-                              </Typography>
-                            </Box>
+                            <Typography className="text-sm">Change Password</Typography>
                           </MenuItem>
                         </Menu>
                       </Box>
@@ -366,22 +285,13 @@ const UserManagement = () => {
                   </TableRow>
                 );
               })}
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: 53 * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
             </TableBody>
           </Table>
         </TableContainer>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={totalCount}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -394,3 +304,4 @@ const UserManagement = () => {
 };
 
 export default UserManagement;
+

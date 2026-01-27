@@ -23,71 +23,65 @@ import {
 import Image from "next/image";
 import { Logo2, LoginBackground } from "../assets";
 import { login } from "@/redux/slices/authSlice";
+import { apiClient } from "@/base-url/apiClient";
+import { SIGN_IN } from "@/base-url/apiRoutes";
+import Link from "next/link";
+
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const validationSchema = Yup.object({
-    username: Yup.string().required("Please enter your username"),
+    email: Yup.string().email("Invalid email").required("Please enter your email"),
     password: Yup.string().required("Please enter your password"),
   });
 
   const handleLogin = async (values: {
-    username: string;
+    email: string;
     password: string;
   }) => {
-    const { username, password } = values;
-
-    // Commented out middleware-related code
-    
+    setLoading(true);
     try {
-      // Mock login logic
-      if (username === "admin" && password === "password") {
-        const mockData = { token: "mockedAuthToken" };
+      // Use direct axios for login since we don't have a token yet
+      // The SIGN_IN URL is relative now
+      const response = await apiClient.post(SIGN_IN, {
+        email: values.email,
+        password: values.password,
+      });
 
-        // Set authToken in cookies
-        document.cookie = `authToken=${
-          mockData.token
-        }; path=/; secure; expires=${new Date(
-          Date.now() + 60 * 60 * 1000 // 1-hour 
+
+      if (response.data.statusCode === 200) {
+        const { accessToken, refreshToken } = response.data.data;
+
+        // Set tokens in cookies and localStorage
+        localStorage.setItem("authToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+
+        document.cookie = `authToken=${accessToken}; path=/; secure; samesite=strict; expires=${new Date(
+          Date.now() + 60 * 60 * 1000 // 1-hour
         ).toUTCString()};`;
 
         // Dispatch action for login
         dispatch(login());
 
+        // Force a page reload or router push to dashboard
         router.push("/dashboard");
       } else {
-        alert("Invalid username or password");
+        alert(response.data.message || "Invalid email or password");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Login error:", error);
-      alert("Login failed. Please try again.");
+      const errorMessage = error.response?.data?.message || "Invalid email or password";
+      alert(errorMessage);
+    } finally {
+      setLoading(false);
     }
-    
-   }; 
-
-  //   if (username === "admin" && password === "password") {
-  //     // Mock token
-  //     const mockData = { token: "mockedAuthToken" };
-
-  //     // Set authToken in cookies
-  //     document.cookie = `authToken=${mockData.token}; path=/; secure; expires=${new Date(
-  //       Date.now() + 60 * 60 * 1000 // 1-hour
-  //     ).toUTCString()};`;
-
-  //     // Dispatch action for login
-  //     dispatch(login());
-
-  //     // Navigate to dashboard
-  //     router.push("/dashboard");
-  //   } else {
-  //     alert("Invalid username or password");
-  //   }
-  // };
+  };
 
   return (
     <Box className="relative h-screen w-full">
@@ -103,41 +97,41 @@ const SignIn = () => {
             <Typography className="text-2xl font-bold leading-6">
               LOGIN
             </Typography>
-            <Typography className="mt-2">
+            <Typography className="mt-2 text-gray-500">
               Enter your credentials for login
             </Typography>
           </Box>
 
           <Formik
-            initialValues={{ username: "", password: "" }}
+            initialValues={{ email: "", password: "" }}
             validationSchema={validationSchema}
             onSubmit={handleLogin}
           >
             {({ errors, touched }) => (
               <Form>
                 <Box className="mt-6">
-                  <Typography className="text-primary">Username</Typography>
+                  <Typography className="text-primary font-medium mb-1">Email</Typography>
                   <Field
                     as={OutlinedInput}
-                    name="username"
-                    placeholder="Enter here"
+                    name="email"
+                    placeholder="Enter your email"
                     fullWidth
                     className="mt-1"
-                    error={touched.username && Boolean(errors.username)}
+                    error={touched.email && Boolean(errors.email)}
                   />
                   <ErrorMessage
-                    name="username"
+                    name="email"
                     component="div"
-                    className="text-red-600 text-[12px]"
+                    className="text-red-600 text-[12px] mt-1"
                   />
                 </Box>
                 <Box className="mt-6">
-                  <Typography className="text-primary">Password</Typography>
+                  <Typography className="text-primary font-medium mb-1">Password</Typography>
                   <Field
                     as={OutlinedInput}
                     name="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="Enter here"
+                    placeholder="Enter your password"
                     fullWidth
                     error={touched.password && Boolean(errors.password)}
                     endAdornment={
@@ -158,25 +152,42 @@ const SignIn = () => {
                   <ErrorMessage
                     name="password"
                     component="div"
-                    className="text-red-600 text-[12px]"
+                    className="text-red-600 text-[12px] mt-1"
                   />
                 </Box>
                 <Button
                   type="submit"
                   variant="contained"
-                  className="w-full mt-6 h-[47px]"
+                  className="w-full mt-6 h-[47px] bg-primary hover:bg-primary-dark transition-all"
+                  disabled={loading}
+                  sx={{ borderRadius: '8px', textTransform: 'none', fontWeight: 600 }}
                 >
-                  Login
+                  {loading ? "Logging in..." : "Login"}
                 </Button>
               </Form>
             )}
           </Formik>
 
-          <Box className="flex items-center justify-between mt-9">
-            <Typography className="text-primary font-medium">
-              FORGOT PASSWORD
-            </Typography>
-            <ArrowForwardIosOutlinedIcon className="text-sm text-[#090A0B]" />
+          <Box className="mt-6 flex flex-col gap-4">
+            <Box className="flex items-center justify-between">
+              <Link href="/forgot-password" style={{ textDecoration: 'none' }}>
+                <Typography className="text-primary font-medium hover:underline cursor-pointer">
+                  FORGOT PASSWORD
+                </Typography>
+              </Link>
+              <ArrowForwardIosOutlinedIcon className="text-sm text-[#090A0B]" />
+            </Box>
+            
+            <Box className="text-center pt-4 border-t border-gray-100">
+              <Typography className="text-gray-600">
+                Don&apos;t have an account?{" "}
+                <Link href="/sign-up" style={{ textDecoration: 'none' }}>
+                  <span className="text-primary font-bold hover:underline cursor-pointer">
+                    Sign Up
+                  </span>
+                </Link>
+              </Typography>
+            </Box>
           </Box>
         </Box>
       </Box>
@@ -185,3 +196,4 @@ const SignIn = () => {
 };
 
 export default SignIn;
+

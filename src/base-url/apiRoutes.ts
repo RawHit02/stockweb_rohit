@@ -1,10 +1,9 @@
-const BASE_URL = `${process?.env?.NEXT_PUBLIC_BACKEND_API_URL}/api/v1`;
-
-// const BASE_URL = "http://localhost:8001/api/v1";
-
+const BASE_URL = `/api/v1`;
 
 // Login Routes
-export const SIGN_IN = `${BASE_URL}/auth/signIn`; // Auth route updated
+export const SIGN_IN = `${BASE_URL}/auth/signIn`;
+export const CREATE_USER = `${BASE_URL}/userManagement`;
+export const GET_USERS = `${BASE_URL}/userManagement/getUser`;
 
 // Vendor Management
 export const CREATE_VENDOR = `${BASE_URL}/vendorManagement/createVendor`;
@@ -12,7 +11,6 @@ export const EDIT_VENDOR = `${BASE_URL}/vendorManagement/updateVendor`;
 export const DELETE_VENDOR = `${BASE_URL}/vendorManagement/deleteVendor`;  
 export const GET_ALL_BUYERS = `${BASE_URL}/vendorManagement/getVendor/buyer`;
 export const GET_ALL_SELLERS = `${BASE_URL}/vendorManagement/getVendor/supplier`;
-
 
 // STOCK Management
 export const CREATE_STOCK = `${BASE_URL}/stockManagement/createStock`; // Create Stock

@@ -2,7 +2,9 @@ import Header from "./Header";
 import SideNav from "./SideNav";
 import AddNewBuyerDialog from "./AddNewBuyerDialog";
 import SignIn from "./SignIn";
+import SignUp from "./SignUp";
 import PrimaryTable from "./PrimaryTable";
+
 import TransactionTable from "./TransactionTable";
 import AddStockEntryDialog from "./AddStockEntryDialog";
 import PrimaryTableExample from "./AttendanceTableRecords";
@@ -31,7 +33,9 @@ export {
     DateAttendanceSheet,
     AddNewBuyerDialog,
     SignIn,
+    SignUp,
     AddEmployeeDialog,
+
     PrimaryTable,
     AddAttendanceDialog,
     TotalPresentPercentage,

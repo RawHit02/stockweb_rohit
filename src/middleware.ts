@@ -5,7 +5,8 @@ export function middleware(req: NextRequest) {
   const url = req.nextUrl.clone();
 
   // Define public and private routes
-  const publicRoutes = ["/", "/login"];
+  const publicRoutes = ["/", "/login", "/sign-up"];
+
   const privateRoutes = [
     "/dashboard",
     "/vender-management",

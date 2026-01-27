@@ -1,6 +1,5 @@
-
 import { Dispatch } from 'redux';
-import axios from 'axios';
+import { apiClient } from '@/base-url/apiClient';
 import {
   GET_DASHBOARD,
   GET_DUES
@@ -20,7 +19,8 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 // Action creators for dispatching data
 export const fetchDashboardData = () => async (dispatch: Dispatch) => {
   try {
-    const response = await axios.get(GET_DASHBOARD);
+    const response = await apiClient.get(GET_DASHBOARD);
+
     const data = response.data.data; // Extract data from API response
     // console.log("API Response for Dashboard Data:", data); // Debug API response
     dispatch(setDashboardData(data)); // Dispatch the entire dashboard data
@@ -35,7 +35,7 @@ export const fetchTableData = createAsyncThunk(
   "table/fetchData",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(GET_DUES);
+      const response = await apiClient.get(GET_DUES);
       if (response.status === 200) {
         return response.data.data; // Return the data array from the response
       } else {
@@ -46,6 +46,7 @@ export const fetchTableData = createAsyncThunk(
     }
   }
 );
+
 
 
 
