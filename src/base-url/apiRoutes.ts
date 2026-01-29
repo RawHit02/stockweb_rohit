@@ -4,6 +4,7 @@ const BASE_URL = `/api/v1`;
 export const SIGN_IN = `${BASE_URL}/auth/signIn`;
 export const CREATE_USER = `${BASE_URL}/userManagement`;
 export const GET_USERS = `${BASE_URL}/userManagement/getUser`;
+export const GET_ROLES = `${BASE_URL}/roles/getRoles`;
 
 // Vendor Management
 export const CREATE_VENDOR = `${BASE_URL}/vendorManagement/createVendor`;

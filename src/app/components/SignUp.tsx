@@ -1,7 +1,7 @@
 // src/components/SignUp.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -9,6 +9,11 @@ import {
   IconButton,
   InputAdornment,
   OutlinedInput,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  FormHelperText,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -23,20 +28,45 @@ import {
   LoginBackground,
 } from "../assets";
 import { apiClient } from "@/base-url/apiClient";
-import { CREATE_USER } from "@/base-url/apiRoutes";
+import { CREATE_USER, GET_ROLES } from "@/base-url/apiRoutes";
 
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [roles, setRoles] = useState<any[]>([]);
   const router = useRouter();
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'https://stock-backend-rohit.onrender.com';
+        const response = await fetch(`${BACKEND_URL}${GET_ROLES}?page=1&take=50`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'accept': '*/*',
+          },
+        });
+        const data = await response.json();
+        if (data.statusCode === 200 && data.data?.data) {
+          setRoles(data.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching roles:", error);
+      }
+    };
+
+    fetchRoles();
+  }, []);
 
   const validationSchema = Yup.object({
     name: Yup.string().required("Please enter your name"),
     email: Yup.string().email("Invalid email").required("Please enter your email"),
     phoneNumber: Yup.string().required("Please enter your phone number"),
     password: Yup.string().min(6, "Password must be at least 6 characters").required("Please enter your password"),
+    role: Yup.string().required("Please select a role"),
   });
 
   const handleSignUp = async (values: any) => {
@@ -45,19 +75,29 @@ const SignUp = () => {
       const payload = {
         name: values.name,
         email: values.email,
-        phoneNumber: values.phoneNumber,
+        phoneNumber: values.phoneNumber.startsWith("+") ? values.phoneNumber : `+91${values.phoneNumber}`,
         password: values.password,
-        role: "a58125bf-f933-445e-af65-873708d98e03", // Default role from user request
+        role: values.role,
       };
 
-      const response = await apiClient.post(CREATE_USER, payload);
+      // Use axios directly without auth interceptor for public signup
+      const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'https://stock-backend-rohit.onrender.com';
+      const response = await fetch(`${BACKEND_URL}${CREATE_USER}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'accept': '*/*',
+        },
+        body: JSON.stringify(payload),
+      });
 
+      const data = await response.json();
 
-      if (response.data.statusCode === 201 || response.data.statusCode === 200) {
+      if (response.ok && (data.statusCode === 201 || data.statusCode === 200)) {
         alert("Account created successfully! Please login.");
         router.push("/");
       } else {
-        alert(response.data.message || "Registration failed");
+        alert(data.message || "Registration failed");
       }
     } catch (error: any) {
       console.error("Sign up error:", error);
@@ -88,11 +128,11 @@ const SignUp = () => {
           </Box>
 
           <Formik
-            initialValues={{ name: "", email: "", phoneNumber: "", password: "" }}
+            initialValues={{ name: "", email: "", phoneNumber: "", password: "", role: "" }}
             validationSchema={validationSchema}
             onSubmit={handleSignUp}
           >
-            {({ errors, touched }) => (
+            {({ errors, touched, handleChange, handleBlur, values }) => (
               <Form>
                 <Box className="mt-6">
                   <Typography className="text-primary font-medium mb-1">Full Name</Typography>
@@ -129,6 +169,29 @@ const SignUp = () => {
                     error={touched.phoneNumber && Boolean(errors.phoneNumber)}
                   />
                   <ErrorMessage name="phoneNumber" component="div" className="text-red-600 text-[12px] mt-1" />
+                </Box>
+
+                <Box className="mt-4">
+                  <Typography className="text-primary font-medium mb-1">Role</Typography>
+                  <FormControl fullWidth error={touched.role && Boolean(errors.role)}>
+                    <InputLabel id="role-select-label">Select Role</InputLabel>
+                    <Select
+                      labelId="role-select-label"
+                      id="role-select"
+                      name="role"
+                      value={values.role}
+                      label="Select Role"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    >
+                      {roles.map((role) => (
+                        <MenuItem key={role.id} value={role.id}>
+                          {role.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <ErrorMessage name="role" component="div" className="text-red-600 text-[12px] mt-1" />
+                  </FormControl>
                 </Box>
 
                 <Box className="mt-4">
