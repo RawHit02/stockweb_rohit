@@ -18,7 +18,7 @@ const getToken = () => {
 };
 
 // Get base URL from environment variable or use the default provided in your request
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'https://stock-backend-rohit-1.onrender.com';
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'https://stock-backend-rohit.onrender.com';
 
 // Create the axios instance
 export const apiClient = axios.create({

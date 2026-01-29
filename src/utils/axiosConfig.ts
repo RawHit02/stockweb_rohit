@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Get the base URL from environment variables
-const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'https://stock-backend-rohit-1.onrender.com';
+const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'https://stock-backend-rohit.onrender.com';
 
 // Create an instance of axios
 const axiosInstance = axios.create({
